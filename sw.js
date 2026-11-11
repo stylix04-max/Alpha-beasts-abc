@@ -1,9 +1,9 @@
-// Alpha-Beasts ABC: lets the app open and play offline.
+// AZoomals ABC: lets the app open and play offline.
 // The app page is fetched fresh when online (so updates show straight away) and saved for offline use.
 // On a slow or patchy connection it gives up waiting after a few seconds and opens the saved copy.
 // 3D engine, fonts and voice clips are kept once downloaded. Icons and the manifest refresh quietly in the background.
 // Change the version below whenever the icons or manifest change.
-const CACHE = "ab-abc-v2";
+const CACHE = "ab-abc-v3";
 const FONTS = "https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Lilita+One&display=swap";
 const CORE = ["/", "/index.html", "/manifest.json", "/icon-192.png", "/icon-512.png",
   "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js", FONTS];
