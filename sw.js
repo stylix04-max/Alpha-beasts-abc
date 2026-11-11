@@ -5,7 +5,7 @@
 // Change the version below whenever the icons or manifest change.
 const CACHE = "ab-abc-v3";
 const FONTS = "https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Lilita+One&display=swap";
-const CORE = ["/", "/index.html", "/manifest.json", "/icon-192.png", "/icon-512.png",
+const CORE = ["/", "/index.html", "/manifest.json", "/icon-192.png", "/icon-512.png", "/web-icon.png",
   "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js", FONTS];
 
 self.addEventListener("install", e => {
