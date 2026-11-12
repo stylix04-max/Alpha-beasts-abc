@@ -174,7 +174,7 @@ tr.me td{background:rgba(58,134,255,.12)}
 .clues li{background:rgba(0,0,0,.05);border-radius:12px;padding:.5rem .8rem;margin-bottom:.4rem;font-weight:700}
 .stars{font-size:1.4rem;letter-spacing:2px}
 @media (prefers-reduced-motion: reduce){.hole .pop{animation:none}}
-/* Adopt a beast */
+/* Adopt an AZoomal */
 .petcard{background:var(--paper);border-radius:22px;padding:1.2rem;box-shadow:0 6px 0 rgba(0,0,0,.15);text-align:center;position:relative;overflow:hidden}
 .pet-stage{position:relative;height:13rem;display:grid;place-items:center;margin-top:.4rem}
 .pet{position:relative;width:9.5rem;height:9.5rem;border-radius:30px;background:var(--c);box-shadow:0 10px 0 rgba(0,0,0,.25);animation:bob 2.6s ease-in-out infinite}
@@ -854,7 +854,7 @@ function home(){
     letters: ["letters","🔤","Letters","A to Z","--vowels"], books3d: ["books3d","📚","Story books","Read in 3D","--place"],
     games: ["games","🎮","Games","26 to play","--mobster"], meet: ["meet","🦁","Meet the AZoomals",`${BEASTS.filter(b => MODELS[b.l]).length} of 26 in 3D`,"--stealth"],
     cards: ["cards","🃏","AZoomal cards",`${cards} of 26`,"--horde"], stickers: ["stickers","⭐","Sticker book",`${traced} of 26`,"--authority"],
-    draw: ["draw","✏️","Draw a beast","Make your own","--stealth"], colour: ["colour","🎨","Colouring","Colour a letter","--unknown"],
+    draw: ["draw","✏️","Draw an AZoomal","Make your own","--stealth"], colour: ["colour","🎨","Colouring","Colour a letter","--unknown"],
     standings: ["standings","🏆","Standings",S.team?TEAMNAME[S.team]:"Pick a team","--place"], bedtime: ["bedtime","🌙","Bedtime","Sleepy A to Z","--night"],
     unlocks: ["unlocks","🎁","Unlocks",`⭐ ${(S.medals || []).length} stars`,"--vowels"]
   };
@@ -963,9 +963,9 @@ function studio(){
   const img = {sketch: null, colour: null};
   render(`${header("Shorts studio")}
     <div class="card" style="text-align:left">
-      <p class="sub" style="margin-top:0">Makes a ready-to-post YouTube Short (upright, 1080 × 1920) with music and the beast's voice. Pick a type, press Record, then save the video.</p>
-      <div class="row" style="justify-content:flex-start"><button class="btn ${st.kind === "evo" ? "" : "ghost"}" data-k="evo">✏️ Beast Evolution</button><button class="btn ${st.kind === "ad" ? "" : "ghost"}" data-k="ad">📣 Advert</button><button class="btn ${st.kind === "scene" ? "" : "ghost"}" data-k="scene">🎬 Scene</button></div>
-      <label class="stl">Beast<select id="sbeast">${have.map(b => `<option value="${b.l}" ${b.l === st.l ? "selected" : ""}>${b.l} · ${esc(b.name)}</option>`).join("")}</select></label>
+      <p class="sub" style="margin-top:0">Makes a ready-to-post YouTube Short (upright, 1080 × 1920) with music and the AZoomal's voice. Pick a type, press Record, then save the video.</p>
+      <div class="row" style="justify-content:flex-start"><button class="btn ${st.kind === "evo" ? "" : "ghost"}" data-k="evo">✏️ AZoomal Evolution</button><button class="btn ${st.kind === "ad" ? "" : "ghost"}" data-k="ad">📣 Advert</button><button class="btn ${st.kind === "scene" ? "" : "ghost"}" data-k="scene">🎬 Scene</button></div>
+      <label class="stl">AZoomal<select id="sbeast">${have.map(b => `<option value="${b.l}" ${b.l === st.l ? "selected" : ""}>${b.l} · ${esc(b.name)}</option>`).join("")}</select></label>
       <div id="sevo" ${st.kind === "evo" ? "" : "hidden"}>
         <label class="stl">1. Pencil sketch photo<input type="file" accept="image/*" id="fsk"></label><div class="sthumbs"><img id="tsk" alt="" hidden></div>
         <label class="stl">2. Coloured picture <small>(uses the app's picture if you skip this)</small><input type="file" accept="image/*" id="fco"></label><div class="sthumbs"><img id="tco" alt=""></div>
@@ -978,10 +978,10 @@ function studio(){
       <div id="ssc" ${st.kind === "scene" ? "" : "hidden"}>
         <label class="stl">Where<select id="sback">${[["meadow", "🌼 Rainbow Meadow"], ["castle", "🏰 Queen Quilla's Castle"], ["claw", "🌵 Claw City"], ["igloo", "❄️ Igloo Isles"], ["stage", "✨ Spotlight stage"]].map(([v, t]) => `<option value="${v}" ${v === st.back ? "selected" : ""}>${t}</option>`).join("")}</select></label>
         <label class="stl">Camera<select id="scam">${[["front", "Steady"], ["zoom", "Slow zoom in"], ["orbit", "Gentle orbit"], ["close", "Close-up"], ["wide", "Wide shot"], ["low", "Dramatic low angle"]].map(([v, t]) => `<option value="${v}" ${v === st.cam ? "selected" : ""}>${t}</option>`).join("")}</select></label>
-        <p class="stl" style="margin-bottom:.35rem">What happens, in order <small>(talking steps use the beast's voice, and the camera moves in close)</small></p>
+        <p class="stl" style="margin-bottom:.35rem">What happens, in order <small>(talking steps use the AZoomal's voice, and the camera moves in close)</small></p>
         <div id="ssteps" class="ssteps"></div>
         <div class="saddrow">${[["walkin", "🚶 Walk in"], ["talk", "💬 Talk"], ["wave", "👋 Wave"], ["dance", "💃 Dance"], ["special", "✨ Special"], ["jump", "⤴ Jump"], ["spin", "🌀 Spin"], ["walkout", "🚶 Walk off"], ["pause", "⏸ Pause"]].map(([k, t]) => `<button class="pill" data-add="${k}">＋ ${t}</button>`).join("")}</div></div>
-      <div class="row" style="justify-content:flex-start"><label class="stchk"><input type="checkbox" id="smus" ${st.music ? "checked" : ""}> 🎵 Music</label><label class="stchk"><input type="checkbox" id="svoi" ${st.voice ? "checked" : ""}> 🔊 Beast's voice</label></div></div>
+      <div class="row" style="justify-content:flex-start"><label class="stchk"><input type="checkbox" id="smus" ${st.music ? "checked" : ""}> 🎵 Music</label><label class="stchk"><input type="checkbox" id="svoi" ${st.voice ? "checked" : ""}> 🔊 AZoomal's voice</label></div></div>
     <div class="card"><div class="stframe"><canvas id="scv" width="1080" height="1920"></canvas></div>
       <div class="row"><button class="btn ghost" id="sprev">▶ Preview</button><button class="btn" id="srec" style="--c:#D62828">⏺ Record video</button></div>
       <p class="sub" id="smsg" style="margin:.4rem 0 0">Keep this screen open while it records. It takes as long as the video.</p>
@@ -1000,7 +1000,7 @@ function studio(){
   ["sh1", "sh2", "scta", "smove", "smus", "svoi"].forEach(id => { $(id).onchange = saveSt; });
   // ---------- scene steps ----------
   const STEP = {walkin: "🚶 Walk in", talk: "💬 Talk", wave: "👋 Wave", dance: "💃 Dance", special: "✨ Special", jump: "⤴ Jump", spin: "🌀 Spin", walkout: "🚶 Walk off", pause: "⏸ Pause"};
-  const defSteps = b => [{k: "walkin"}, {k: "wave"}, {k: "talk", text: `Hi! I'm ${b.name}!${b.power ? ` My power is ${b.power}!` : ""}`}, {k: "special"}, {k: "talk", text: "Come and play with me, free, at beastabet dot co dot uk!"}, {k: "dance"}];
+  const defSteps = b => [{k: "walkin"}, {k: "wave"}, {k: "talk", text: `Hi! I'm ${b.name}!${b.power ? ` My power is ${b.power}!` : ""}`}, {k: "special"}, {k: "talk", text: "Come and play with me, free, at A B C dot A Zoomals dot co dot uk!"}, {k: "dance"}];
   if (!Array.isArray(st.steps) || !st.steps.length) st.steps = defSteps(beastNow());
   function beastNow(){ return byL((document.getElementById("sbeast") || {}).value || st.l) || have[0]; }
   const drawSteps = () => { const box = $("ssteps"); if (!box) return;
@@ -1016,7 +1016,7 @@ function studio(){
           mr.onstop = () => { stream.getTracks().forEach(t => t.stop()); el._rec = null; const blob = new Blob(chunks, {type: mr.mimeType || "audio/mp4"}), fr = new FileReader(); fr.onload = () => { st.steps[i].rec = fr.result; save(); drawSteps(); drawStill(); }; fr.readAsDataURL(blob); };
           mr.start(); setTimeout(() => { if (mr.state === "recording") mr.stop(); }, 5000); }
         catch(e){ alert("The microphone isn't available. Check the app has permission to use it."); } };
-      el.oncontextmenu = e => { e.preventDefault(); if (st.steps[i].rec && confirm("Remove your recording and use the beast's voice?")){ delete st.steps[i].rec; save(); drawSteps(); } }; });
+      el.oncontextmenu = e => { e.preventDefault(); if (st.steps[i].rec && confirm("Remove your recording and use the AZoomal's voice?")){ delete st.steps[i].rec; save(); drawSteps(); } }; });
     box.querySelectorAll("[data-up]").forEach(el => el.onclick = () => { const i = +el.dataset.up; [st.steps[i - 1], st.steps[i]] = [st.steps[i], st.steps[i - 1]]; save(); drawSteps(); drawStill(); }); };
   app.querySelectorAll("[data-add]").forEach(el => el.onclick = () => { const k = el.dataset.add; st.steps.push(k === "talk" ? {k, text: ""} : {k}); save(); drawSteps(); drawStill(); const ins = app.querySelectorAll(".stalk"); if (k === "talk" && ins.length) ins[ins.length - 1].focus(); });
   if ($("sback")){ $("sback").onchange = () => { saveSt(); drawStill(); }; $("scam").onchange = () => { saveSt(); drawStill(); }; }
@@ -1108,7 +1108,7 @@ function studio(){
         if (s.k === "talk"){ line = (s.text || "").trim() || `Hi! I'm ${b.name}!`; if (ac && s.rec){ try { buf = await ac.decodeAudioData(await (await fetch(s.rec)).arrayBuffer()); } catch(e){ buf = null; } } if (!buf && ac && st.voice) buf = await getVoice(ac, line, b.l); d = buf ? buf.duration + 0.5 : Math.max(1.6, line.split(/\s+/).length*0.38 + 0.6); }
         segs.push({k: s.k, a: t, d, line, buf, fired: false}); t += d; }
       const tEnd = Math.max(t, 1.5), T = tEnd + 3.4, startX = segs.length && segs[0].k === "walkin" ? -3.6 : 0;
-      if (st.voice && ac && segs.some(s => s.k === "talk" && !s.buf)) $("smsg").textContent = "The beast's voice couldn't load (check the voice in Grown-ups), so the talking has captions only.";
+      if (st.voice && ac && segs.some(s => s.k === "talk" && !s.buf)) $("smsg").textContent = "The AZoomal's voice couldn't load (check the voice in Grown-ups), so the talking has captions only.";
       let camD = 0;
       return {T, voice: segs.filter(s => s.buf).map(s => [s.line, s.a + 0.15, s.buf]), draw(tt, dt){
         const g = getScene(b, back); let x = startX, y = 0, rot = 0, mv = 0, spin = 0, talk = null;
@@ -1160,7 +1160,7 @@ function studio(){
         if (i % 4 === 0){ const ob = ac.createOscillator(), gb = ac.createGain(); ob.type = "sine"; ob.frequency.value = bass[Math.floor(i/8) % 4]; gb.gain.setValueAtTime(0.0001, t0 + t); gb.gain.exponentialRampToValueAtTime(0.9, t0 + t + 0.02); gb.gain.exponentialRampToValueAtTime(0.0001, t0 + t + beat*3.5); ob.connect(gb).connect(mg); ob.start(t0 + t); ob.stop(t0 + t + beat*4); } }
       mg.gain.setValueAtTime(0.32, t0 + plan.T - 1.2); mg.gain.linearRampToValueAtTime(0.0001, t0 + plan.T - 0.1); }
     studioAn = null; if (st.voice && ac.createAnalyser){ studioAn = ac.createAnalyser(); studioAn.fftSize = 512; outs.forEach(o => studioAn.connect(o)); }
-    if (st.voice){ for (const [line, at, pre] of plan.voice){ try { let buf = pre; if (!buf){ const r = await fetch(clipURL(line, beast().l)); if (!r.ok) throw 0; buf = await ac.decodeAudioData(await r.arrayBuffer()); } const src = ac.createBufferSource(), vg = ac.createGain(); vg.gain.value = 1; src.buffer = buf; src.connect(vg); if (studioAn) vg.connect(studioAn); else outs.forEach(o => vg.connect(o)); src.start(Math.max(ac.currentTime, t0 + at)); } catch(e){ $("smsg").textContent = "The beast's voice couldn't load (check the voice in Grown-ups), so this one has music only."; } } }
+    if (st.voice){ for (const [line, at, pre] of plan.voice){ try { let buf = pre; if (!buf){ const r = await fetch(clipURL(line, beast().l)); if (!r.ok) throw 0; buf = await ac.decodeAudioData(await r.arrayBuffer()); } const src = ac.createBufferSource(), vg = ac.createGain(); vg.gain.value = 1; src.buffer = buf; src.connect(vg); if (studioAn) vg.connect(studioAn); else outs.forEach(o => vg.connect(o)); src.start(Math.max(ac.currentTime, t0 + at)); } catch(e){ $("smsg").textContent = "The AZoomal's voice couldn't load (check the voice in Grown-ups), so this one has music only."; } } }
     return t0; };
   // ---------- play / record ----------
   let running = false;
@@ -1184,7 +1184,7 @@ function studio(){
     $("sprev").disabled = $("srec").disabled = false;
     if (!rec){ $("smsg").textContent = "Happy with it? Press Record video."; return; }
     await new Promise(r => { rec.onstop = r; rec.stop(); });
-    const ext = /mp4/.test(type || rec.mimeType || "") ? "mp4" : "webm", blob = new Blob(chunks, {type: (type || rec.mimeType || "video/mp4").split(";")[0]}), name = `beastabet-${beast().name.toLowerCase().replace(/\W+/g, "-")}-${st.kind === "evo" ? "evolution" : "advert"}.${ext}`;
+    const ext = /mp4/.test(type || rec.mimeType || "") ? "mp4" : "webm", blob = new Blob(chunks, {type: (type || rec.mimeType || "video/mp4").split(";")[0]}), name = `azoomals-${beast().name.toLowerCase().replace(/\W+/g, "-")}-${st.kind === "evo" ? "evolution" : "advert"}.${ext}`;
     const url = URL.createObjectURL(blob); CLEAN.push(() => URL.revokeObjectURL(url)); $("svid").src = url; $("sdl").href = url; $("sdl").download = name; $("sout").hidden = false;
     $("smsg").textContent = ext === "mp4" ? "Done! Save it, then post it from the YouTube app." : "Done! This phone saved a .webm video, which YouTube accepts too.";
     $("ssave").onclick = async () => { const file = new File([blob], name, {type: blob.type}); try { if (navigator.canShare && navigator.canShare({files: [file]})){ await navigator.share({files: [file], title: name}); return; } } catch(e){ if (e && e.name === "AbortError") return; } $("sdl").click(); };
@@ -1414,7 +1414,7 @@ function trace(i, lower){
 
 /* ================= GAMES ================= */
 const GAMES = [
-  ["maths","🔢","Beast Maths","--authority"],
+  ["maths","🔢","AZoomal Maths","--authority"],
   ["find","👂","Find the letter","--vowels"],
   ["boost","🍎","Boost match","--mobster"],
   ["cases","🔠","Big and little","--horde"],
@@ -1426,19 +1426,19 @@ const GAMES = [
   ["board","🎲","Boost Trail","--vowels"],
   ["outlaws","🕶️","Stop the Outlaws","--outlaw"],
   ["missing","🔡","Missing letter","--place"],
-  ["beastle","🔍","Beastle","--mobster"],
-  ["snakes","🐍","Beasts & Ladders","--horde"],
+  ["beastle","🔍","Zoomle","--mobster"],
+  ["snakes","🐍","Vance & Ladders","--horde"],
   ["relay3d","🏃","Relay Rumble 3D","--place"],
   ["joust3d","🛡️","Royal Joust 3D","--unknown"],
   ["chicken3d","🐔","Capture the Chicken 3D","--outlaw"],
   ["beach3d","🏖️","Beasts at the Beach 3D","--stealth"],
-  ["ludo3d","🏠","Beast Ludo 3D","--vowels"],
+  ["ludo3d","🏠","AZoomal Ludo 3D","--vowels"],
   ["bowl3d","🎳","Barrel Bowling 3D","--mobster"],
   ["hunt3d","🔎","Letter Hunt 3D","--horde"],
-  ["kart3d","🏎️","Beast Kart 3D","--vowels"],
-  ["micro3d","🚗","Micro Beasts","--mobster"],
-  ["soccer3d","⚽","Beast Football","--horde"],
-  ["chess3d","♟️","Beast Chess 3D","--stealth"]
+  ["kart3d","🏎️","Zoom Kart 3D","--vowels"],
+  ["micro3d","🚗","Micro Karts","--mobster"],
+  ["soccer3d","⚽","AZoomal Football","--horde"],
+  ["chess3d","♟️","AZoomal Chess 3D","--stealth"]
 ];
 /* One game for every letter. null = coming soon */
 const GAMES_AZ = [
@@ -1458,7 +1458,7 @@ function games(){
     <div class="azgames">${GAMES_AZ.map(([l, key, name]) => { const b = byL(l);
       return `<button class="azg ${key ? "" : "soon"}" style="--c:${col(b)}" ${key ? `data-go="${key}"` : "disabled"}>
         <span class="azl">${ART_HEAD[l] ? `<img src="${ART_HEAD[l]}" alt="">` : l}</span><span class="azn"><b>${esc(name)}</b>${key ? "" : "<small>🔒 Coming soon</small>"}</span></button>`; }).join("")}</div>
-    <details class="card" style="margin-top:1rem;text-align:left"><summary><b>More games</b> <small>(including 🔢 Beast Maths)</small></summary>
+    <details class="card" style="margin-top:1rem;text-align:left"><summary><b>More games</b> <small>(including 🔢 AZoomal Maths)</small></summary>
       <div class="hub" style="margin-top:.8rem">${extras.map(g=>`<button class="tile" style="--c:var(${g[3]})" data-go="${g[0]}"><span class="ic" aria-hidden="true">${g[1]}</span><b>${g[2]}</b></button>`).join("")}</div></details>`);
 }
 
@@ -1479,7 +1479,7 @@ function maths(){
   const face = b => ART_HEAD[b.l] ? `<img class="mface" src="${ART_HEAD[b.l]}" alt="">` : `<span class="mface mletter" style="--c:${col(b)}">${b.l}</span>`;
   const row = (e, n, cls) => `<div class="mrow">${Array.from({length: n}, () => `<span class="mitem ${cls || ""}">${e}</span>`).join("")}</div>`;
   const next = () => {
-    if (round === ROUNDS){ if (score >= ROUNDS - 2) S.mathWins = (S.mathWins || 0) + 1; save(); return finish("Beast Maths", score, ROUNDS, maths); }
+    if (round === ROUNDS){ if (score >= ROUNDS - 2) S.mathWins = (S.mathWins || 0) + 1; save(); return finish("AZoomal Maths", score, ROUNDS, maths); }
     round++;
     const types = lvl === 1 ? ["count", "count", "more", "add"] : lvl === 2 ? ["count", "add", "add", "more", "take"] : ["add", "take", "add", "take", "more"];
     const type = rnd(types), b = rnd(crowd), e = b.e;
@@ -1498,7 +1498,7 @@ function maths(){
       q = `Who has more? ${b.name} or ${f.name}?`; say = q; opts = [b, f]; }
     if (!isWho){ const s = new Set([ans]); while (s.size < 3){ const d = ans + rnd([-2, -1, 1, 2]); if (d >= 0 && d <= 12) s.add(d); } opts = shuffle([...s]); }
     let tries = 0;
-    render(`${header("Beast Maths", "games", "Games")}
+    render(`${header("AZoomal Maths", "games", "Games")}
       <div class="card"><p class="count">${round} of ${ROUNDS} · Level ${lvl}</p>
         <div class="mq">${type === "more" ? "" : face(b)}<p class="say" style="margin:.3rem 0">${esc(q)}</p></div>
         <div class="mvis">${visual}</div>
@@ -1770,7 +1770,7 @@ function board(){
   render(`${header("Boost Trail", "games", "Games")}
     <div class="card"><p class="say">How many players?</p>
       <div class="row">${[1,2,3,4].map(n=>`<button class="btn" data-n="${n}" style="--c:var(--vowels)">${n}</button>`).join("")}</div>
-      <p class="note">1 player races a computer beast. 2 to 4 players take turns on this phone.</p></div>`);
+      <p class="note">1 player races a computer AZoomal. 2 to 4 players take turns on this phone.</p></div>`);
   speak("How many players?");
   app.querySelectorAll("[data-n]").forEach(el => el.onclick = () => boardPick(+el.dataset.n, []));
 }
@@ -1779,11 +1779,11 @@ function boardPick(n, chosen){
   const who = chosen.length + 1;
   const choices = pool();
   render(`${header("Boost Trail", "games", "Games")}
-    <div class="card"><p class="say">${n>1?`Player ${who}, `:""}pick your beast</p>
+    <div class="card"><p class="say">${n>1?`Player ${who}, `:""}pick your AZoomal</p>
       <div class="pick">${choices.map(b=>{ const taken = chosen.some(c=>c.l===b.l);
         return `<button class="block ${taken?"taken":""}" style="--c:${col(b)}" data-l="${b.l}" ${taken?"disabled":""}>${b.l}<small>${esc(b.name)}</small></button>`; }).join("")}</div>
-      ${S.unlocked?"":`<p class="note">Unlock the full alphabet to race with every beast.</p>`}</div>`);
-  speak(n>1 ? `Player ${who}, pick your beast.` : "Pick your beast.");
+      ${S.unlocked?"":`<p class="note">Unlock the full alphabet to race with every AZoomal.</p>`}</div>`);
+  speak(n>1 ? `Player ${who}, pick your AZoomal.` : "Pick your AZoomal.");
   app.querySelectorAll(".pick .block:not(.taken)").forEach(el => el.onclick = () => {
     const b = byL(el.dataset.l); speak(line(b));
     const list = [...chosen, {l:b.l, cpu:false}];
@@ -1993,9 +1993,9 @@ function outlaws(mode){
     <div class="card">
       <div class="vs"><span>⏱️ <b id="tm">30</b></span><span>🕶️ <b id="sc">0</b></span></div>
       <div class="holes">${Array.from({length:9},(_,i)=>`<button class="hole" data-i="${i}" aria-label="Hole ${i+1}"></button>`).join("")}</div>
-      <p class="feedback" id="fb" aria-live="polite">Tap Xander and Yareli. Leave the good beasts alone!</p>
+      <p class="feedback" id="fb" aria-live="polite">Tap Xander and Yareli. Leave the good AZoomals alone!</p>
     </div>`);
-  speak("Stop the outlaws! Tap Xander and Yareli, but leave the good beasts alone!");
+  speak("Stop the outlaws! Tap Xander and Yareli, but leave the good AZoomals alone!");
   const holes = [...app.querySelectorAll(".hole")];
   const clear = i => { holes[i].innerHTML = ""; delete active[i]; };
   const pop = () => {
@@ -2108,7 +2108,7 @@ function addFood(n){ petState(); S.food += n; }
 const petLevel = xp => Math.min(LEVELS.length, 1 + Math.floor(xp/PER_LEVEL));
 function petTile(){
   petState();
-  if (!S.pet) return `<button class="tile wide" style="--c:var(--vowels)" data-go="pet"><span class="ic">🐾</span><span><b>Adopt a beast</b><br><span class="n">Pick a beast to look after</span></span></button>`;
+  if (!S.pet) return `<button class="tile wide" style="--c:var(--vowels)" data-go="pet"><span class="ic">🐾</span><span><b>Adopt an AZoomal</b><br><span class="n">Pick an AZoomal to look after</span></span></button>`;
   const b = byL(S.pet);
   return `<button class="tile wide" style="--c:${col(b)}" data-go="pet"><span class="ic">${b.e||"🐾"}</span><span><b>${esc(b.name)}</b><br><span class="n">${S.food ? `${S.food} ${esc(b.boost.toLowerCase())} to feed` : "Play games to earn food"}</span></span></button>`;
 }
@@ -2122,10 +2122,10 @@ function pet(){
   // gentle daily treat, never a penalty for missing days
   let gift = false;
   if (S.lastGift !== today()){ S.lastGift = today(); S.food += 1; gift = true; save(); }
-  render(`${header("My beast")}
+  render(`${header("My AZoomal")}
     <div class="petcard" style="--c:${col(b)}">
       <h2>${esc(b.name)}</h2>
-      <p class="sub" id="lvl">Level ${lvl} · ${LEVELS[lvl-1]} ${b.animal||"beast"}</p>
+      <p class="sub" id="lvl">Level ${lvl} · ${LEVELS[lvl-1]} ${b.animal||"AZoomal"}</p>
       <div class="pet-stage" id="stage">
         ${ART[b.l] ? `<div class="pet artpet" id="pet"><img src="${ART[b.l]}" alt="${esc(b.name)}"></div>` : `<div class="pet" id="pet"><div class="eyes"><span class="eye"></span><span class="eye"></span></div>
           <span class="cheek l"></span><span class="cheek r"></span><span class="mouth"></span><span class="belly">${b.l}</span></div>`}
@@ -2139,9 +2139,9 @@ function pet(){
       <div class="row"><button class="btn ghost" data-go="games">🎮 Earn more food</button></div>
     </div>
     <div class="card"><p class="say">Care days: <span id="days">${S.careDays.length}</span></p>
-      <p class="sub">Feed your beast on different days to win prizes. Miss a day? No problem, ${esc(b.name)} will wait for you.</p>
+      <p class="sub">Feed your AZoomal on different days to win prizes. Miss a day? No problem, ${esc(b.name)} will wait for you.</p>
       <div class="track" id="track"></div>
-      <button class="link-btn" id="swap">Adopt a different beast</button>
+      <button class="link-btn" id="swap">Adopt a different AZoomal</button>
     </div>`);
   // wears your chosen outfit
   { const o = OUTFITS.find(x => x[0] === S.outfit); if (o && o[0] !== "none" && outfitOpen(o[0])) $("pet").insertAdjacentHTML("beforeend", `<span class="pethat">${o[3]}</span>`); }
@@ -2155,7 +2155,7 @@ function pet(){
     if (asleep){ speak(rnd(["Yawn... five more minutes!", "Shh, I'm sleeping!", "Zzz... hmm?"]), null, {beast: b.l}); $("pet").classList.remove("jump"); void $("pet").offsetWidth; $("pet").classList.add("jump"); return; }
     $("pet").classList.remove("jump"); void $("pet").offsetWidth; $("pet").classList.add("jump"); sparkle(e.clientX - st.left, e.clientY - st.top); SFX.star && SFX.star(); buzz(20);
     speak(head ? rnd([`Aww, thank you!`, `I love head pats!`, `${nm(b)} is happy!`]) : rnd(["Hee hee hee!", "That tickles!", "Ha ha, stop it!"]), null, {beast: b.l}); });
-  if (asleep) $("fb").textContent = "Shh… your beast is sleeping. Tap to say goodnight.";
+  if (asleep) $("fb").textContent = "Shh… your AZoomal is sleeping. Tap to say goodnight.";
   const drawPantry = () => { $("pantry").textContent = S.food ? `${b.e} ${S.food} ${b.boost.toLowerCase()} in the pantry` : "The pantry is empty. Play games or trace letters to earn food!"; };
   const drawTrack = () => { $("days").textContent = S.careDays.length;
     $("track").innerHTML = REWARDS.map(r=>`<div class="step ${S.petRewards[r.days]?"done":""}"><span class="i">${S.petRewards[r.days]?r.icon:"🔒"}</span>${r.days} days<br>${r.label}</div>`).join(""); };
@@ -2183,7 +2183,7 @@ function pet(){
     p.classList.remove("jump"); void p.offsetWidth; p.classList.add(after > before ? "grow" : "jump");
     $("xpfill").style.width = (after>=LEVELS.length ? 100 : (x%PER_LEVEL)/PER_LEVEL*100) + "%";
     $("xptext").textContent = after>=LEVELS.length ? "Top level reached!" : `${PER_LEVEL - x%PER_LEVEL} more treats to level ${after+1}`;
-    $("lvl").textContent = `Level ${after} · ${LEVELS[after-1]} ${b.animal||"beast"}`;
+    $("lvl").textContent = `Level ${after} · ${LEVELS[after-1]} ${b.animal||"AZoomal"}`;
     drawPantry();
     let msg = `Yum! ${b.name} loves ${b.boost.toLowerCase()}!`, say = `Yum! ${nm(b)} loves ${b.boost}!`;
     if (after > before){
@@ -2219,12 +2219,12 @@ function checkRewards(b, redraw){
 function adopt(){
   petState();
   const choices = pool();
-  render(`${header("Adopt a beast")}
-    <div class="card"><p class="say">Which beast will you look after?</p>
+  render(`${header("Adopt an AZoomal")}
+    <div class="card"><p class="say">Which AZoomal will you look after?</p>
       <p class="sub">Feed them by playing games and tracing letters. They grow as you learn!</p>
       <div class="pick">${choices.map(b=>`<button class="block" style="--c:${col(b)}" data-l="${b.l}">${b.l}<small>${esc(b.name)}</small></button>`).join("")}</div>
-      ${S.unlocked?"":`<p class="note">Unlock the full alphabet to adopt any beast.</p>`}</div>`);
-  speak("Which beast will you look after?");
+      ${S.unlocked?"":`<p class="note">Unlock the full alphabet to adopt any AZoomal.</p>`}</div>`);
+  speak("Which AZoomal will you look after?");
   app.querySelectorAll(".pick .block").forEach(el => el.onclick = () => {
     const b = byL(el.dataset.l);
     S.pet = b.l; if (!S.food) S.food = 3; save();
@@ -2287,17 +2287,17 @@ function snakes(){
   render(`${header("Vance and Ladders", "games", "Games")}
     <div class="card"><p class="say">How many players?</p>
       <div class="row">${[1,2,3,4].map(n=>`<button class="btn" data-n="${n}" style="--c:var(--horde)">${n}</button>`).join("")}</div>
-      <p class="note">Climb the ladders, dodge the snakes! 1 player races a computer beast.</p></div>`);
+      <p class="note">Climb the ladders, dodge the snakes! 1 player races a computer AZoomal.</p></div>`);
   speak("Vance and ladders! How many players?");
   app.querySelectorAll("[data-n]").forEach(el => el.onclick = () => snakesPick(+el.dataset.n, []));
 }
 function snakesPick(n, chosen){
   const who = chosen.length + 1;
   render(`${header("Vance and Ladders", "games", "Games")}
-    <div class="card"><p class="say">${n>1?`Player ${who}, `:""}pick your beast</p>
+    <div class="card"><p class="say">${n>1?`Player ${who}, `:""}pick your AZoomal</p>
       <div class="pick">${pool().map(b=>{ const taken = chosen.some(c=>c.l===b.l);
         return `<button class="block ${taken?"taken":""}" style="--c:${col(b)}" data-l="${b.l}" ${taken?"disabled":""}>${b.l}<small>${esc(b.name)}</small></button>`; }).join("")}</div></div>`);
-  speak(n>1 ? `Player ${who}, pick your beast.` : "Pick your beast.");
+  speak(n>1 ? `Player ${who}, pick your AZoomal.` : "Pick your AZoomal.");
   app.querySelectorAll(".pick .block:not(.taken)").forEach(el => el.onclick = () => {
     const b = byL(el.dataset.l); speak(line(b));
     const list = [...chosen, {l:b.l, cpu:false}];
@@ -2612,7 +2612,7 @@ function snakes3D(list, MAP, SIZE){
     fb(`${p.b.name}${p.cpu ? "'s turn" : ", tap the dice!"}`); sayQ(`${nm(p.b)}, your turn!`);
     if (p.cpu){ btn(false); later(roll, 1800); } else btn(true); };
   const win = p => { over = true; btn(false); hud(); SFX.win(); banner("🏆 WINNER!", "#FFD166");
-    if (!p.cpu && P.some(x => x.cpu)){ award(10); medal("🪜", "Beasts & Ladders"); }
+    if (!p.cpu && P.some(x => x.cpu)){ award(10); medal("🪜", "Vance & Ladders"); }
     $("fb").innerHTML = `🏁 ${esc(p.b.name)} wins!<div class="row"><button class="btn" id="again">Play again</button><button class="btn ghost" id="newmap">New map</button><button class="btn ghost" data-go="games">More games</button></div>`;
     $("again").onclick = () => snakesPlay(list, BL_MAPS.indexOf(MAP), Object.keys(BL_SIZES).find(k => BL_SIZES[k] === SIZE)); $("newmap").onclick = () => snakesMap(list);
     sayQ(`${nm(p.b)} wins!`); const [x, y, z] = tile(N); for (let k = 0; k < 8; k++) rocket(x + (Math.random() - .5)*6, y, z + (Math.random() - .5)*3, k*300);
@@ -3955,9 +3955,9 @@ function start3D(fn){
 }
 function pickBeast(title, then){
   render(`${header(title, "games", "Games")}
-    <div class="card"><p class="say">Pick your beast</p>
+    <div class="card"><p class="say">Pick your AZoomal</p>
       <div class="pick">${pool().map(b=> beastOpen(b.l) ? `<button class="block" style="--c:${col(b)}" data-l="${b.l}">${b.l}<small>${esc(b.name)}</small></button>` : `<button class="block taken" style="--c:${col(b)}" disabled>🔒<small>⭐ ${beastStars(b.l)}</small></button>`).join("")}</div></div>`);
-  speak("Pick your beast.");
+  speak("Pick your AZoomal.");
   app.querySelectorAll(".pick .block[data-l]").forEach(el => el.onclick = () => { const b = byL(el.dataset.l); OUTFIT_FOR = b.l; speak(line(b)); later(() => then(b), 900); });
 }
 const hexOf = b => getComputedStyle(document.documentElement).getPropertyValue(T[b.team]).trim() || "#888888";
@@ -4308,7 +4308,7 @@ function chicken3d(){
 /* ---------- BEASTS AT THE BEACH (Book 5) ---------- */
 function beach3d(){ pickBeast("Apex's Apple Catch", beach3dPlay); }
 function beach3dPlay(me){
-  shell3D("Apex's Apple Catch", `Drag, or hold ◀ ▶, to catch your falling ${esc((me.boost||"boosts").toLowerCase())}. Golden ones power you up, rotten ones lose a point, and other beasts' things don't count. Watch out for seagulls and gusts of wind!`,
+  shell3D("Apex's Apple Catch", `Drag, or hold ◀ ▶, to catch your falling ${esc((me.boost||"boosts").toLowerCase())}. Golden ones power you up, rotten ones lose a point, and other AZoomals' things don't count. Watch out for seagulls and gusts of wind!`,
     `<div class="row"><button class="btn huge" id="L" style="--c:var(--place)">◀</button><button class="btn huge" id="R" style="--c:var(--place)">▶</button></div>`);
   start3D(() => {
     const G = make3D({sky:["#2F8FE0","#8DD3F7","#FFF1D0"], fog:["#CFEFFA", 25, 80]}), {T3, camera, add, mat} = G;
@@ -4440,16 +4440,16 @@ function ludo3d(){
   render(`${header("Lucky's Loot Ludo", "games", "Games")}
     <div class="card"><p class="say">How many players?</p>
       <div class="row">${[1,2,3,4].map(n=>`<button class="btn" data-n="${n}" style="--c:var(--vowels)">${n}</button>`).join("")}</div>
-      <p class="note">1 player plays against 3 computer beasts. Each player has two beasts to get home.</p></div>`);
-  speak("Beast Ludo! How many players?");
+      <p class="note">1 player plays against 3 computer AZoomals. Each player has two AZoomals to get home.</p></div>`);
+  speak("AZoomal Ludo! How many players?");
   app.querySelectorAll("[data-n]").forEach(el => el.onclick = () => ludoPick(+el.dataset.n, []));
 }
 function ludoPick(n, chosen){
   const who = chosen.length + 1;
   render(`${header("Lucky's Loot Ludo", "games", "Games")}
-    <div class="card"><p class="say">${n>1?`Player ${who}, `:""}pick your beast</p>
+    <div class="card"><p class="say">${n>1?`Player ${who}, `:""}pick your AZoomal</p>
       <div class="pick">${pool().map(b=>{ const taken = chosen.some(c=>c.l===b.l); return `<button class="block ${taken?"taken":""}" style="--c:${col(b)}" data-l="${b.l}" ${taken?"disabled":""}>${b.l}<small>${esc(b.name)}</small></button>`; }).join("")}</div></div>`);
-  speak(n>1 ? `Player ${who}, pick your beast.` : "Pick your beast.");
+  speak(n>1 ? `Player ${who}, pick your AZoomal.` : "Pick your AZoomal.");
   app.querySelectorAll(".pick .block:not(.taken)").forEach(el => el.onclick = () => {
     const list = [...chosen, {l: el.dataset.l, cpu:false}]; speak(line(byL(el.dataset.l)));
     if (list.length < n) return later(() => ludoPick(n, list), 900);
@@ -4469,7 +4469,7 @@ function ludoPlay(list){
       </div>
       <div class="lchoose" id="choose"></div>
       <p class="feedback" id="fb" aria-live="polite"></p>
-      <p class="note">Tap the dice to roll. Roll a 6 or a 1 to sail out of your treasure chest. Land on another beast to send it home and grab their loot! A 6 gives you another go. Get both beasts to the treasure in the middle to win. Drag to spin the island.</p>
+      <p class="note">Tap the dice to roll. Roll a 6 or a 1 to sail out of your treasure chest. Land on another AZoomal to send it home and grab their loot! A 6 gives you another go. Get both AZoomals to the treasure in the middle to win. Drag to spin the island.</p>
     </div>`);
   start3D(() => {
     const G = make3D({fog:["#CFEAF5", 30, 90]}), {T3, camera, add, mat} = G;
@@ -4552,9 +4552,9 @@ function ludoPlay(list){
           say(`${pl.b.name} sent ${o.b.name} back home!`, `${nm(pl.b)} sent ${nm(o.b)} back home!`); banner("💰 LOOT!", SEAT[pl.seat]); SFX.bang && SFX.bang(); } }); });
         if (t.steps >= 44){ G.burst(0, 1, 0, 24, RB, true); speak(`${nm(pl.b)} made it to the treasure!`); banner("🏴‍☠️ TREASURE!", SEAT[pl.seat]); SFX.win && SFX.win(); }
         if (pl.toks.every(x => x.steps >= 44)){ over = true; hud(); $("roll").disabled = true;
-          if (!pl.cpu && P.some(x => x.cpu)){ award(10); medal("🏠", "Beast Ludo"); }
-          $("fb").innerHTML = `🏆 ${esc(pl.b.name)} wins Beast Ludo!<div class="row"><button class="btn" id="again">Play again</button><button class="btn ghost" data-go="games">More games</button></div>`;
-          $("again").onclick = ludo3d; speak(`${nm(pl.b)} wins Beast Ludo!`); G.burst(0, 2, 0, 60, RB, true); return; }
+          if (!pl.cpu && P.some(x => x.cpu)){ award(10); medal("🏠", "AZoomal Ludo"); }
+          $("fb").innerHTML = `🏆 ${esc(pl.b.name)} wins AZoomal Ludo!<div class="row"><button class="btn" id="again">Play again</button><button class="btn ghost" data-go="games">More games</button></div>`;
+          $("again").onclick = ludo3d; speak(`${nm(pl.b)} wins AZoomal Ludo!`); G.burst(0, 2, 0, 60, RB, true); return; }
         hud(); later(() => next(n === 6), 800);
       });
     };
@@ -4572,7 +4572,7 @@ function ludoPlay(list){
             const cap = idx >= 0 && P.some(o => o !== pl && o.toks.some(ot => ringIdx(o, ot.steps) === idx)) ? 100 : 0; return cap + (t.steps < 0 ? 50 : 0) + tg; };
           pick = opts.slice().sort((a, b) => score(b) - score(a))[0]; }
         return later(() => doMove(pl, pick, n), 700); }
-      $("choose").innerHTML = `<p class="sub" style="margin:.2rem 0">Which beast?</p>` + opts.map(t => `<button class="lpick" data-j="${t.j}" style="--c:${SEAT[pl.seat]}"><span>${pl.b.l}</span><b>Beast ${t.j + 1}</b><small>${t.steps < 0 ? "sail out of the chest" : t.steps >= 40 ? "nearly home" : `${44 - t.steps} to go`}</small></button>`).join("");
+      $("choose").innerHTML = `<p class="sub" style="margin:.2rem 0">Which one?</p>` + opts.map(t => `<button class="lpick" data-j="${t.j}" style="--c:${SEAT[pl.seat]}"><span>${pl.b.l}</span><b>Piece ${t.j + 1}</b><small>${t.steps < 0 ? "sail out of the chest" : t.steps >= 40 ? "nearly home" : `${44 - t.steps} to go`}</small></button>`).join("");
       $("choose").querySelectorAll("[data-j]").forEach(bt => bt.onclick = () => doMove(pl, pl.toks[+bt.dataset.j], n));
     };
     $("roll").onclick = roll;
@@ -4757,7 +4757,7 @@ function hunt3dPlay(me, mi, opt){
   const targets = words ? words.map(w => w[0]).join("").split("") : opt.daily ? shuffle(BEASTS.filter(b => b.team !== "place").map(b => b.l)).slice(0, 6) : useName ? nameLs : BEASTS.slice(st0, st0 + 8).map(b => b.l);
   const wordEnds = words ? [3, 6] : [];
   if (opt.daily) Math.random = realRandom;
-  shell3D(`${opt.daily ? "📅 Daily: " : "🔎 "}${MAP.name}`, (opt.word ? "Spell the words! Look at the picture clue." : opt.sound ? "Listen to the sound, then find the letter that makes it!" : opt.daily ? "Today's Daily Hunt: the same letters and places for everyone!" : useName ? `Find the letters of ${esc(S.name)}'s name, in order!` : "Find the letters in alphabet order!") + " Follow the golden beam, the compass and the map. Drag the screen or use the arrows to walk, ⤴ or double-tap to jump (twice for higher), hold 🏃 to jog, two fingers to look around, 🔭 to zoom out. Every beast has its own power!",
+  shell3D(`${opt.daily ? "📅 Daily: " : "🔎 "}${MAP.name}`, (opt.word ? "Spell the words! Look at the picture clue." : opt.sound ? "Listen to the sound, then find the letter that makes it!" : opt.daily ? "Today's Daily Hunt: the same letters and places for everyone!" : useName ? `Find the letters of ${esc(S.name)}'s name, in order!` : "Find the letters in alphabet order!") + " Follow the golden beam, the compass and the map. Drag the screen or use the arrows to walk, ⤴ or double-tap to jump (twice for higher), hold 🏃 to jog, two fingers to look around, 🔭 to zoom out. Every AZoomal has its own power!",
     `<div class="huntctl"><div class="dpad"><button class="btn" id="up" style="--c:var(--place)">▲</button><div><button class="btn" id="lf" style="--c:var(--place)">◀</button><button class="btn" id="dn" style="--c:var(--place)">▼</button><button class="btn" id="rt" style="--c:var(--place)">▶</button></div></div>
       <div class="huntbtns"><button class="btn jumpbtn" id="jump" style="--c:var(--vowels)">⤴<br><small>Jump</small></button><button class="btn jumpbtn" id="jog" style="--c:var(--mobster)">🏃<br><small>Jog</small></button></div></div>`);
   { const wr = app.querySelector(".slwrap"), cd = wr && wr.closest(".card"); if (cd){ cd.classList.add("fsgame"); document.body.classList.add("huntfs"); CLEAN.push(() => document.body.classList.remove("huntfs"));
@@ -5771,7 +5771,7 @@ function hunt3dPlay(me, mi, opt){
         CLEAN.push(() => box2.remove()); }catch(e){ toast("Couldn't take the photo"); } };
     $("mus").onclick = () => { S.music = !MUSIC.on(); save(); $("mus").textContent = MUSIC.on() ? "🎵" : "🔇"; MUSIC.on() ? MUSIC.start(MAP.id) : MUSIC.stop(); };
     // ---- first-time tutorial
-    if (!S.huntTut){ const steps = [["👆", "Put your thumb on the left side and slide it to walk. Slide right past the circle to run!"], ["⤴", "Tap Jump, or double-tap the screen, to jump. Do it again in the air to jump higher!"], ["👉", "Slide a finger on the right side to look around. Pinch to zoom. The camera follows you as you walk."], ["☰", "Tap ☰ for more buttons: zoom, music, camera, photos and dances. Tap the map to make it big."], ["✨", "Follow the golden light and the compass to find each letter. The map shows where you are."], ["⭐", "There are 3 golden stars hidden in every world. Can you find them?"], ["🍄", "Bounce on mushrooms and trampolines, and climb the crate steps up the lookout towers. Some letters are up there!"], ["😎", "Watch out for Yareli's yellow mist, Xander's fake letters in sunglasses, and the guard on patrol!"], ["📸", "Tap the camera button to take a photo of your beast."]];
+    if (!S.huntTut){ const steps = [["👆", "Put your thumb on the left side and slide it to walk. Slide right past the circle to run!"], ["⤴", "Tap Jump, or double-tap the screen, to jump. Do it again in the air to jump higher!"], ["👉", "Slide a finger on the right side to look around. Pinch to zoom. The camera follows you as you walk."], ["☰", "Tap ☰ for more buttons: zoom, music, camera, photos and dances. Tap the map to make it big."], ["✨", "Follow the golden light and the compass to find each letter. The map shows where you are."], ["⭐", "There are 3 golden stars hidden in every world. Can you find them?"], ["🍄", "Bounce on mushrooms and trampolines, and climb the crate steps up the lookout towers. Some letters are up there!"], ["😎", "Watch out for Yareli's yellow mist, Xander's fake letters in sunglasses, and the guard on patrol!"], ["📸", "Tap the camera button to take a photo of your AZoomal."]];
       let si = 0; const wrap = $("g3d").parentElement; wrap.insertAdjacentHTML("beforeend", `<div class="tut" id="tut"><div class="tutbox"><div class="tute" id="tute"></div><p id="tutt"></p><button class="btn" id="tutn">Next ›</button></div></div>`);
       const showStep = () => { $("tute").textContent = steps[si][0]; $("tutt").textContent = steps[si][1]; $("tutn").textContent = si === steps.length - 1 ? "Let's go! ▶" : "Next ›"; speak(steps[si][1]); };
       $("tutn").onclick = () => { si++; if (si >= steps.length){ $("tut").remove(); S.huntTut = 1; save(); speak(`Find the letter ${SAY[targets[0]]}!`); } else showStep(); }; showStep(); }
@@ -6063,7 +6063,7 @@ function hunt3dPlay(me, mi, opt){
 /* ---------- BEAST KART 3D ---------- */
 function kart3d(){ pickBeast("Zachary's Zoom Karts", kartLevel); }
 function kartLevel(me){
-  render(`${header("Beast Kart", "games", "Games")}
+  render(`${header("Zoom Kart", "games", "Games")}
     <div class="card"><p class="say">Pick your race</p>
       <div class="row"><button class="btn huge" id="easy" style="--c:var(--horde)">🟢 Easy</button><button class="btn huge" id="hard" style="--c:var(--vowels)">🔴 Hard</button></div>
       <p class="note">Easy: the kart helps steer and the other karts go gently. Hard: you do all the steering, and the other karts race to win.</p></div>`);
@@ -6161,9 +6161,9 @@ function kart3dPlay(me, hard){
     const hud = () => { const h = $("hud"); if (!h) return; const pl = place(me0);
       h.innerHTML = `<div class="slp now" style="--c:${col(me)}"><span class="av">${me.l}</span><span class="nm">${hard ? "🔴" : "🟢"} Lap ${Math.max(1, Math.min(LAPS, me0.lap + 1))}/${LAPS}</span><span class="sq">${ord(pl)}</span></div>${me0.boost > 0 ? `<div class="slp"><span class="nm">⚡ BOOST</span></div>` : ""}`; };
     const finishRace = () => { finished = true; const pl = place(me0), pts = [10,7,5,3,2,1][pl - 1];
-      award(pts); medal(["🥇","🥈","🥉","🏅","🏅","🏅"][pl - 1], "Beast Kart");
+      award(pts); medal(["🥇","🥈","🥉","🏅","🏅","🏅"][pl - 1], "Zoom Kart");
       $("fb").innerHTML = `🏁 ${esc(me.name)} finished ${ord(pl)}! +${pts} points<div class="row"><button class="btn" id="again">Race again</button><button class="btn ghost" data-go="games">More games</button></div>`;
-      $("again").onclick = () => kart3dPlay(me, hard); speak(pl === 1 ? `${nm(me)} wins the Beast Kart grand prix!` : `${nm(me)} finished ${ord(pl)}! Great driving!`);
+      $("again").onclick = () => kart3dPlay(me, hard); speak(pl === 1 ? `${nm(me)} wins the Zoom Kart grand prix!` : `${nm(me)} finished ${ord(pl)}! Great driving!`);
       for (let k = 0; k < 4; k++) later(() => G.burst(me0.x, 3, me0.z, 40, RB, true), k*350); };
     const physics = (k, dt) => {
       const [ni, d] = nearest(k.x, k.z, k.idx, 20);
@@ -6209,7 +6209,7 @@ function kart3dPlay(me, hard){
       G.sun.position.set(k.x + 12, 26, k.z + 10); G.sun.target.position.set(k.x, 0, k.z);
     });
     camera.position.set(me0.x - Math.sin(me0.h)*6, 2.9, me0.z - Math.cos(me0.h)*6);
-    hud(); $("fb").textContent = "Get ready…"; speak(`Welcome to Beast Kart! ${nm(me)} is on the grid.`);
+    hud(); $("fb").textContent = "Get ready…"; speak(`Welcome to Zoom Kart! ${nm(me)} is on the grid.`);
     [0, 1, 2].forEach(k => later(() => { G.lights[k].material.color.set("#E63946"); speak(String(3 - k)); $("fb").textContent = String(3 - k); }, 2200 + k*1000));
     later(() => { G.lights.forEach(l => l.material.color.set("#06D6A0")); racing = true; t0 = performance.now(); $("fb").textContent = "GO!"; speak("Go!"); }, 5200);
   });
@@ -6225,14 +6225,14 @@ const MICRO_TRACKS = [
   {id:"frost", name:"Frost Lake", e:"❄️", cp:[[0,22],[18,20],[26,6],[22,-10],[10,-22],[-6,-24],[-20,-14],[-14,-4],[-24,6],[-18,18]], road:"#9FC4DA", kerb:["#3A86FF","#FFFFFF"], oil:"#DDF4FF", oilWord:"Slippy!", grip:0.32}
 ];
 function micro3d(){ pickBeast("Indy's Micro Karts", b => {
-  render(`${header("Micro Beasts", "games", "Games")}
+  render(`${header("Micro Karts", "games", "Games")}
     <div class="card"><p class="say">Pick your race</p>
       <div class="row"><button class="btn huge" id="easy" style="--c:var(--horde)">🟢 Easy</button><button class="btn huge" id="hard" style="--c:var(--vowels)">🔴 Hard</button></div>
       <p class="note">Easy: the kart helps steer and rivals go gently. Hard: full speed, you do the steering.</p></div>`);
   speak("Easy race, or hard race?"); $("easy").onclick = () => microTracks(b, false); $("hard").onclick = () => microTracks(b, true); }); }
 function microTracks(me, hard){
   const best = S.microBest || {};
-  render(`${header("Micro Beasts", "games", "Games")}
+  render(`${header("Micro Karts", "games", "Games")}
     <div class="card"><p class="say">Pick a track</p>
       <div class="hub">${MICRO_TRACKS.map((t, i) => `<button class="tile" style="--c:var(${["--vowels","--mobster","--place","--horde","--stealth"][i]})" data-t="${i}">
         <span class="ic">${t.e}</span><span><b>${t.name}</b><br><span class="n">${best[t.id + (hard ? "H" : "E")] ? "Best: " + best[t.id + (hard ? "H" : "E")] : "Not raced yet"}</span></span></button>`).join("")}</div></div>`);
@@ -6397,7 +6397,7 @@ function micro3dPlay(me, hard, ti){
     const hud = () => { const h = $("hud"); if (!h) return; const pl = place(me0);
       h.innerHTML = `<div class="slp now" style="--c:${col(me)}"><span class="av">${me.l}</span><span class="nm">${hard ? "🔴" : "🟢"} Lap ${Math.max(1, Math.min(LAPS, me0.lap + 1))}/${LAPS}</span><span class="sq">${ord(pl)}</span></div>${me0.boost > 0 ? `<div class="slp"><span class="nm">⚡ BOOST</span></div>` : ""}`; };
     const finishRace = () => { finished = true; const pl = place(me0), pts = [10,7,5,3,2,1][pl - 1];
-      award(pts); medal(["🥇","🥈","🥉","🏅","🏅","🏅"][pl - 1], "Micro Beasts");
+      award(pts); medal(["🥇","🥈","🥉","🏅","🏅","🏅"][pl - 1], "Micro Karts");
       const key = TR.id + (hard ? "H" : "E"); S.microBest = S.microBest || {}; const prev = S.microBest[key], rank = s => s ? ["1st","2nd","3rd","4th","5th","6th"].indexOf(s) : 9;
       if (rank(ord(pl)) < rank(prev)) S.microBest[key] = ord(pl); save();
       $("fb").innerHTML = `🏁 ${esc(me.name)} finished ${ord(pl)} at ${TR.name}! +${pts} points<div class="row"><button class="btn" id="again">Race again</button><button class="btn" id="next" style="--c:var(--mobster)">Next track ›</button><button class="btn ghost" data-go="games">More games</button></div>`;
@@ -6471,7 +6471,7 @@ function micro3dPlay(me, hard, ti){
       G.sun.position.set(k.x + 10, 26, k.z + 8); G.sun.target.position.set(k.x, 0, k.z);
     });
     camera.position.set(me0.x, 19, me0.z + 7);
-    hud(); $("fb").textContent = `${TR.e} ${TR.name}: get ready…`; speak(`Micro Beasts at the ${TR.name}! ${nm(me)} is on the grid.`);
+    hud(); $("fb").textContent = `${TR.e} ${TR.name}: get ready…`; speak(`Micro Karts at the ${TR.name}! ${nm(me)} is on the grid.`);
     [0, 1, 2].forEach(k => later(() => { $("fb").textContent = ["🔴", "🔴 🔴", "🔴 🔴 🔴"][k] + "  " + (3 - k); speak(String(3 - k)); }, 2400 + k*1000));
     later(() => { racing = true; $("fb").textContent = "🟢 GO!"; speak("Go!"); }, 5400);
   });
@@ -6487,7 +6487,7 @@ function soccer3d(){ pickBeast("Kingston's Kickabout", b => {
       <div class="row"><button class="btn huge" id="two" style="--c:var(--place)">👫 2 players</button></div>
       <p class="note">Easy: gentle opponents. Hard: they run faster, tackle harder and shoot straighter. 2 players: you each get a joystick and a kick button, side by side on the same phone.</p></div>`);
   speak("Keepy uppy, or a football match?"); $("keepy").onclick = () => keepyPick(b); $("easy").onclick = () => soccer3dPlay(b, false); $("hard").onclick = () => soccer3dPlay(b, true);
-  $("two").onclick = () => pickBeast("Player 2, pick your beast", b2 => soccer3dPlay(b, false, b2)); }); }
+  $("two").onclick = () => pickBeast("Player 2, pick your AZoomal", b2 => soccer3dPlay(b, false, b2)); }); }
 /* ---------- KEEPY-UPPY (in Kingston's Kickabout): every kick says the next letter ---------- */
 const KEEPY_THINGS = [
   {id: "ball", name: "Football", e: "⚽", g: 11, kick: 8.2, drift: 1.0, r: 0.32},
@@ -6506,7 +6506,7 @@ function keepyPick(me){
   app.querySelectorAll("[data-k]").forEach(el => el.onclick = () => keepyPlay(me, KEEPY_THINGS[+el.dataset.k]));
 }
 function keepyPlay(me, K){
-  shell3D(`Keepy-Uppy: ${K.e} ${K.name}`, "Tap the screen (or KICK) just as it drops to your beast's feet. Every kick is the next letter of the alphabet!",
+  shell3D(`Keepy-Uppy: ${K.e} ${K.name}`, "Tap the screen (or KICK) just as it drops to your AZoomal's feet. Every kick is the next letter of the alphabet!",
     `<div class="row"><button class="btn huge" id="kick" style="--c:var(--horde);touch-action:none;min-width:9rem">🦶 KICK</button></div>`);
   start3D(() => {
     const G = make3D({sky: ["#3A6FD8", "#9AD4F5", "#FFD9A8"], fog: ["#CFE6F2", 30, 90], seed: 5}), {T3, camera, add, mat, scene} = G; kitLook(G);
@@ -6675,7 +6675,7 @@ function soccer3dPlay(me, hard, me2){
       for (let k = 0; k < (mine ? 5 : 2); k++) later(() => G.burst((R() - .5)*10, 3, -side*L2 + side*3, 40, mine ? RB : ["#ffffff", tcol(oppKey)], true), k*300);
       later(() => kickoff(side === 1 ? -1 : 1), 2600); };
     const endMatch = () => { over = true; playing = false; const [a, b] = score, res = a > b ? "win" : a === b ? "draw" : "lose";
-      const pts = res === "win" ? 10 : res === "draw" ? 5 : 2; award(pts); medal(res === "win" ? "🏆" : res === "draw" ? "🥈" : "🥉", "Beast Football");
+      const pts = res === "win" ? 10 : res === "draw" ? 5 : 2; award(pts); medal(res === "win" ? "🏆" : res === "draw" ? "🥈" : "🥉", "AZoomal Football");
       $("fb").innerHTML = `${twoP ? (res === "win" ? "🏆 Player 1 wins" : res === "draw" ? "🤝 It's a draw" : "🏆 Player 2 wins") : res === "win" ? "🏆 You win" : res === "draw" ? "🤝 It's a draw" : "Unlucky"}! ${score[0]}–${score[1]}. +${pts} points
         <div class="row"><button class="btn" id="again">Play again</button><button class="btn ghost" data-go="games">More games</button></div>`;
       $("again").onclick = () => soccer3dPlay(me, hard, me2); speak(twoP ? (res === "draw" ? "Full time! It's a draw!" : `Full time! ${res === "win" ? "Player 1" : "Player 2"} wins!`) : res === "win" ? "Full time! You win!" : res === "draw" ? "Full time! It's a draw!" : "Full time! Better luck next time!");
@@ -6744,7 +6744,7 @@ function soccer3dPlay(me, hard, me2){
       if (playing && Math.floor(clock*4) !== Math.floor((clock - dt)*4)){ hud(); drawBoard(); }
     });
     kickoff(1); drawBoard(); hud(); camera.position.set(0, 21, 8);
-    say(`${TEAMNAME[myTeamKey]} versus ${TEAMNAME[oppKey]}!`, twoP ? `Welcome to Beast Football! Player 1, ${TEAMNAME[myTeamKey]}, versus Player 2, ${TEAMNAME[oppKey]}!` : `Welcome to Beast Football! ${TEAMNAME[myTeamKey]} versus ${TEAMNAME[oppKey]}! You kick off.`);
+    say(`${TEAMNAME[myTeamKey]} versus ${TEAMNAME[oppKey]}!`, twoP ? `Welcome to AZoomal Football! Player 1, ${TEAMNAME[myTeamKey]}, versus Player 2, ${TEAMNAME[oppKey]}!` : `Welcome to AZoomal Football! ${TEAMNAME[myTeamKey]} versus ${TEAMNAME[oppKey]}! You kick off.`);
     later(() => { playing = true; say("Kick off! ⚽", "Kick off!"); }, 3000);
   });
 }
@@ -7237,15 +7237,15 @@ function chess3d(){
         <p class="say" style="margin-top:1rem">How tricky?</p>
         <div class="row">${[["easy","🟢 Easy"],["medium","🟡 Medium"],["hard","🔴 Hard"]].map(([k, n]) => `<button class="btn ${k === lvl ? "" : "ghost"}" data-l="${k}" style="--c:var(--vowels)">${n}</button>`).join("")}</div>
         <div class="row" style="margin-top:1rem"><button class="btn huge" id="go" style="--c:var(--vowels)">Play ♟</button></div>
-        <p class="note">Every chess piece is a beast from your team: the leader is the King, and each beast plays a different piece.</p></div>`);
+        <p class="note">Every chess piece is an AZoomal from your team: the leader is the King, and each AZoomal plays a different piece.</p></div>`);
     app.querySelectorAll("[data-t]").forEach(el => el.onclick = () => { team = el.dataset.t; speak(TEAMNAME[team]); draw(); });
     app.querySelectorAll("[data-l]").forEach(el => el.onclick = () => { lvl = el.dataset.l; draw(); });
     $("go").onclick = () => { S.chessLvl = lvl; save(); const opp = rnd(Object.keys(CHESS_TEAMS).filter(t => t !== team)); chessPlay(team, opp, lvl); };
   };
-  draw(); speak("Beast chess! Pick your team.");
+  draw(); speak("AZoomal chess! Pick your team.");
 }
 function chessPlay(myTeam, oppTeam, lvl){
-  shell3D("Otto's Chess", "Tap one of your beasts, then tap a glowing square to move. Capture the other team’s pieces and trap their King to win! Drag sideways to turn the board.",
+  shell3D("Otto's Chess", "Tap one of your AZoomals, then tap a glowing square to move. Capture the other team’s pieces and trap their King to win! Drag sideways to turn the board.",
     `<div class="row"><button class="btn" id="undo" style="--c:var(--place)">↶ Undo</button><button class="btn ghost" id="restart">New game</button></div>`);
   start3D(() => {
     const G = make3D({sky:["#1F1638","#3A2A5C","#6A4C7E"], fog:["#2A2040", 22, 60], fov: 46}), {T3, camera, add, mat, scene} = G;
@@ -7325,7 +7325,7 @@ function chessPlay(myTeam, oppTeam, lvl){
         hud(); const legalNow = CE.legal(st), chk = CE.inCheck(st, st.w);
         if (!legalNow.length){ over = true; busy = false;
           if (chk){ const winnerMe = !st.w; fb(`♚ Checkmate! ${TEAMNAME[winnerMe ? myTeam : oppTeam]} win!`); sayQ(winnerMe ? "Checkmate! You win!" : "Checkmate! Better luck next time!");
-            if (winnerMe){ award(15); medal("♛", "Beast Chess"); SFX.win(); for (let k = 0; k < 6; k++) later(() => G.burst((Math.random() - .5)*6, 3, (Math.random() - .5)*6, 60, RB, true), k*300); } }
+            if (winnerMe){ award(15); medal("♛", "AZoomal Chess"); SFX.win(); for (let k = 0; k < 6; k++) later(() => G.burst((Math.random() - .5)*6, 3, (Math.random() - .5)*6, 60, RB, true), k*300); } }
           else { fb("🤝 Stalemate! It's a draw."); sayQ("Stalemate! It's a draw!"); }
           $("fb").insertAdjacentHTML("beforeend", `<div class="row"><button class="btn" id="again">Play again</button><button class="btn ghost" data-go="games">More games</button></div>`);
           $("again").onclick = () => chessPlay(myTeam, oppTeam, lvl); return; }
@@ -7354,7 +7354,7 @@ function chessPlay(myTeam, oppTeam, lvl){
     G.onFrame((dt, now) => { const d = 10.5, h = 9.5; camera.position.set(Math.sin(orbit)*d, h, Math.cos(orbit)*d); camera.lookAt(0, 0, 0.4);
       selRing.rotation.z = now/400; dots.forEach(dd => dd.material.opacity = 0.6 + Math.sin(now/200)*0.25); });
     hud(); fb(`${TEAMNAME[myTeam]} versus ${TEAMNAME[oppTeam]}! You go first.`);
-    speak(`Beast chess! ${TEAMNAME[myTeam]} versus ${TEAMNAME[oppTeam]}. Tap one of your beasts to move.`);
+    speak(`AZoomal chess! ${TEAMNAME[myTeam]} versus ${TEAMNAME[oppTeam]}. Tap one of your AZoomals to move.`);
   });
 }
 
@@ -7384,7 +7384,7 @@ const letterBlock = (g, b, x, y, s, extra) => { g.fillStyle = hexB(b); g.beginPa
   g.fillStyle = "#fff"; g.font = `bold ${s*0.62}px Arial`; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(b.l, x, y + s*0.04); if (extra) extra(); };
 
 /* ---------- C: Clyde's Card Shark (matching pairs) ---------- */
-const CS_MODES = [["same", "🃏", "Same card"], ["beast", "🦁", "Letter + beast"], ["boost", "🍎", "Letter + Boost"], ["case", "Aa", "Big + small"]];
+const CS_MODES = [["same", "🃏", "Same card"], ["beast", "🦁", "Letter + AZoomal"], ["boost", "🍎", "Letter + Boost"], ["case", "Aa", "Big + small"]];
 function cardshark(pairsWanted){
   const mode = S.cardMode || "same";
   // choose how many cards to play with
@@ -7396,7 +7396,7 @@ function cardshark(pairsWanted){
         <div class="csopts">${opts.map(([n, t, sub]) => `<button class="csopt ${S.cardPairs === n ? "on" : ""}" data-n="${n}"><span>${"🃏".repeat(n/2 - 1)}</span><b>${t}</b><small>${sub}</small></button>`).join("")}</div></div>`);
     speak("How many cards do you dare play with?");
     app.querySelectorAll("[data-n]").forEach(el => el.onclick = () => { S.cardPairs = +el.dataset.n; save(); cardshark(S.cardPairs); });
-    app.querySelectorAll("[data-mode]").forEach(el => el.onclick = () => { S.cardMode = el.dataset.mode; save(); speak({same: "Match the same cards!", beast: "Match each letter to its beast!", boost: "Match each letter to the beast's boost!", case: "Match big letters to small letters!"}[S.cardMode]); cardshark(); });
+    app.querySelectorAll("[data-mode]").forEach(el => el.onclick = () => { S.cardMode = el.dataset.mode; save(); speak({same: "Match the same cards!", beast: "Match each letter to its AZoomal!", boost: "Match each letter to the AZoomal's boost!", case: "Match big letters to small letters!"}[S.cardMode]); cardshark(); });
     return;
   }
   const avail = pool(), pairs = Math.min(pairsWanted, avail.length), pick = shuffle(avail).slice(0, pairs), deck = shuffle([...pick.map(b => ({b, f: "a"})), ...pick.map(b => ({b, f: mode === "same" ? "a" : "b"}))]);
@@ -8210,7 +8210,7 @@ function mistmaze(level){
 
 function mistmazePlay(level){
   const M = MIST_MAZES[level - 1], N = M.n, WORD = M.word;
-  shell3D(`Maze ${level}: ${M.name}`, "Drag your beast the way you want to go, or use the arrows. Collect the letters to spell the word, find the golden key to open the gate, and reach the golden star! Every letter you find clears the mist a little.",
+  shell3D(`Maze ${level}: ${M.name}`, "Drag your AZoomal the way you want to go, or use the arrows. Collect the letters to spell the word, find the golden key to open the gate, and reach the golden star! Every letter you find clears the mist a little.",
     `<div class="dpad"><button class="btn" id="up" style="--c:var(--outlaw);touch-action:none" aria-label="Up">▲</button><div><button class="btn" id="lf" style="--c:var(--outlaw);touch-action:none" aria-label="Left">◀</button><button class="btn" id="dn" style="--c:var(--outlaw);touch-action:none" aria-label="Down">▼</button><button class="btn" id="rt" style="--c:var(--outlaw);touch-action:none" aria-label="Right">▶</button></div></div>
      <div class="row"><button class="btn ghost" id="mzhint">💡 Hint (3)</button><button class="btn ghost" id="mzmap">🗺️ Big map</button><button class="btn ghost" id="mzlist">All mazes</button></div>`);
   $("mzlist").onclick = () => mistmaze();
@@ -8557,7 +8557,7 @@ function unlocks(){
       ${testAll() ? `<p class="note">🧪 Testing mode: everything is unlocked. Grown-ups can switch this off in Settings.</p>` : nextAt ? `<div class="xpbar"><span style="width:${Math.min(100, n/nextAt*100)}%"></span></div><p class="sub">${nextAt - n} more star${nextAt - n === 1 ? "" : "s"} to the next unlock</p>` : `<p class="sub">You've unlocked everything! 🏆</p>`}</div>
     <div class="card"><h2>AZoomals</h2><div class="unlockgrid">${BEASTS.filter(b => b.team !== "place").map(b => { const open = beastOpen(b.l);
       return `<div class="ub ${open ? "" : "lockd"}" style="--c:${col(b)}">${ART_HEAD[b.l] && open ? `<img src="${ART_HEAD[b.l]}" alt="">` : open ? b.l : "🔒"}<small>${open ? esc(b.name.split(" ")[0]) : `⭐ ${beastStars(b.l)}`}</small></div>`; }).join("")}</div></div>
-    <div class="card"><h2>Outfits</h2><p class="sub">Your beast wears this in the 3D games.</p><div class="outfits">${OUTFITS.map(([id, name, need, e]) => { const open = outfitOpen(id);
+    <div class="card"><h2>Outfits</h2><p class="sub">Your AZoomal wears this in the 3D games.</p><div class="outfits">${OUTFITS.map(([id, name, need, e]) => { const open = outfitOpen(id);
       return `<button class="outfit ${S.outfit === id || (!S.outfit && id === "none") ? "sel" : ""} ${open ? "" : "lockd"}" data-o="${id}" ${open ? "" : "disabled"}><span>${open ? e : "🔒"}</span><small>${open ? esc(name) : `⭐ ${need}`}</small></button>`; }).join("")}</div></div>
     <div class="card"><h2>Letter Hunt worlds</h2><div class="outfits">${HUNT_MAPS.map(m => `<div class="outfit ${worldOpen(m.id) ? "" : "lockd"}"><span>${worldOpen(m.id) ? m.e : "🔒"}</span><small>${worldOpen(m.id) ? esc(m.name) : `⭐ ${WORLD_STARS[m.id]}`}</small></div>`).join("")}</div></div>`);
   app.querySelectorAll("[data-o]").forEach(el => el.onclick = () => { S.outfit = el.dataset.o; save(); speak(OUTFITS.find(o => o[0] === S.outfit)[1]); unlocks(); });
@@ -8581,7 +8581,7 @@ function cards(){
   const n = Object.keys(S.cards).length;
   render(`${header("AZoomal cards")}
     <div class="card cardprog"><b>${n} of 26 cards</b><div class="pbar"><i style="width:${n/26*100}%"></i></div>
-      <p class="sub" style="margin:.4rem 0 0">${n ? "Keep going! " : ""}Get 3 answers right about a beast in the games to win their card.</p></div>
+      <p class="sub" style="margin:.4rem 0 0">${n ? "Keep going! " : ""}Get 3 answers right about an AZoomal in the games to win their card.</p></div>
     <div class="cards">${BEASTS.map((b,i)=>S.cards[b.l]
       ? `<button class="mini" style="--c:${col(b)}" data-i="${i}"><span class="ml">${b.l}</span><span class="mn">${esc(b.name)}</span><span class="mstar" aria-hidden="true">⭐</span></button>`
       : `<div class="mini wanted" style="--c:${col(b)}" aria-label="${esc(b.name)}, not won yet"><span class="ml">${b.l}</span><span class="mn">${esc(b.name)}</span><span class="mlock" aria-hidden="true">🔒 To win</span></div>`).join("")}</div>`);
@@ -8653,9 +8653,9 @@ function makePostcard(cv, title){
   pending++; done(); }
 function draw(){
   let colour = COLOURS[0], size = 14, brush = "pen";
-  render(`${header("Draw a beast")}
+  render(`${header("Draw an AZoomal")}
     <div class="card">
-      <p class="sub">Every great beast starts with an idea. What's yours?</p>
+      <p class="sub">Every great AZoomal starts with an idea. What's yours?</p>
       <canvas id="cv" width="600" height="600" aria-label="Drawing area"></canvas>
       <div class="palette">${COLOURS.map((c,i)=>`<button class="swatch ${i?"":"on"}" style="--s:${c}" data-c="${c}" aria-label="Colour ${i+1}"></button>`).join("")}</div>
       <div class="row">
@@ -8671,11 +8671,11 @@ function draw(){
       <label for="f-b">Boosts</label><input id="f-b" maxlength="30">
       <label for="f-p">Power</label><input id="f-p" maxlength="30">
       <label for="f-t">Team</label><select id="f-t">${Object.keys(TEAMS).map(t=>`<option value="${t}">${TEAMNAME[t]}</option>`).join("")}<option value="outlaw">Outlaw (no team)</option></select>
-      <div class="row"><button class="btn" id="save">Save my beast</button><button class="btn ghost" data-go="gallery">My beasts (${DRAWINGS.length})</button></div>
+      <div class="row"><button class="btn" id="save">Save my AZoomal</button><button class="btn ghost" data-go="gallery">My AZoomals (${DRAWINGS.length})</button></div>
     </div>`);
   const cv = $("cv"); const ctx = freehand(cv, () => ({colour, size, brush}));
   app.querySelectorAll("[data-br]").forEach(el => el.onclick = () => { brush = el.dataset.br; app.querySelectorAll("[data-br]").forEach(x => x.classList.toggle("on", x === el)); if (brush === "water") speak("Watercolour! Go over it again to make it darker."); });
-  $("postcard").onclick = () => makePostcard(cv, ($("f-n") && $("f-n").value.trim()) || "My beast");
+  $("postcard").onclick = () => makePostcard(cv, ($("f-n") && $("f-n").value.trim()) || "My AZoomal");
   const blank = () => { ctx.fillStyle = "#fff"; ctx.fillRect(0,0,600,600); }; blank();
   app.querySelectorAll(".swatch").forEach(el => el.onclick = () => { colour = el.dataset.c; app.querySelectorAll(".swatch").forEach(s=>s.classList.toggle("on", s===el)); });
   app.querySelectorAll("[data-s]").forEach(el => el.onclick = () => { size = +el.dataset.s; app.querySelectorAll("[data-s]").forEach(s=>s.classList.toggle("on", s===el)); });
@@ -8683,24 +8683,24 @@ function draw(){
   $("save").onclick = () => {
     const small = document.createElement("canvas"); small.width = small.height = 360;
     small.getContext("2d").drawImage(cv, 0, 0, 360, 360);
-    const item = {img: small.toDataURL("image/jpeg", .7), l: $("f-l").value, n: $("f-n").value.trim() || "My beast",
+    const item = {img: small.toDataURL("image/jpeg", .7), l: $("f-l").value, n: $("f-n").value.trim() || "My AZoomal",
       h: $("f-h").value.trim(), b: $("f-b").value.trim(), p: $("f-p").value.trim(), t: $("f-t").value};
     DRAWINGS.unshift(item); if (DRAWINGS.length > (HAS_IDB ? 60 : 12)) DRAWINGS.pop();
-    if (!saveDrawings()){ DRAWINGS.shift(); toast("No room left. Delete an old beast first."); return; }
-    toast("Beast saved!"); speak(`${SAY[item.l]} is for ${item.n}! What a brilliant beast.`);
+    if (!saveDrawings()){ DRAWINGS.shift(); toast("No room left. Delete an old AZoomal first."); return; }
+    toast("AZoomal saved!"); speak(`${SAY[item.l]} is for ${item.n}! What a brilliant AZoomal.`);
     later(gallery, 1200);
   };
 }
 function gallery(){
   if (!DRAW_LOADED) return void drawingsReady.then(gallery);
-  render(`${header("My beasts", "draw", "Draw")}
+  render(`${header("My AZoomals", "draw", "Draw")}
     ${DRAWINGS.length ? `<div class="gallery">${DRAWINGS.map((d,i)=>`<button data-i="${i}"><img src="${d.img}" alt="${esc(d.n)}"><span>${esc(d.l)} is for ${esc(d.n)}</span></button>`).join("")}</div>`
-      : `<div class="card"><p class="say">No beasts yet</p><div class="row"><button class="btn" data-go="draw">Draw one now</button></div></div>`}`);
+      : `<div class="card"><p class="say">No AZoomals yet</p><div class="row"><button class="btn" data-go="draw">Draw one now</button></div></div>`}`);
   app.querySelectorAll(".gallery button").forEach(el => el.onclick = () => myBeast(+el.dataset.i));
 }
 function myBeast(i){
   const d = DRAWINGS[i];
-  render(`${header("", "gallery", "My beasts")}
+  render(`${header("", "gallery", "My AZoomals")}
     <div class="beastcard" style="--c:${tcol(d.t)}">
       <div class="bc-top"><span class="bc-l">${esc(d.l)}</span><h2>${esc(d.n)}</h2></div>
       <img src="${d.img}" alt="${esc(d.n)}" style="width:100%;border-radius:14px;margin-bottom:1rem;display:block">
@@ -8715,7 +8715,7 @@ function myBeast(i){
 /* ================= COLOURING ================= */
 function colour(){
   render(`${header("Colouring")}
-    <p class="sub">Pick a letter to colour. Beast colouring pages arrive with the finished art.</p>
+    <p class="sub">Pick a letter to colour. AZoomal colouring pages arrive with the finished art.</p>
     <div class="grid">${BEASTS.map((b,i)=>`<button class="block ${isOpen(i)?"":"locked"}" style="--c:${col(b)}" data-i="${i}">${b.l}${isOpen(i)?"":'<span class="badge" aria-hidden="true">🔒</span>'}</button>`).join("")}</div>`);
   app.querySelectorAll(".grid .block").forEach(el => el.onclick = () => { const i=+el.dataset.i; isOpen(i)?colourPage(i):grownups(); });
 }
@@ -8774,7 +8774,7 @@ function bedtime(){
   const stars = Array.from({length: 46}, (_, k) => { const x = (k*37) % 100, y = (k*61) % 70, s = 1 + (k % 3), d = (k % 7)*0.6; return `<i class="star" style="left:${x}%;top:${y}%;width:${s}px;height:${s}px;animation-delay:${d}s"></i>`; }).join("");
   render(`<div class="bedsky">${stars}<div class="moon"></div><div class="bcloud c1"></div><div class="bcloud c2"></div><div class="beddim" id="dim"></div>
     <div class="bedwrap" id="bw"><div class="bedcard">
-      <div class="bedmoon" aria-hidden="true">🌙</div><h2>Goodnight, AZoomals</h2><p>Snuggle down and listen as the beasts say goodnight, one by one.</p>
+      <div class="bedmoon" aria-hidden="true">🌙</div><h2>Goodnight, AZoomals</h2><p>Snuggle down and listen as the AZoomals say goodnight, one by one.</p>
       <div class="row"><button class="btn bedbtn" id="ball">🌙 Whole alphabet</button><button class="btn bedbtn ghost" id="bfive">⭐ Just 5 tonight</button></div>
       <div class="row"><button class="btn ghost bedstop" data-go="home">Back</button></div></div></div></div>`);
   document.body.classList.add("night");
@@ -8833,9 +8833,9 @@ function parents(){
         <tr><td>AZoomal cards</td><td class="pts">${cardsN} of 26</td></tr>
         <tr><td>Medals won</td><td class="pts">${S.medals.length}</td></tr>
         <tr><td>Drawings saved</td><td class="pts">${DRAWINGS.length}</td></tr>
-        <tr><td>Beast care days</td><td class="pts">${(S.careDays||[]).length}</td></tr></table>
+        <tr><td>AZoomal care days</td><td class="pts">${(S.careDays||[]).length}</td></tr></table>
       <p class="note">${practise ? `Letters to practise next: ${practise}` : "Every available letter has been traced."}</p></div>
-    <div class="card" style="text-align:left"><h2>🎬 Shorts studio</h2><p class="sub">Make YouTube Shorts: Beast Evolution (sketch, colour, 3D) and adverts, with music and voices, saved straight to your phone.</p>
+    <div class="card" style="text-align:left"><h2>🎬 Shorts studio</h2><p class="sub">Make YouTube Shorts: AZoomal Evolution (sketch, colour, 3D) and adverts, with music and voices, saved straight to your phone.</p>
       <div class="row" style="justify-content:flex-start"><button class="btn" data-go="studio">Open the studio</button></div></div>
     <div class="card" style="text-align:left"><h2>The AZoomals Series</h2>
       <p class="sub">The AZoomals in this app star in a picture book series by Martin Aspinall, illustrated by Louise Pyke.</p>
@@ -8859,7 +8859,7 @@ function parents(){
       <p class="sub" style="margin-top:1rem">Letter names or phonics sounds</p>${soundPicker()}
       <p class="sub" style="margin-top:1rem">Unlocks: children earn a star for every medal, and stars unlock AZoomals, outfits and worlds.</p>
       <div class="row"><button class="btn ${testAll() ? "" : "ghost"}" id="testall">🧪 Testing mode: ${testAll() ? "ON (everything open)" : "OFF (earn unlocks)"}</button></div>
-      <p class="sub" style="margin-top:1rem">Natural voice</p><div class="row"><button class="btn ghost" id="vcheck">🔊 Voice check</button><button class="btn ghost" id="vrefresh">🔄 Refresh voices</button></div><p class="note" id="vres"></p><p class="sub" style="margin:.2rem 0 0;font-size:.85rem">Changed a beast's voice in ElevenLabs? Tap Refresh voices so the app stops using the old recordings.</p>
+      <p class="sub" style="margin-top:1rem">Natural voice</p><div class="row"><button class="btn ghost" id="vcheck">🔊 Voice check</button><button class="btn ghost" id="vrefresh">🔄 Refresh voices</button></div><p class="note" id="vres"></p><p class="sub" style="margin:.2rem 0 0;font-size:.85rem">Changed an AZoomal's voice in ElevenLabs? Tap Refresh voices so the app stops using the old recordings.</p>
       <div class="row"><button class="btn ghost" id="reset">Reset all progress</button></div></div>`);
   $("vcheck").onclick = async () => { const r = $("vres"); r.textContent = "Checking…";
     try{ const t = "Voice check " + Math.floor(Math.random()*900 + 100) + ".", res = await fetch(clipURL(t));
