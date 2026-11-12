@@ -687,7 +687,7 @@ function wireSoundPicker(redraw){
 }
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
-let CLEAN = [], EPOCH = 0;
+let CLEAN = [], EPOCH = 0, SPOKEN = 0;
 function leave(){ CLEAN.forEach(f=>{try{f()}catch(e){}}); CLEAN = []; EPOCH++; stopAudio(); try{speechSynthesis.cancel()}catch(e){} document.body.classList.remove("night"); }
 function later(fn, ms){ const ep = EPOCH; const t = setTimeout(()=>{ if(ep===EPOCH) fn(); }, ms); CLEAN.push(()=>clearTimeout(t)); }
 
@@ -816,7 +816,7 @@ function nvPrefetch(texts){ if (!nvOn()) return; const q = texts.filter(t => t &
 function splitSentences(t){ const parts = (t.match(/[^.!?…]+[.!?…]+["”’)]*|[^.!?…]+$/g) || [t]).map(x => x.trim()).filter(Boolean); const out = [];
   parts.forEach(pt => { if (out.length && out[out.length - 1].length < 14) out[out.length - 1] += " " + pt; else out.push(pt); }); return out; }
 function speak(text, onend, opts={}){
-  stopAudio(); try{ speechSynthesis.cancel(); }catch(e){}
+  SPOKEN++; stopAudio(); try{ speechSynthesis.cancel(); }catch(e){}
   if (S.mute){ if (onend) later(onend, 700); return; }
   if (!nvOn() || !text) return robotSpeak(text, onend, opts);
   const ep = EPOCH, parts = opts.beast ? [text] : splitSentences(text); let i = 0;
@@ -1425,7 +1425,7 @@ const GAMES = [
   ["chicken3d","🐔","Capture the Chicken 3D","--outlaw"],
   ["beach3d","🏖️","Beasts at the Beach 3D","--stealth"],
   ["ludo3d","🏠","Beast Ludo 3D","--vowels"],
-  ["bowl3d","🎳","Alpha-Bowling 3D","--mobster"],
+  ["bowl3d","🎳","Barrel Bowling 3D","--mobster"],
   ["hunt3d","🔎","Letter Hunt 3D","--horde"],
   ["kart3d","🏎️","Beast Kart 3D","--vowels"],
   ["micro3d","🚗","Micro Beasts","--mobster"],
@@ -8874,7 +8874,11 @@ function parents(){
 /* ================= ROUTER ================= */
 const SCREENS = {home, meet, studio, letters, games, cards, stickers, standings, draw, gallery, colour, bedtime, grownups,
   pickteam:()=>pickTeam(home), maths, find, boost, cases, quiz, spell, relay, joust, chicken, board, outlaws, missing, beastle, pet, adopt, snakes, relay3d, joust3d, chicken3d, beach3d, ludo3d, bowl3d, hunt3d, kart3d, micro3d, soccer3d, books3d, monthhunt, passport, chess3d, unlocks, cardshark, diamond3d, eggstomp, fishing, jellyjump, explorer, popslide3d, tulips, glide, wilber, xmarks, mistmaze};
-app.addEventListener("click", e => { const g = e.target.closest("[data-go]"); if (g && SCREENS[g.dataset.go]) SCREENS[g.dataset.go](); });
+app.addEventListener("click", e => { const g = e.target.closest("[data-go]"); if (!g || !SCREENS[g.dataset.go]) return;
+  const n = SPOKEN; SCREENS[g.dataset.go]();
+  /* talking tiles: little ones can't read yet, so if the new screen doesn't talk, say the name of what they tapped */
+  if (SPOKEN === n && !g.classList.contains("pill")){ const lab = ((g.querySelector("b") || g).textContent || "").replace(/\s+/g, " ").trim(); if (lab && lab.length < 60) speak(lab); }
+});
 home();
 try{ if (new URLSearchParams(location.search).get("signed")==="1"){ history.replaceState(null,"",location.pathname); toast("Thanks! You're on the list."); } }catch(e){}
 
