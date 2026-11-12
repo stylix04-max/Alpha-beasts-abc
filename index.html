@@ -252,6 +252,10 @@ tr.me td{background:rgba(58,134,255,.12)}
 .mslot.got .coin{background:radial-gradient(circle at 35% 30%,#FFF6C8,#FFD166 45%,#C99A2E 100%);color:#7A4E00;box-shadow:0 0 0 3px #F2C94C,0 3px 6px rgba(0,0,0,.4)}
 .mslot.cur .coin{background:#4A2E14;color:#FFD166;box-shadow:inset 0 0 0 3px #FFD166;animation:nudge 1.4s ease-in-out infinite}
 .tile.sel{outline:4px solid #FFD166;outline-offset:2px}
+.big3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));position:relative;z-index:2;gap:.7rem;margin:.9rem 0 .2rem}
+.tile.bigt{display:flex;flex-direction:column;width:auto;height:auto;font-size:inherit;min-width:0;align-items:center;justify-content:center;text-align:center;gap:.4rem;min-height:8.4rem;padding:.9rem .4rem;border-radius:22px}
+.tile.bigt .ic{font-size:2.9rem}
+.tile.bigt b{font-size:1.2rem}
 .blbanner{position:absolute;left:0;right:0;top:38%;text-align:center;font-family:var(--display,inherit);font-size:2.6rem;font-weight:800;color:var(--bc,#FFD166);
   -webkit-text-stroke:3px #1D2B4F;text-shadow:0 5px 0 #1D2B4F,0 0 24px rgba(255,255,255,.6);pointer-events:none;opacity:0;transform:scale(.3)}
 .blbanner.go{animation:blpop 1.8s cubic-bezier(.2,1.4,.4,1) forwards}
@@ -866,13 +870,17 @@ function home(){
     <div class="hero"><div class="hero-txt"><p class="hero-hi">${hello}</p><p class="hero-bub">${hero.name} says: ${tip}</p>
       ${S.team ? `<span class="hero-team" style="--c:${tcol(S.team)}">${TEAMNAME[S.team]}</span>` : `<button class="btn hero-btn" data-go="pickteam">Pick my team</button>`}</div>
       ${ART[hero.l] ? `<button class="hero-pic" id="heropic" aria-label="Say hello to ${hero.name}"><img src="${ART[hero.l]}" alt=""></button>` : ""}</div>
-    <div class="hub">${huntTile()}${petTile()}</div>
-    ${sec("🎮", "Play", ["games", "meet", "books3d"])}
-    ${sec("🔤", "Learn", ["letters", "stickers", "bedtime"])}
+    <div class="big3">${[["games","🎮","Games","--mobster"],["letters","🔤","Letters","--vowels"],["books3d","📚","Books","--place"]].map(b => `<button class="tile bigt" style="--c:var(${b[3]})" data-go="${b[0]}"><span class="ic" aria-hidden="true">${b[1]}</span><b>${b[2]}</b></button>`).join("")}</div>
+    <div class="hub" style="margin-top:.9rem">${huntTile()}${petTile()}</div>
+    ${sec("🌟", "More fun", ["meet", "bedtime"])}
     ${sec("🎨", "Make", ["draw", "colour"])}
-    ${sec("🏆", "My stuff", ["cards", "unlocks", "standings"])}`);
-  const hp = $("heropic"); if (hp){ const jokes = hero.l === "C" ? ["Why did the cheetah never win at hide and seek? Because he was always spotted!", "What's a cheetah's favourite card game? Snap!", `Hello! I'm ${hero.name}. Let's play!`, "I'm the fastest runner on the island. Can you keep up?"] : [`Hello! I'm ${hero.name}. Let's play!`];
-    if (nvOn() && !home.warmed){ home.warmed = true; jokes.forEach((t, k) => later(() => { fetch(clipURL(t, hero.l)).catch(() => {}); }, 800 + k*1500)); }
+    ${sec("🏆", "My stuff", ["cards", "stickers", "unlocks", "standings"])}`);
+  const hp = $("heropic"); if (hp){ const jokes = hero.l === "C" ? ["Why did the cheetah never win at hide and seek? Because he was always spotted!", "What's a cheetah's favourite card game? Snap!", `Hello! I'm ${hero.name}. Let's play!`, "I'm the fastest runner on the island. Can you keep up?",
+      "Why is the letter A like a flower? Because a B comes after it!", "What do you call a cheetah with a cold? A sneeze-tah!", "What do you call a sleeping dinosaur? A dino-snore!",
+      "Why are fish so clever? Because they live in schools!", "What do you call a bear with no teeth? A gummy bear!", "Why did the cow go to the cinema? To see a moo-vie!",
+      "What's orange and sounds like a parrot? A carrot!", "Why do bees have sticky hair? Because they use honeycombs!", "Why couldn't the pony sing? Because she was a little hoarse!",
+      "What do you call a dog magician? A labracadabrador!"] : [`Hello! I'm ${hero.name}. Let's play!`];
+    if (nvOn() && !home.warmed){ home.warmed = true; [0, 1].forEach(k => { const t = jokes[((S.jokeAt || 0) + k) % jokes.length]; later(() => { fetch(clipURL(t, hero.l)).catch(() => {}); }, 800 + k*1500); }); }
     let j = S.jokeAt || 0, busy = false; const bub = app.querySelector(".hero-bub"), tipHtml = bub ? bub.innerHTML : "";
     hp.onclick = () => { hp.classList.remove("wig"); void hp.offsetWidth; hp.classList.add("wig"); buzz(15); if (busy) return;
       const t = jokes[j % jokes.length]; j++; S.jokeAt = j; save(); busy = true; if (bub) bub.textContent = `${hero.name}: ${t}`;
