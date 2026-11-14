@@ -4384,33 +4384,32 @@ function chicken3d(){
 /* ---------- BEASTS AT THE BEACH (Book 5) ---------- */
 function beach3d(){ pickBeast("Apex's Apple Catch", beach3dPlay); }
 function beach3dPlay(me){
-  shell3D("Apex's Apple Catch", `Drag, or hold ◀ ▶, to catch your falling ${esc((me.boost||"boosts").toLowerCase())}. Golden ones power you up, rotten ones lose a point, and other AZoomals' things don't count. Watch out for seagulls and gusts of wind!`,
-    `<div class="row"><button class="btn huge" id="L" style="--c:var(--place)">◀</button><button class="btn huge" id="R" style="--c:var(--place)">▶</button></div>`);
+  shell3D("Apex's Apple Catch", `Drag, or hold ◀︎ ▶︎, to catch your falling ${esc((me.boost||"boosts").toLowerCase())}. Golden ones power you up, rotten ones lose a point, and other AZoomals' things don't count. Watch out for seagulls and gusts of wind!`,
+    `<div class="row"><button class="btn huge" id="L" style="--c:var(--place);font-size:2.4rem">◀︎</button><button class="btn huge" id="R" style="--c:var(--place);font-size:2.4rem">▶︎</button></div>`);
   start3D(() => {
     const G = make3D({sky:["#2F8FE0","#8DD3F7","#FFF1D0"], fog:["#CFEFFA", 25, 80]}), {T3, camera, add, mat} = G;
     const canv = (w, h, draw) => { const c = document.createElement("canvas"); c.width = w; c.height = h; draw(c.getContext("2d"), w, h); const t = new T3.CanvasTexture(c); t.wrapS = t.wrapT = T3.RepeatWrapping; return t; };
-    const sandTex = canv(256, 256, (x, w, h) => { x.fillStyle = "#F3D9A0"; x.fillRect(0, 0, w, h); for (let k = 0; k < 2600; k++){ x.fillStyle = Math.random() < 0.5 ? "rgba(214,178,112,.35)" : "rgba(255,246,220,.5)"; x.fillRect(Math.random()*w, Math.random()*h, 2, 2); }
+    const sandTex = canv(256, 256, (x, w, h) => { x.fillStyle = "#EFCB84"; x.fillRect(0, 0, w, h); for (let k = 0; k < 2600; k++){ x.fillStyle = Math.random() < 0.5 ? "rgba(214,178,112,.35)" : "rgba(255,246,220,.5)"; x.fillRect(Math.random()*w, Math.random()*h, 2, 2); }
       x.strokeStyle = "rgba(205,165,100,.35)"; x.lineWidth = 3; for (let y = 10; y < h; y += 26){ x.beginPath(); for (let px = 0; px <= w; px += 8) x.lineTo(px, y + Math.sin(px/18 + y)*4); x.stroke(); } }); sandTex.repeat.set(10, 3);
     const sand = add(new T3.BoxGeometry(60, 0.2, 14), new T3.MeshLambertMaterial({map: sandTex}), 0, -0.1, 2, false); sand.receiveShadow = true;
     add(new T3.BoxGeometry(60, 0.05, 2.2), new T3.MeshLambertMaterial({color: "#E2BF7E"}), 0, 0.0, -4.4, false);
     const seaTex = canv(256, 256, (x, w, h) => { const gr = x.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, "#1E6FC0"); gr.addColorStop(0.6, "#2A9BD8"); gr.addColorStop(1, "#4FD0E0"); x.fillStyle = gr; x.fillRect(0, 0, w, h);
       x.strokeStyle = "rgba(255,255,255,.35)"; x.lineWidth = 2; for (let k = 0; k < 40; k++){ const yy = Math.random()*h, xx = Math.random()*w; x.beginPath(); x.moveTo(xx, yy); x.quadraticCurveTo(xx + 12, yy - 4, xx + 24, yy); x.stroke(); } }); seaTex.repeat.set(6, 1);
     const sea = add(new T3.BoxGeometry(120, 0.2, 60), new T3.MeshLambertMaterial({map: seaTex, transparent: true, opacity: 0.95}), 0, -0.15, -34, false);
-    [[-26, -46, 7, "#5FA84A"], [18, -52, 9, "#4E9A3E"], [34, -40, 5, "#6BB653"]].forEach(([x, z, r, c]) => { const isl = add(new T3.SphereGeometry(r, 18, 12), mat(c), x, -r*0.55, z, false); isl.scale.set(1.6, 0.7, 1); add(new T3.CylinderGeometry(0.15, 0.2, 2.6, 6), mat("#8B5E3C"), x + r*0.3, r*0.3 + 0.8, z, false); add(new T3.SphereGeometry(1, 8, 6), mat("#3E9B3A"), x + r*0.3, r*0.3 + 2.2, z, false).scale.set(1.6, 0.5, 1.6); });
-    const clouds = []; for (let k = 0; k < 6; k++){ const cg = new T3.Group(); for (let q = 0; q < 4; q++){ const pf = new T3.Mesh(new T3.SphereGeometry(1.2 + Math.random()*0.8, 12, 10), new T3.MeshLambertMaterial({color: "#FFFFFF", emissive: "#BFD9EE"})); pf.position.set(q*1.3 - 2, Math.random()*0.6, Math.random()*0.5); pf.scale.y = 0.65; cg.add(pf); } cg.position.set(-30 + k*12, 13 + Math.random()*5, -40 - Math.random()*10); G.scene.add(cg); clouds.push(cg); }
+    [[-26, -46, 7, "#5FA84A"], [18, -52, 9, "#4E9A3E"], [34, -40, 5, "#6BB653"]].forEach(([x, z, r, c]) => { const isl = add(new T3.SphereGeometry(r, 18, 12), mat(c), x, -r*0.55, z, false); isl.scale.set(1.6, 0.7, 1); });
+    const clouds = []; for (let k = 0; k < 6; k++){ const cg = new T3.Group(); for (let q = 0; q < 4; q++){ const pf = new T3.Mesh(new T3.SphereGeometry(1.2 + Math.random()*0.8, 12, 10), new T3.MeshBasicMaterial({color: "#FFFFFF", fog: false})); pf.position.set(q*1.3 - 2, Math.random()*0.6, Math.random()*0.5); pf.scale.y = 0.65; cg.add(pf); } cg.position.set(-30 + k*12, 13 + Math.random()*5, -40 - Math.random()*10); G.scene.add(cg); clouds.push(cg); }
     const foam = add(new T3.BoxGeometry(60, 0.05, 0.5), mat("#ffffff"), 0, 0, -4.8, false);
-    add(new T3.SphereGeometry(3, 20, 16), new T3.MeshBasicMaterial({color:"#FFE9A0"}), 10, 9, -55, false);
-    [[-6,-2],[6.5,-1.5],[-7.5,2.5],[7.5,3]].forEach(([x, z]) => { const tr = add(new T3.CylinderGeometry(0.14, 0.22, 3.4, 8), mat("#9B6B3E"), x, 1.7, z, true); tr.rotation.z = x > 0 ? -0.15 : 0.15;
+        [[-4.6,-2.6],[4.9,-2.2],[-6.5,1.5],[6.5,2]].forEach(([x, z]) => { const tr = add(new T3.CylinderGeometry(0.14, 0.22, 3.4, 8), mat("#9B6B3E"), x, 1.7, z, true); tr.rotation.z = x > 0 ? -0.15 : 0.15;
       for (let k = 0; k < 5; k++){ const lf = add(new T3.ConeGeometry(0.35, 2, 5), mat("#3E9B3A"), x + (x > 0 ? -0.5 : 0.5), 3.4, z, true); lf.rotation.z = Math.PI/2 + (k-2)*0.5; lf.rotation.y = k*1.25; } });
     add(new T3.CylinderGeometry(0.6, 0.6, 0.05, 20), mat("#E63946"), -3.5, 0.02, 3.5, false);
     add(new T3.SphereGeometry(0.35, 12, 10), mat("#FFD166"), 3.6, 0.35, 4, true);
     // ---- detail pass
     kitLook(G); kitSky(G, {mr: 60, mountains: false});
+    G.scene.traverse(o => { if (o.isMesh && o.geometry && o.geometry.type === "IcosahedronGeometry" && o.material && o.material.color && o.material.color.getHexString() === "ffffff"){ o.material.emissive && o.material.emissive.set("#DDE9F4"); } });
     { const R = G.rand;
-      kitGrass(G, 900, () => [(R() - .5)*40, 6.5 + R()*2], null, ["#9CB45A","#B5C46E","#7FA14A"]);
-      kitInst(G, new T3.ConeGeometry(0.08, 0.1, 5), new T3.MeshLambertMaterial({color: "#ffffff"}), Array.from({length: 40}, () => ({x: (R() - .5)*18, y: 0.03, z: -3 + R()*9, rx: Math.PI/2, rz: R()*6, c: ["#F7B7D0","#FFF3C4","#F4A261","#FFFFFF"][Math.floor(R()*4)]})), false);
-      kitInst(G, new T3.CylinderGeometry(0.14, 0.14, 0.03, 5), new T3.MeshLambertMaterial({color: "#ffffff"}), Array.from({length: 10}, () => ({x: (R() - .5)*16, y: 0.02, z: -2 + R()*8, ry: R()*6, c: ["#F08A24","#E63946"][Math.floor(R()*2)]})), false);
-      [[-5.5, -1, "#E63946"], [5.8, 1.5, "#3A86FF"], [-8.5, 3, "#06D6A0"], [8.8, -1.8, "#FFD166"]].forEach(([x, z, c]) => {
+            kitInst(G, new T3.ConeGeometry(0.08, 0.1, 5), new T3.MeshLambertMaterial({color: "#ffffff"}), Array.from({length: 14}, () => ({x: (R() - .5)*12, y: 0.03, z: -3 + R()*7, rx: Math.PI/2, rz: R()*6, c: ["#F7B7D0","#FFF3C4","#FFFFFF"][Math.floor(R()*4)]})), false);
+      kitInst(G, new T3.CylinderGeometry(0.14, 0.14, 0.03, 5), new T3.MeshLambertMaterial({color: "#ffffff"}), Array.from({length: 4}, () => ({x: (R() - .5)*12, y: 0.02, z: -2 + R()*8, ry: R()*6, c: ["#F08A24","#E63946"][Math.floor(R()*2)]})), false);
+      [[-3.6, -3.4, "#E63946"], [3.4, -3.6, "#3A86FF"], [-8.5, 3, "#06D6A0"], [8.8, -1.8, "#FFD166"]].forEach(([x, z, c]) => {
         add(new T3.CylinderGeometry(0.04, 0.04, 2, 6), mat("#FFFFFF"), x, 1, z, true);
         for (let k = 0; k < 8; k++){ const seg = add(new T3.ConeGeometry(1.3, 0.6, 3, 1, true, k*Math.PI/4, Math.PI/4), new T3.MeshLambertMaterial({color: k % 2 ? c : "#FFFFFF", side: T3.DoubleSide}), x, 2.1, z, true); }
         add(new T3.BoxGeometry(0.8, 0.03, 1.6), mat(c), x + 0.9, 0.02, z + 0.4, false); });
@@ -4427,7 +4426,7 @@ function beach3dPlay(me){
         const eye = new T3.Mesh(new T3.SphereGeometry(0.04, 6, 5), mat("#1D2B4F")); eye.position.set(sd*0.07, 0.15, 0.12); crab.add(eye); }); G.scene.add(crab);
       G.onFrame((dt, now) => { const t = now/1000; boats.forEach((b, k) => { b.g.position.set(b.x + Math.sin(t*0.08 + k)*6, -0.1 + Math.sin(t*1.2 + k)*0.08, b.z); b.g.rotation.z = Math.sin(t + k)*0.05; });
         crab.position.set(Math.sin(t*0.5)*5, 0.12, 3.8 + Math.sin(t*0.9)*0.3); crab.rotation.y = Math.PI/2; }); }
-    const player = G.beast(me, 0.7);
+    const player = G.beast(me, 0.85);
     const bucket = new T3.Group(); G.scene.add(bucket);
     { const bm = mat(RB[4], {side: T3.DoubleSide}), b1 = new T3.Mesh(new T3.CylinderGeometry(0.46, 0.34, 0.5, 18, 1, true), bm); bucket.add(b1);
       const bot = new T3.Mesh(new T3.CylinderGeometry(0.34, 0.34, 0.03, 18), bm); bot.position.y = -0.24; bucket.add(bot);
