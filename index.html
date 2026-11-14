@@ -4405,11 +4405,13 @@ function beach3dPlay(me){
     add(new T3.SphereGeometry(0.35, 12, 10), mat("#FFD166"), 3.6, 0.35, 4, true);
     // ---- detail pass
     kitLook(G); kitSky(G, {mr: 60, mountains: false});
-    G.scene.traverse(o => { if (o.isMesh && o.geometry && o.geometry.type === "IcosahedronGeometry" && o.material && o.material.color && o.material.color.getHexString() === "ffffff"){ o.material.emissive && o.material.emissive.set("#DDE9F4"); } });
+    G.scene.traverse(o => { if (o.isMesh && o.geometry && o.geometry.type === "IcosahedronGeometry" && o.material && o.material.color && o.material.color.getHexString() === "ffffff"){ o.material.emissive && o.material.emissive.set("#DDE9F4"); }
+      if (o.isSprite && Math.abs(o.position.x + 28) < 0.1 && Math.abs(o.position.y - 30) < 0.1) o.visible = false; });
+    { const c = document.createElement("canvas"); c.width = c.height = 256; const g = c.getContext("2d"), gr = g.createRadialGradient(128, 128, 10, 128, 128, 128);
+      gr.addColorStop(0, "#FFF6B0"); gr.addColorStop(0.32, "#FFD93D"); gr.addColorStop(0.36, "rgba(255,217,61,.55)"); gr.addColorStop(1, "rgba(255,217,61,0)"); g.fillStyle = gr; g.fillRect(0, 0, 256, 256);
+      const sp = new T3.Sprite(new T3.SpriteMaterial({map: new T3.CanvasTexture(c), transparent: true, fog: false, depthWrite: false})); sp.scale.set(14, 14, 1); sp.position.set(13, 22, -60); G.scene.add(sp); }
     { const R = G.rand;
-            kitInst(G, new T3.ConeGeometry(0.08, 0.1, 5), new T3.MeshLambertMaterial({color: "#ffffff"}), Array.from({length: 14}, () => ({x: (R() - .5)*12, y: 0.03, z: -3 + R()*7, rx: Math.PI/2, rz: R()*6, c: ["#F7B7D0","#FFF3C4","#FFFFFF"][Math.floor(R()*4)]})), false);
-      kitInst(G, new T3.CylinderGeometry(0.14, 0.14, 0.03, 5), new T3.MeshLambertMaterial({color: "#ffffff"}), Array.from({length: 4}, () => ({x: (R() - .5)*12, y: 0.02, z: -2 + R()*8, ry: R()*6, c: ["#F08A24","#E63946"][Math.floor(R()*2)]})), false);
-      [[-3.6, -3.4, "#E63946"], [3.4, -3.6, "#3A86FF"], [-8.5, 3, "#06D6A0"], [8.8, -1.8, "#FFD166"]].forEach(([x, z, c]) => {
+            [[-3.6, -3.4, "#E63946"], [3.4, -3.6, "#3A86FF"], [-8.5, 3, "#06D6A0"], [8.8, -1.8, "#FFD166"]].forEach(([x, z, c]) => {
         add(new T3.CylinderGeometry(0.04, 0.04, 2, 6), mat("#FFFFFF"), x, 1, z, true);
         for (let k = 0; k < 8; k++){ const seg = add(new T3.ConeGeometry(1.3, 0.6, 3, 1, true, k*Math.PI/4, Math.PI/4), new T3.MeshLambertMaterial({color: k % 2 ? c : "#FFFFFF", side: T3.DoubleSide}), x, 2.1, z, true); }
         add(new T3.BoxGeometry(0.8, 0.03, 1.6), mat(c), x + 0.9, 0.02, z + 0.4, false); });
@@ -4433,7 +4435,7 @@ function beach3dPlay(me){
       const rim = new T3.Mesh(new T3.TorusGeometry(0.46, 0.035, 8, 24), mat("#FFFFFF")); rim.rotation.x = Math.PI/2; rim.position.y = 0.25; bucket.add(rim);
       const handle = new T3.Mesh(new T3.TorusGeometry(0.44, 0.02, 6, 20, Math.PI), mat("#9AA4B5")); handle.position.y = 0.25; bucket.add(handle);
       const band = new T3.Mesh(new T3.CylinderGeometry(0.43, 0.41, 0.08, 18, 1, true), mat("#FFD166", {side: T3.DoubleSide})); band.position.y = 0.05; bucket.add(band); }
-    const BUCKET_Y = 2.3;
+    const BUCKET_Y = 2.2;
     // the falling treats are the beast's own boost (apples for Apex), drawn from its picture
     const boostTex = (() => { const c = document.createElement("canvas"); c.width = c.height = 128; const x = c.getContext("2d"); x.font = "104px system-ui, 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif"; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText(me.e || "⭐", 64, 70); return new T3.CanvasTexture(c); })();
     const boostMat = new T3.SpriteMaterial({map: boostTex, transparent: true});
