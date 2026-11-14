@@ -4407,9 +4407,9 @@ function beach3dPlay(me){
     kitLook(G); kitSky(G, {mr: 60, mountains: false});
     G.scene.traverse(o => { if (o.isMesh && o.geometry && o.geometry.type === "IcosahedronGeometry" && o.material && o.material.color && o.material.color.getHexString() === "ffffff"){ o.material.emissive && o.material.emissive.set("#DDE9F4"); }
       if (o.isSprite && Math.abs(o.position.x + 28) < 0.1 && Math.abs(o.position.y - 30) < 0.1) o.visible = false; });
-    { const c = document.createElement("canvas"); c.width = c.height = 256; const g = c.getContext("2d"), gr = g.createRadialGradient(128, 128, 10, 128, 128, 128);
-      gr.addColorStop(0, "#FFF6B0"); gr.addColorStop(0.32, "#FFD93D"); gr.addColorStop(0.36, "rgba(255,217,61,.55)"); gr.addColorStop(1, "rgba(255,217,61,0)"); g.fillStyle = gr; g.fillRect(0, 0, 256, 256);
-      const sp = new T3.Sprite(new T3.SpriteMaterial({map: new T3.CanvasTexture(c), transparent: true, fog: false, depthWrite: false})); sp.scale.set(14, 14, 1); sp.position.set(13, 22, -60); G.scene.add(sp); }
+    { const sun = new T3.Group(); sun.position.set(-9, 19, -50); sun.lookAt(0, 3, 10); G.scene.add(sun);
+      sun.add(new T3.Mesh(new T3.CircleGeometry(2.6, 40), new T3.MeshBasicMaterial({color: "#FFD93D", fog: false})));
+      const halo = new T3.Mesh(new T3.CircleGeometry(3.6, 40), new T3.MeshBasicMaterial({color: "#FFF1A8", fog: false, transparent: true, opacity: 0.45, depthWrite: false})); halo.position.z = -0.05; sun.add(halo); }
     { const R = G.rand;
             [[-3.6, -3.4, "#E63946"], [3.4, -3.6, "#3A86FF"], [-8.5, 3, "#06D6A0"], [8.8, -1.8, "#FFD166"]].forEach(([x, z, c]) => {
         add(new T3.CylinderGeometry(0.04, 0.04, 2, 6), mat("#FFFFFF"), x, 1, z, true);
