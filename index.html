@@ -4676,8 +4676,8 @@ function ludoPlay(list){
 /* ---------- ALPHA-BOWLING ---------- */
 function bowl3d(){ pickBeast("Bonnie's Barrel Bowling", bowl3dPlay); }
 function bowl3dPlay(me){
-  shell3D("Bonnie's Barrel Bowling", "Slide the barrel left and right by dragging on the lane, or hold ◀ ▶. The dotted line shows where it will roll. Then tap Bowl! 5 frames, 2 barrels each. Every pin you knock down is a letter!",
-    `<div class="row"><button class="btn huge" id="aL" style="--c:var(--place)">◀</button><button class="btn huge" id="bowl" style="--c:${col(me)}" disabled>Bowl!</button><button class="btn huge" id="aR" style="--c:var(--place)">▶</button></div>`);
+  shell3D("Bonnie's Barrel Bowling", "Slide the barrel left and right by dragging on the lane, or hold ◀︎ ▶︎. The dotted line shows where it will roll. Then tap Bowl! 5 frames, 2 barrels each. Every pin you knock down is a letter!",
+    `<div class="row" style="flex-wrap:nowrap;gap:.5rem"><button class="btn huge" id="aL" style="--c:var(--place);flex:0 0 22%;min-width:0;padding-left:0;padding-right:0">◀︎</button><button class="btn huge" id="bowl" style="--c:${col(me)};flex:1;min-width:0" disabled>Bowl!</button><button class="btn huge" id="aR" style="--c:var(--place);flex:0 0 22%;min-width:0;padding-left:0;padding-right:0">▶︎</button></div>`);
   start3D(() => {
     const G = make3D({sky:["#2A2F5C","#5B5F9E","#C9B6E8"], fog:["#5B5F9E", 20, 60]}), {T3, camera, add, mat} = G;
     add(new T3.BoxGeometry(40, 0.2, 60), mat("#3A3F6E"), 0, -0.3, -10, false);
@@ -4698,7 +4698,9 @@ function bowl3dPlay(me){
         [-1.45, 1.45].forEach(g => add(new T3.BoxGeometry(0.5, 0.2, 17), mat("#2A2A40"), x + g, -0.2, -5.5, false));
         for (let r = 0; r < 4; r++) for (let i = 0; i <= r; i++) add(new T3.CylinderGeometry(0.1, 0.14, 0.7, 10), mat("#FFFFFF"), x + (i - r/2)*0.5, 0.35, -11 - r*0.5, true); });
       [-1.75, 1.75, -5.05, 5.05, -8.35, 8.35].forEach(x => add(new T3.BoxGeometry(0.4, 0.25, 17), mat("#4A2E6E"), x, 0, -5.5, false));
-      add(new T3.BoxGeometry(24, 4, 0.3), mat("#1D1F3A"), 0, 2, -14.8, false);
+      add(new T3.BoxGeometry(24, 4, 0.3), mat("#3B2F6E"), 0, 2, -14.8, false);
+      [0.55, 0.85].forEach((y, k) => add(new T3.BoxGeometry(24, 0.08, 0.05), new T3.MeshBasicMaterial({color: k ? "#FF7AC6" : "#5FE3FF"}), 0, y, -14.6, false));
+      add(new T3.BoxGeometry(3, 1.1, 0.05), new T3.MeshBasicMaterial({color: "#E9E1FF"}), 0, 0.55, -14.58, false);
       { const c = document.createElement("canvas"); c.width = 1024; c.height = 256; const g = c.getContext("2d"); g.fillStyle = "#14162E"; g.fillRect(0, 0, 1024, 256);
         g.strokeStyle = "#FFD166"; g.lineWidth = 10; g.strokeRect(8, 8, 1008, 240);
         g.font = "900 104px 'Arial Black', Arial, sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; const word = "AZOOMALS", w = g.measureText(word).width; let x = 512 - w/2;
@@ -4766,7 +4768,7 @@ function bowl3dPlay(me){
       else if (bz > PZ - 3){ bz -= 9*dt; bx = bx0; ball.position.set(bx, 0.26, bz); ball.rotation.x -= dt*20;
         pins.forEach(p => { if (!p.down && Math.abs(p.z - bz) < 0.3 && Math.abs(p.x - bx) < 0.42) knock(p); });
         if (bz <= PZ - 3){ later(endBall, 900); } }
-      const cz = rolling ? Math.max(PZ + 4.5, bz + 3.6) : 3.2; camera.position.set(0, 2.1, cz); camera.lookAt(0, 0.3, cz - 6.5);
+      const cz = rolling ? Math.max(PZ + 6.2, bz + 3.6) : 3.2; camera.position.set(0, rolling ? Math.max(1.6, 2.1 - (3.2 - cz)*0.03) : 2.1, cz); camera.lookAt(0, rolling ? 0.15 : 0.3, cz - 6.5);
     });
     setPins(); hud(); $("fb").textContent = "Line up your shot!"; speak("Barrel bowling! Drag to aim, then tap bowl.");
     later(ready, 1500);
