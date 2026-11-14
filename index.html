@@ -3189,7 +3189,7 @@ function bipedAnimator(api, R){
 /* ---------- B: Bonnie Brash Badger ---------- */
 function bonnieModel(T3){
   const K = beastKit(T3, 21), {g, M, B, part, grp, S, C, BX, CO, TO} = K;
-  const fur = M("#B6B0B6"), furDark = M("#8C8A94"), white = M("#F2EADC"), mask = M("#6A6872"), hairM = M("#1F1F24"), streak = M("#9FB4D6"),
+  const fur = M("#B6B0B6"), furDark = M("#8C8A94"), white = M("#F2EADC"), mask = M("#7A7680"), hairM = M("#2C2B31"), streak = M("#9FB4D6"),
     top = M("#FFFFFF", K.stripes("#34405E", "#B9C6E2", [6, 2])), skirt = M("#8A8FA2"), tights = M("#2A2A30"), boot = M("#18181C"), glove = M("#1C1C20"), cap = M("#26262B"), stick = M("#C9954A"), noseM = M("#141416");
   // legs: dark tights and boots
   const legs = [-1, 1].map(s => K.leg(s, {thighM: tights, shinM: tights, hip: 0.92, thigh: 0.42, shin: 0.32, r: 0.12, foot: (Kn, y) => { part(C(0.13, 0.12, 0.2), boot, 0, y - 0.04, 0, Kn, 0.08); const f = part(S(0.13), boot, 0, y - 0.13, 0.07, Kn, 0.08); f.scale.set(1, 0.55, 1.5); }}));
@@ -3205,7 +3205,7 @@ function bonnieModel(T3){
   [stickArm, hipArm].forEach(a => [-0.045, 0, 0.045].forEach(dx => part(S(0.03, 8, 6), fur, dx, a.handY - 0.09, 0.05, a.fore)));
   const tooth = grp(stickArm.fore, 0, stickArm.handY, 0.08); part(C(0.0075, 0.0075, 0.22, 6), M("#E6C48E"), 0, 0, 0, tooth); [-1, 1].forEach(s => { const tp = part(CO(0.0075, 0.03, 6), M("#E6C48E"), 0, s*0.125, 0, tooth); if (s < 0) tp.rotation.x = Math.PI; });
   // head: badger face — white with a dark mask stripe through each eye, a long snout, black nose
-  const head = grp(body, 0, 2.16, 0.04); head.scale.setScalar(1.22);
+  const head = grp(body, 0, 2.14, 0.04); head.scale.setScalar(1.12);
   part(S(0.34, 26, 20), white, 0, 0.02, -0.02, head, 0.045).scale.set(0.98, 1, 0.95);
   [-1, 1].forEach(s => { const st = part(S(0.15, 16, 12), mask, s*0.15, 0.09, 0.17, head); st.scale.set(0.55, 1.05, 0.75); st.rotation.z = s*0.45; });
   const snout = part(S(0.15, 16, 12), white, 0, -0.1, 0.27, head, 0.06); snout.scale.set(0.95, 0.75, 1.35);
@@ -3216,9 +3216,10 @@ function bonnieModel(T3){
   [-1, 1].forEach(s => { const e = part(S(0.07, 12, 10), furDark, s*0.27, 0.24, -0.05, head, 0.08); e.scale.set(1, 1, 0.55); });
   // hair: a smooth helmet of dark hair, a long fall down her back, side locks with blue streaks, and a sweeping fringe
   const hairCap = part(new T3.SphereGeometry(0.36, 22, 14, 0, Math.PI*2, 0, Math.PI*0.55), hairM, 0, 0.04, -0.06, head, 0.04); hairCap.scale.set(1.03, 1, 1.02);
-  const back = part(C(0.3, 0.36, 0.6, 20, 1, false, Math.PI*0.6, Math.PI*0.8), hairM, 0, -0.32, -0.12, head, 0.04); back.material.side = T3.DoubleSide;
+  for (let k = 0; k < 7; k++){ const a = -0.9 + k*0.3, lk = part(S(0.1, 14, 10), k % 3 === 1 ? M("#B8B6C0") : hairM, Math.sin(a)*0.27, -0.28 - Math.abs(Math.cos(k))*0.06, -0.2 - Math.cos(a)*0.06, head, 0.05); lk.scale.set(0.85, 3.4, 0.75); lk.rotation.z = Math.sin(a)*0.25; }
   [-1, 1].forEach(s => { const lock = part(S(0.09, 12, 10), hairM, s*0.3, -0.25, 0.06, head, 0.06); lock.scale.set(0.7, 3.2, 0.7);
-    const bl = part(S(0.035, 10, 8), M("#9FB2D2"), s*0.31, -0.2, 0.12, head); bl.scale.set(0.7, 6.5, 0.6); bl.rotation.z = s*0.05; });
+    const bl = part(S(0.035, 10, 8), M("#C9C8D2"), s*0.31, -0.2, 0.12, head); bl.scale.set(0.7, 6.5, 0.6); bl.rotation.z = s*0.05; });
+  [-1, 1].forEach(s => { const gl = part(S(0.06, 12, 10), M("#C9C8D2"), s*0.21, -0.12, 0.2, head, 0.05); gl.scale.set(0.8, 3.6, 0.7); gl.rotation.z = s*0.12; });
   const fringe = part(S(0.18, 14, 10), hairM, 0.1, 0.2, 0.24, head, 0.05); fringe.scale.set(1.25, 0.5, 0.55); fringe.rotation.z = -0.5;
   // flat cap, tipped forward
   const capG = grp(head, 0, 0.3, -0.02); capG.rotation.set(-0.16, 0, 0.08);
@@ -3352,13 +3353,14 @@ function friskModel(T3){
   const watch = grp(watchArm.fore, 0, watchArm.handY - 0.04, 0.1); part(C(0.1, 0.1, 0.035, 20), watchM, 0, 0, 0, watch, 0.08).rotation.x = Math.PI/2; part(C(0.085, 0.085, 0.04, 20), B("#FFFDF5"), 0, 0, 0.003, watch).rotation.x = Math.PI/2; part(C(0.015, 0.015, 0.06, 6), watchM, 0, 0.12, 0, watch); part(BX(0.01, 0.06, 0.01), dark, 0, 0.025, 0.025, watch);
   const head = grp(body, 0, 2.08, 0.03);
   part(S(0.36, 22, 16), fur, 0, 0, 0, head, 0.045).scale.set(1, 0.95, 0.95);
-  const muz = part(S(0.2, 16, 12), cream, 0, -0.13, 0.3, head, 0.05); muz.scale.set(1.05, 0.72, 1.5);
-  part(S(0.05, 10, 8), dark, 0, -0.08, 0.6, head).scale.set(1.2, 0.8, 0.8);
-  const smile = part(TO(0.08, 0.015, 6, 16, Math.PI), dark, 0.03, -0.17, 0.4, head); smile.rotation.set(-0.3, 0, Math.PI + 0.2);
+  const muz = part(S(0.2, 16, 12), cream, 0, -0.12, 0.34, head, 0.05); muz.scale.set(0.82, 0.62, 1.9); muz.rotation.x = 0.12;
+  [-1, 1].forEach(s => { const ck = part(S(0.13, 14, 10), cream, s*0.2, -0.14, 0.14, head, 0.05); ck.scale.set(0.9, 0.8, 0.8); });
+  part(S(0.055, 10, 8), dark, 0, -0.08, 0.7, head).scale.set(1.2, 0.8, 0.8);
+  const smile = part(TO(0.07, 0.014, 6, 16, Math.PI), dark, 0.02, -0.19, 0.5, head); smile.rotation.set(-0.3, 0, Math.PI + 0.2);
   const eyes = K.eyes(head, {x: 0.14, y: 0.05, z: 0.3, r: 0.07, iris: "#5E4B2E", lid: fur, brow: M("#8A4A2A"), browTilt: -0.2, lidRest: 0.45});
   // hood with fox ears poking up
   const hood = part(new T3.SphereGeometry(0.46, 22, 16, Math.PI*0.75, Math.PI*1.5, 0, Math.PI*0.8), cloak, 0, 0.04, -0.06, head, 0.04); hood.material.side = T3.DoubleSide;
-  [-1, 1].forEach(s => { const e = part(CO(0.12, 0.3, 4), fur, s*0.22, 0.48, -0.02, head, 0.07); e.rotation.z = -s*0.25; part(CO(0.07, 0.18, 4), cream, s*0.22, 0.47, 0.03, head).rotation.z = -s*0.25; });
+  [-1, 1].forEach(s => { const e = part(CO(0.14, 0.38, 8), fur, s*0.22, 0.5, -0.02, head, 0.07); e.rotation.z = -s*0.22; e.scale.z = 0.55; const ei = part(CO(0.08, 0.24, 8), cream, s*0.22, 0.48, 0.03, head); ei.rotation.z = -s*0.22; ei.scale.z = 0.45; });
   // big bushy tail with a cream tip
   const tail = grp(g, 0, 0.9, -0.3), segs = [];
   for (let i = 0; i < 10; i++){ const u = i/9, r = 0.16 + Math.sin(u*Math.PI)*0.12; const sp = part(S(r, 12, 10), u > 0.8 ? cream : fur, 0, 0, 0, tail, 0.06); segs.push(sp); }
@@ -3372,14 +3374,14 @@ function friskModel(T3){
 /* ---------- H: Hendrix Hill Horse ---------- */
 function hendrixModel(T3){
   const K = beastKit(T3, 61), {g, M, B, part, grp, S, C, BX, CO, TO} = K;
-  const coat = M("#B2AEAD"), nose = M("#D8A79A"), mane = M("#8E8A8A"), vest = M("#FFFFFF", K.stripes("#3C4D7A", "#A9B8DA")), shirt = M("#F7F5F0"), bow = M("#1E1E22"), hoof = M("#5A524A"), ham = M("#9E3B2E"), bone = M("#F4EFE4"), dark = M("#2B2B2B");
+  const coat = M("#C9C1B8"), nose = M("#DDD2C8"), mane = M("#8E8A8A"), vest = M("#FFFFFF", K.stripes("#3C4D7A", "#A9B8DA")), shirt = M("#F7F5F0"), bow = M("#1E1E22"), hoof = M("#5A524A"), ham = M("#9E3B2E"), bone = M("#F4EFE4"), dark = M("#2B2B2B");
   const legs = [-1, 1].map(s => K.leg(s, {thighM: vest, hip: 0.94, r: 0.15, thigh: 0.44, shin: 0.32, foot: (Kn, y) => { part(C(0.14, 0.16, 0.16), hoof, 0, y - 0.1, 0.02, Kn, 0.08); part(C(0.13, 0.13, 0.08), coat, 0, y - 0.0, 0.02, Kn); }}));
   const body = grp(g);
   K.torso(body, shirt, 1.38, 1.05);
   const vestBody = part(K.lathe([[0.37, 0], [0.4, 0.2], [0.4, 0.42], [0.35, 0.56], [0.22, 0.62]], 24), vest, 0, 1.33, 0, body, 0.04); vestBody.scale.set(1.04, 1, 1.04);
   part(C(0.35, 0.36, 0.2), vest, 0, 0.98, 0, body, 0.05);
   [1.2, 1.31, 1.42].forEach(y => part(S(0.022, 8, 6), dark, 0.02, y, 0.41, body));
-  [-1, 1].forEach(s => { const b = part(CO(0.11, 0.18, 4), bow, s*0.11, 1.72, 0.33, body, 0.08); b.rotation.z = -s*Math.PI/2; }); part(S(0.035, 8, 6), bow, 0, 1.72, 0.31, body);
+  [-1, 1].forEach(s => { const b = part(CO(0.12, 0.2, 4), bow, s*0.12, 1.7, 0.39, body, 0.08); b.rotation.z = -s*Math.PI/2; }); part(S(0.045, 8, 6), bow, 0, 1.7, 0.4, body);
   K.badge(body, "H", 0.2, 1.52, 0.385);
   const armO = {sleeve: coat, skin: coat, handM: M("#9E9A98"), r: 0.15, upper: 0.38, lower: 0.28};
   const hamArm = K.arm(body, 1, armO), hipArm = K.arm(body, -1, armO);
@@ -3389,12 +3391,12 @@ function hendrixModel(T3){
   const neck = part(C(0.17, 0.21, 0.5, 14), coat, 0, 1.95, -0.02, body, 0.05); neck.rotation.x = 0.18;
   const head = grp(body, 0, 2.12, 0.0);
   part(S(0.3, 22, 16), coat, 0, 0.1, -0.04, head, 0.045).scale.set(0.95, 1.05, 1);
-  const face = part(S(0.24, 20, 14), coat, 0, -0.04, 0.3, head, 0.04); face.scale.set(0.82, 0.82, 1.75); face.rotation.x = 0.35;
-  const muzzle = part(S(0.2, 16, 12), nose, 0, -0.2, 0.62, head, 0.05); muzzle.scale.set(1.05, 0.8, 0.9);
-  [-1, 1].forEach(s => part(S(0.03, 8, 6), M("#7A4A3A"), s*0.08, -0.12, 0.79, head));
-  const jaw = grp(head, 0, -0.28, 0.44); const lj = part(S(0.16, 14, 10), nose, 0, -0.02, 0.12, jaw, 0.05); lj.scale.set(1, 0.45, 1); part(S(0.11, 12, 8, 0, Math.PI*2, 0, Math.PI/2), M("#B3384A"), 0, 0.02, 0.12, jaw).scale.set(0.9, 0.4, 0.9);
+  const face = part(S(0.24, 20, 14), coat, 0, -0.06, 0.34, head, 0.04); face.scale.set(0.8, 0.85, 2.05); face.rotation.x = 0.42;
+  const muzzle = part(S(0.2, 16, 12), nose, 0, -0.22, 0.7, head, 0.05); muzzle.scale.set(0.98, 0.78, 1.0);
+  [-1, 1].forEach(s => { const n = part(S(0.045, 10, 8), M("#4A3A34"), s*0.09, -0.15, 0.88, head); n.scale.set(0.7, 1.1, 0.5); n.rotation.z = s*0.4; });
+  const jaw = grp(head, 0, -0.31, 0.52); const lj = part(S(0.16, 14, 10), nose, 0, -0.02, 0.12, jaw, 0.05); lj.scale.set(1, 0.45, 1); part(S(0.11, 12, 8, 0, Math.PI*2, 0, Math.PI/2), M("#B3384A"), 0, 0.02, 0.12, jaw).scale.set(0.9, 0.4, 0.9); part(BX(0.2, 0.05, 0.05), B("#FFFDF5"), 0, 0.045, 0.24, jaw);
   const eyes = K.eyes(head, {x: 0.16, y: 0.16, z: 0.2, r: 0.07, iris: "#4A3A2A", lid: coat, brow: M("#7A6A5A"), browTilt: 0.25, lidRest: 0.35, turn: 0.45});
-  [-1, 1].forEach(s => { const e = part(CO(0.08, 0.26, 6), coat, s*0.15, 0.4, -0.04, head, 0.07); e.rotation.z = -s*0.2; part(CO(0.045, 0.16, 6), nose, s*0.15, 0.39, 0.0, head).rotation.z = -s*0.2; });
+  [-1, 1].forEach(s => { const e = part(CO(0.085, 0.34, 8), coat, s*0.15, 0.44, -0.04, head, 0.07); e.rotation.z = -s*0.18; e.scale.z = 0.6; const ei = part(CO(0.05, 0.22, 8), M("#E2B3A6"), s*0.15, 0.43, 0.0, head); ei.rotation.z = -s*0.18; ei.scale.z = 0.5; });
   for (let k = 0; k < 7; k++){ const mm = part(S(0.11, 10, 8), mane, 0, 0.34 - k*0.11, -0.25 - k*0.025, head, 0.06); mm.scale.set(0.55, 1.3, 1.1); }
   // flowing tail
   const tail = grp(g, 0, 0.98, -0.3), segs = [];
@@ -3409,7 +3411,7 @@ function hendrixModel(T3){
 /* ---------- I: Indy Iguana ---------- */
 function indyModel(T3){
   const K = beastKit(T3, 71), {g, M, B, part, grp, S, C, BX, CO, TO} = K;
-  const skin = M("#FFFFFF", K.mottled("#8DB46C", ["rgba(60,110,50,.35)", "rgba(190,220,150,.35)"], 150)), belly = M("#C6DCA0"), shorts = M("#E6BC9E"), capM = M("#8FAADB"), capD = M("#7593C6"), goggle = M("#D9A441"), lens = new T3.MeshBasicMaterial({color: "#BFE6F7"}), dark = M("#2B2B2B");
+  const skin = M("#FFFFFF", K.mottled("#8DB46C", ["rgba(60,110,50,.35)", "rgba(190,220,150,.35)"], 150)), belly = M("#C6DCA0"), shorts = M("#E8D3A6"), capM = M("#8FAADB"), capD = M("#7593C6"), goggle = M("#D9A441"), lens = new T3.MeshBasicMaterial({color: "#BFE6F7"}), dark = M("#2B2B2B");
   const shirtTex = K.tex(256, 256, (x, w, h) => { x.fillStyle = "#EDE3EF"; x.fillRect(0, 0, w, h); const cols = ["#E9A0C0", "#B4A7E6", "#9FD6C2", "#F5D27A", "#A9C8F2"]; for (let k = 0; k < 30; k++){ const px = ((k % 6) + 0.5 + ((k/6|0) % 2)*0.5)*w/6, py = ((k/6|0) + 0.5)*h/5, c = cols[(k*3) % cols.length]; x.fillStyle = c; for (let p = 0; p < 5; p++){ const a = p/5*Math.PI*2; x.beginPath(); x.ellipse(px + Math.cos(a)*11, py + Math.sin(a)*11, 10, 6, a, 0, 7); x.fill(); } x.fillStyle = "#F7E08A"; x.beginPath(); x.arc(px, py, 3, 0, 7); x.fill(); } }, [2, 1]);
   const shirt = M("#FFFFFF", shirtTex);
   const legs = [-1, 1].map(s => K.leg(s, {thighM: shorts, shinM: skin, hip: 0.9, r: 0.13, thigh: 0.4, shin: 0.34, foot: (Kn, y) => { const f = part(S(0.14), skin, 0, y - 0.1, 0.1, Kn, 0.08); f.scale.set(1.1, 0.5, 1.7); }}));
@@ -3440,6 +3442,7 @@ function indyModel(T3){
   part(TO(0.32, 0.018, 6, 30), goggle, 0, 0.06, 0, cap).rotation.x = Math.PI/2;
   const tail = grp(g, 0, 0.88, -0.28), segs = [];
   for (let i = 0; i < 13; i++){ const u = i/12, sp = part(S(0.15 - u*0.12, 12, 10), skin, 0, 0, 0, tail, 0.07); sp.scale.set(1, 0.8, 1.2); segs.push(sp); }
+  for (let k = 0; k < 6; k++){ const sp = part(CO(0.045 - k*0.004, 0.16 - k*0.012, 6), M("#7FB85A"), 0, 0.26 - k*0.09, -0.24 - k*0.035, head, 0.08); sp.rotation.x = -0.5 - k*0.12; }
   const api = {group: g, height: 2.85, emote: null};
   api.update = bipedAnimator(api, {legs, body, head, eyes, jaw, prop: {s: 1, A: lollyArm.A, fore: lollyArm.fore}, free: freeArm, propPose: [-0.4, 0.3, -1.2], freePose: [0, 0.12, 0.15], item: lolly, itemPos: [0, lollyArm.handY, 0.04], itemRotX: 1.6,
     tail: (t) => segs.forEach((sp, i) => { const u = i/12; sp.position.set(-u*1.0 + Math.sin(u*2 + t*1.5)*0.1*u, -u*0.75 + u*u*0.25, -0.1 - u*0.25); })});
@@ -3594,6 +3597,7 @@ function umbrellabirdModel(T3){
   part(S(0.32, 22, 14, 0, Math.PI*2, 0, Math.PI/2), capM, 0, 0, 0, cap, 0.05).scale.set(1, 0.7, 1.02);
   const brim = part(C(0.23, 0.23, 0.03, 24, 1, false, -Math.PI/2, Math.PI), capD, 0, 0, 0.27, cap, 0.06); brim.scale.set(1, 1, 1.1);
   const lU = K.letter("U", "#FFFFFF", "#1F2025", 0.2); lU.position.set(0, 0.12, 0.29); lU.rotation.x = -0.45; cap.add(lU);
+  [-0.08, 0, 0.08].forEach((x, k) => { const f = part(S(0.05, 12, 10), M("#2F6F5A"), x, 0.46 + (k === 1 ? 0.04 : 0), -0.14, head, 0.06); f.scale.set(0.6, 2.4, 0.5); f.rotation.set(-0.5, 0, -x*3); });
   const api = {group: g, height: 2.6, emote: null, umb, umbWing};
   api.update = (t, moving) => { const w = Math.sin(t*10)*moving, br = Math.sin(t*2.3);
     legs[0].rotation.x = w*0.5; legs[1].rotation.x = -w*0.5; body.position.y = Math.abs(w)*0.06 + br*0.012; body.rotation.z = w*0.05;
@@ -3619,7 +3623,7 @@ function gottiModel(T3){
   const vest = part(K.lathe([[0.35, 0], [0.38, 0.2], [0.38, 0.42], [0.33, 0.56], [0.2, 0.62]], 24), suit, 0, 1.33, 0, body, 0.04); vest.scale.set(1.04, 1, 1.04);
   part(C(0.33, 0.34, 0.2), suit, 0, 0.98, 0, body, 0.05);
   [1.18, 1.28, 1.38, 1.48].forEach(y => part(S(0.02, 8, 6), dark, 0.02, y, 0.39, body));
-  [-1, 1].forEach(s => { const b = part(CO(0.1, 0.17, 4), bow, s*0.1, 1.74, 0.3, body, 0.08); b.rotation.z = -s*Math.PI/2; }); part(S(0.035, 8, 6), bow, 0, 1.74, 0.28, body);
+  [-1, 1].forEach(s => { const b = part(CO(0.12, 0.2, 4), bow, s*0.12, 1.74, 0.36, body, 0.08); b.rotation.z = -s*Math.PI/2; }); part(S(0.045, 8, 6), bow, 0, 1.74, 0.37, body);
   K.badge(body, "G", 0.18, 1.5, 0.37);
   const armO = {sleeve: shirt, skin: hide, foreM: hide, handM: M("#5A3E28"), r: 0.11, upper: 0.36, lower: 0.3};
   const armR = K.arm(body, -1, armO), armL = K.arm(body, 1, armO);
@@ -3713,10 +3717,10 @@ function kingstonModel(T3){
   // head: long kangaroo face, big upright ears, grumpy frown
   const head = grp(body, 0, 2.14, 0.06); head.scale.setScalar(1.12);
   part(S(0.28, 20, 14), fur, 0, 0.04, -0.02, head, 0.045).scale.set(0.95, 1.05, 1);
-  const snout = part(S(0.18, 16, 12), fur, 0, -0.08, 0.28, head, 0.05); snout.scale.set(0.85, 0.82, 1.75);
-  part(S(0.13, 14, 10), light, 0, -0.16, 0.36, head).scale.set(0.9, 0.6, 1.2);
-  part(S(0.05, 10, 8), noseM, 0, -0.02, 0.56, head).scale.set(1.4, 0.8, 0.8);
-  const frown = part(TO(0.06, 0.012, 6, 14, Math.PI), dark, 0, -0.22, 0.47, head); frown.rotation.set(-0.2, 0, 0);
+  const snout = part(S(0.18, 16, 12), fur, 0, -0.09, 0.32, head, 0.05); snout.scale.set(0.8, 0.78, 2.15); snout.rotation.x = 0.15;
+  part(S(0.13, 14, 10), light, 0, -0.18, 0.44, head).scale.set(0.85, 0.55, 1.4);
+  part(S(0.05, 10, 8), noseM, 0, -0.06, 0.68, head).scale.set(1.4, 0.8, 0.8);
+  const frown = part(TO(0.06, 0.012, 6, 14, Math.PI), dark, 0, -0.25, 0.56, head); frown.rotation.set(-0.2, 0, 0);
   const eyes = K.eyes(head, {x: 0.12, y: 0.1, z: 0.22, r: 0.065, iris: "#6A7A8A", lid: fur, brow: M("#8A6A4A"), browTilt: -0.45, lidRest: 0.55});
   [-1, 1].forEach(s => { const e = part(CO(0.09, 0.42, 6), fur, s*0.14, 0.46, -0.06, head, 0.06); e.rotation.z = -s*0.22; e.scale.set(1, 1, 0.55); part(CO(0.05, 0.3, 6), M("#E7B7A4"), s*0.14, 0.44, -0.03, head).rotation.z = -s*0.22; });
   const sweat = part(S(0.025, 8, 6), B("#CFE8F7"), 0.2, 0.06, 0.2, head); sweat.scale.set(0.8, 1.3, 0.8);
@@ -3776,7 +3780,7 @@ function magicModel(T3){
 /* ---------- Q: Queen Quilla ---------- */
 function quillaModel(T3){
   const K = beastKit(T3, 111), {g, M, B, part, grp, S, C, BX, CO, TO} = K;
-  const fur = M("#DDB07E"), muzzleM = M("#F4DEC0"), hair = M("#D9A862"), gown = M("#F2E2C6"), robe = M("#9C92D0"), trim = M("#E9A3B4"), goldM = M("#E3B63A"), shoe = M("#B9A6E4"), noseM = M("#E58A9A"), dark = M("#2B2B2B");
+  const fur = M("#DDB07E"), muzzleM = M("#F4DEC0"), hair = M("#F2C66E"), gown = M("#F2E2C6"), robe = M("#9C92D0"), trim = M("#E9A3B4"), goldM = M("#E3B63A"), shoe = M("#B9A6E4"), noseM = M("#E58A9A"), dark = M("#2B2B2B");
   const gem = c => new T3.MeshBasicMaterial({color: c});
   const legs = [-1, 1].map(s => K.leg(s, {thighM: gown, hip: 0.86, r: 0.11, thigh: 0.4, shin: 0.32, foot: (Kn, y) => { const f = part(S(0.11), shoe, 0, y - 0.06, 0.08, Kn, 0.08); f.scale.set(0.9, 0.55, 1.5); }}));
   const body = grp(g);
@@ -3801,10 +3805,11 @@ function quillaModel(T3){
   const smile = part(TO(0.06, 0.012, 6, 14, Math.PI), dark, 0, -0.14, 0.33, head); smile.rotation.set(-0.3, 0, Math.PI);
   [-1, 1].forEach(s => part(S(0.05, 8, 6), M("#F2A0A0"), s*0.16, -0.06, 0.24, head).scale.set(1, 0.6, 0.4));
   const eyes = K.eyes(head, {x: 0.11, y: 0.06, z: 0.25, r: 0.07, iris: "#B88A3A", lid: fur, brow: M("#B88A3A"), browTilt: 0.1, lidRest: 0.3});
-  [-1, 1].forEach(s => { const e = part(CO(0.09, 0.16, 6), fur, s*0.2, 0.28, -0.02, head, 0.07); e.rotation.z = -s*0.4; });
+  [-1, 1].forEach(s => { const e = part(S(0.08, 12, 10), fur, s*0.24, 0.26, -0.04, head, 0.07); e.scale.set(1, 1, 0.5); part(S(0.05, 10, 8), M("#F2B8B8"), s*0.24, 0.26, -0.005, head).scale.set(1, 1, 0.3); });
   const hairCap = part(new T3.SphereGeometry(0.33, 20, 12, 0, Math.PI*2, 0, Math.PI*0.5), hair, 0, 0.06, -0.06, head, 0.04); hairCap.scale.set(1.08, 0.9, 1.05);
-  const locks = [-1, 1].map(s => { const L = []; for (let k = 0; k < 5; k++){ const l = part(S(0.11, 10, 8), hair, s*(0.28 + Math.sin(k)*0.03), -0.05 - k*0.16, -0.05, head, 0.06); l.scale.set(0.8, 1.1, 0.9); L.push(l); } return L; });
-  for (let k = 0; k < 4; k++){ const l = part(S(0.13, 10, 8), hair, -0.15 + k*0.1, -0.3 - (k % 2)*0.1, -0.22, head, 0.05); l.scale.set(0.9, 2.2, 0.7); }
+  const locks = [-1, 1].map(s => { const L = []; for (let k = 0; k < 5; k++){ const l = part(S(0.13, 12, 10), hair, s*(0.3 + Math.sin(k*1.7)*0.04 + k*0.02), -0.02 - k*0.17, -0.02 + (k > 2 ? 0.06 : 0), head, 0.06); l.scale.set(0.85, 1.15, 0.95); L.push(l); } return L; });
+  for (let k = 0; k < 6; k++){ const l = part(S(0.13, 12, 10), hair, -0.25 + k*0.1, -0.38 - (k % 2)*0.1, -0.24, head, 0.05); l.scale.set(0.9, 2.8, 0.7); l.rotation.z = (k - 2.5)*0.06; }
+  [-1, 1].forEach(s => { const fr = part(S(0.12, 12, 10), hair, s*0.13, 0.2, 0.2, head, 0.05); fr.scale.set(1.2, 0.55, 0.6); fr.rotation.z = s*0.5; });
   const crown = grp(head, 0, 0.3, -0.02); part(C(0.2, 0.2, 0.08, 20, 1, true), goldM, 0, 0, 0, crown, 0.08).material.side = T3.DoubleSide;
   for (let k = 0; k < 5; k++){ const a = -Math.PI/2 + (k - 2)*0.55; part(CO(0.04, 0.13, 4), goldM, Math.cos(a)*0.2, 0.09, -Math.sin(a)*0.2, crown, 0.08); part(S(0.025, 6, 5), gem(["#E63946", "#3A86FF", "#06D6A0", "#FFD166", "#F497C4"][k]), Math.cos(a)*0.205, 0.0, -Math.sin(a)*0.205, crown); }
   const api = {group: g, height: 2.8, emote: null};
