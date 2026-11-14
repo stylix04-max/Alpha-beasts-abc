@@ -1443,16 +1443,16 @@ const GAMES = [
 /* One game for every letter. null = coming soon */
 const GAMES_AZ = [
   ["A","beach3d","Apex's Apple Catch"], ["B","bowl3d","Bonnie's Barrel Bowling"], ["C","cardshark","Clyde's Card Shark"], ["D","diamond3d","Dusky's Diamond Dash"],
-  ["E","eggstomp","Easy E's Egg Bop"], ["F","fishing","Frisk's Fishing"], ["G","beastle","Gotti's Guess"], ["H","joust3d","Hendrix's Joust"],
-  ["I","micro3d","Indy's Micro Karts"], ["J","jellyjump","Juice's Jelly Jump"], ["K","soccer3d","Kingston's Kickabout"], ["L","ludo3d","Lucky's Loot Ludo"],
+  ["E","eggstomp","Easy E's Egg Bop"], ["F","fishing","Frisk's Fishing"], ["G","beastle","Gotti's Guess"], ["H","horseshoe","Hendrix's Horseshoe Toss"],
+  ["I","micro3d","Indy's Micro Karts"], ["J","jellyjump","Juice's Jelly Jump"], ["K","hopalong","Kingston's Hop Along"], ["L","ludo3d","Lucky's Loot Ludo"],
   ["M","missing","Magic Monkey's Missing Letters"], ["N","explorer","New Rainbow Land Explorer"], ["O","chess3d","Otto's Chess"], ["P","popslide3d","Percy's Pop Can Slide"],
   ["Q","hunt3d","Queen Quilla's Letter Hunt"], ["R","relay3d","Referee Rhino's Relay"], ["S","chicken3d","Security Shark's Capture the Chicken"], ["T","tulips","Twinkle Toes' Tulip Garden"],
   ["U","glide","Umbrellabird's Umbrella Glide"], ["V","snakes","Vance and Ladders"], ["W","wilber","Where's Wilber?"], ["X","xmarks","Xander's X Marks the Spot"],
-  ["Y","mistmaze","Yareli's Yellow Mist Maze"], ["Z","kart3d","Zachary's Zoom Karts"]
+  ["Y","mistmaze","Yareli's Yellow Mist Maze"], ["Z","zsums","Zachary's Zebra Sums"]
 ];
 const GAME_TITLE = Object.fromEntries(GAMES_AZ.filter(g => g[1]).map(g => [g[1], g[2]]));
 function games(){
-  const used = new Set([...GAMES_AZ.map(g => g[1]).filter(Boolean), "relay", "joust", "chicken"]), extras = GAMES.filter(g => !used.has(g[0]));  // 2D relay/joust/chicken are replaced by their 3D versions
+  const used = new Set([...GAMES_AZ.map(g => g[1]).filter(Boolean), "relay", "joust", "chicken", "kart3d", "maths", "soccer3d", "joust3d"]), extras = GAMES.filter(g => !used.has(g[0]));  // 2D relay/joust/chicken are replaced by their 3D versions
   render(`${header("Games")}
     <p class="sub" style="margin:0 0 .6rem">A game for every letter, A to Z!</p>
     <div class="azgames">${GAMES_AZ.map(([l, key, name]) => { const b = byL(l);
@@ -1469,7 +1469,7 @@ function optsFor(b, n=3, f){
 }
 
 /* ---------- Beast Maths: counting, adding, taking away and "who has more?" with the beasts' boosts ---------- */
-function maths(){
+function maths(title = "AZoomal Maths", host = null, again = maths){
   let round = 0, score = 0; const ROUNDS = 8;
   const lvl = Math.min(3, 1 + Math.floor((S.mathWins || 0)/2));
   const ri = (a, b) => a + Math.floor(Math.random()*(b - a + 1));
@@ -1479,10 +1479,10 @@ function maths(){
   const face = b => ART_HEAD[b.l] ? `<img class="mface" src="${ART_HEAD[b.l]}" alt="">` : `<span class="mface mletter" style="--c:${col(b)}">${b.l}</span>`;
   const row = (e, n, cls) => `<div class="mrow">${Array.from({length: n}, () => `<span class="mitem ${cls || ""}">${e}</span>`).join("")}</div>`;
   const next = () => {
-    if (round === ROUNDS){ if (score >= ROUNDS - 2) S.mathWins = (S.mathWins || 0) + 1; save(); return finish("AZoomal Maths", score, ROUNDS, maths); }
+    if (round === ROUNDS){ if (score >= ROUNDS - 2) S.mathWins = (S.mathWins || 0) + 1; save(); return finish(title, score, ROUNDS, again); }
     round++;
     const types = lvl === 1 ? ["count", "count", "more", "add"] : lvl === 2 ? ["count", "add", "add", "more", "take"] : ["add", "take", "add", "take", "more"];
-    const type = rnd(types), b = rnd(crowd), e = b.e;
+    const type = rnd(types), b = host || rnd(crowd), e = b.e;
     let q, say, ans, visual, opts, isWho = false, who = null, eatN = 0;
     if (type === "count"){ const n = ri(1, lvl === 1 ? 5 : 10); ans = n; visual = row(e, n, "tapcount");
       q = `How many ${word(b, 2)} has ${b.name} got?`; say = q + " Tap them to count!"; }
@@ -1498,7 +1498,7 @@ function maths(){
       q = `Who has more? ${b.name} or ${f.name}?`; say = q; opts = [b, f]; }
     if (!isWho){ const s = new Set([ans]); while (s.size < 3){ const d = ans + rnd([-2, -1, 1, 2]); if (d >= 0 && d <= 12) s.add(d); } opts = shuffle([...s]); }
     let tries = 0;
-    render(`${header("AZoomal Maths", "games", "Games")}
+    render(`${header(title, "games", "Games")}
       <div class="card"><p class="count">${round} of ${ROUNDS} · Level ${lvl}</p>
         <div class="mq">${type === "more" ? "" : face(b)}<p class="say" style="margin:.3rem 0">${esc(q)}</p></div>
         <div class="mvis">${visual}</div>
@@ -1506,7 +1506,7 @@ function maths(){
         <div class="opts" id="mopts" ${eatN ? 'style="visibility:hidden"' : ""}>${isWho ? opts.map(o => `<button class="block mnum" style="--c:${col(o)}" data-v="${o.l}">${face(o)}<small>${esc(o.name.split(" ")[0])}</small></button>`).join("")
           : opts.map(v => `<button class="block mnum" style="--c:var(--vowels)" data-v="${v}">${v}</button>`).join("")}</div>
         <p class="feedback" id="fb" aria-live="polite"></p></div>`);
-    $("hear").onclick = () => speak(say); speak(say);
+    $("hear").onclick = () => speak(say); if (host && round === 1) speak(`${host.name} here. Right, everyone, listen up. I've got a plan: let's do some sums! ${say}`, null, {beast: host.l}); else speak(say);
     let eaten = 0; app.querySelectorAll(".eatme").forEach(el => el.onclick = () => { if (eaten >= eatN || el.classList.contains("eaten")) return; el.classList.add("eaten"); eaten++; SFX.pop && SFX.pop(); buzz(12);
       const fc = app.querySelector(".mq .mface"); if (fc){ fc.classList.remove("chomp"); void fc.offsetWidth; fc.classList.add("chomp"); }
       if (eaten < eatN) speak(rnd(["Yum!", "Munch!", "Gulp!"])); else { $("mopts").style.visibility = ""; const left = ans; q = "How many are left?"; speak(`Yum! Now, how many are left?`); $("fb").textContent = "How many are left? Count them!"; } });
@@ -1553,6 +1553,82 @@ function mcGame(title, gen, again){
   };
   next();
 }
+
+/* H: Hendrix's Horseshoe Toss - first-sound phonics (replaces Joust) */
+function horseshoe(){
+  let round = 0, score = 0; const ROUNDS = 8;
+  const lvl = Math.min(2, 1 + Math.floor((S.shoeWins || 0)/2)), POSTS = lvl === 1 ? 3 : 4;
+  const letters = Object.keys(WORDS), used = new Set();
+  const next = () => {
+    if (round === ROUNDS){ if (score >= ROUNDS - 2) S.shoeWins = (S.shoeWins || 0) + 1; save(); return finish("Hendrix's Horseshoe Toss", score, ROUNDS, horseshoe); }
+    round++;
+    let L; do { L = rnd(letters); } while (used.has(L) && used.size < letters.length); used.add(L);
+    const [emo, word] = rnd(WORDS[L]);
+    const opts = shuffle([L, ...shuffle(letters.filter(x => x !== L)).slice(0, POSTS - 1)]);
+    const q = `Yee-haw! ${word[0].toUpperCase() + word.slice(1)}. ${word} starts with... ${PHON[L] || ""}. Which letter is it?`;
+    let tries = 0;
+    render(`${header("Hendrix's Horseshoe Toss", "games", "Games")}
+      <div class="card"><p class="count">Throw ${round} of ${ROUNDS} · ⭐ ${score}</p>
+        <div style="font-size:4.5rem;line-height:1.1;text-align:center">${emo}</div>
+        <p class="say" style="margin:.2rem 0">What does <b>${esc(word)}</b> start with?</p>
+        <p class="sub" style="text-align:center">Tap a post to throw your horseshoe</p>
+        <div style="display:flex;justify-content:center;gap:.6rem;margin:1.6rem 0 .4rem">${opts.map(o => `<button class="shoepost" data-l="${o}" style="position:relative;width:4.2rem;height:6.4rem;border:0;border-radius:.6rem .6rem .3rem .3rem;background:linear-gradient(#8B5A2B,#6B4220);color:#fff;font:700 2rem 'Lilita One',sans-serif;box-shadow:0 .25rem 0 #4a2d14">${o}<span class="shoe" style="position:absolute;left:50%;top:-1.5rem;width:1.9rem;height:1.7rem;box-sizing:border-box;border:.42rem solid #B8BEC6;border-bottom:0;border-radius:1rem 1rem 0 0;transform:translateX(-50%) scale(0);transition:transform .35s cubic-bezier(.3,1.6,.5,1)"></span></button>`).join("")}</div>
+        <button class="btn ghost" id="hear">🔊 Hear it</button><p class="feedback" id="fb" aria-live="polite"></p></div>`);
+    $("hear").onclick = () => speak(q);
+    speak(round === 1 ? `Howdy partner! Hendrix here. Let's toss some horseshoes! ${q}` : q, null, round === 1 ? {beast: "H"} : undefined);
+    app.querySelectorAll(".shoepost").forEach(el => el.onclick = () => {
+      const shoe = el.querySelector(".shoe"); shoe.style.transform = "translateX(-50%) scale(1)";
+      if (el.dataset.l === L){ if (tries === 0) score++; app.querySelectorAll(".shoepost").forEach(x => x.disabled = true);
+        shoe.style.borderColor = "#FFD23F"; el.style.boxShadow = "0 0 0 4px #FFD23F, 0 .25rem 0 #4a2d14"; buzz(20);
+        try { SFX.star && SFX.star(); confetti && confetti(); } catch(e){}
+        $("fb").textContent = `✅ Ringer! ${word} starts with ${L}!`; speak(`Ringer! ${word} starts with ${SAY_NAMES[L]}!`); later(next, 2300); }
+      else { tries++; el.disabled = true; later(() => { shoe.style.transform = "translateX(-50%) translateY(3rem) rotate(120deg) scale(.6)"; el.style.opacity = ".4"; }, 350);
+        const hint = `Missed! That's ${el.dataset.l}. Listen: ${word}... ${PHON[L] || ""}.`;
+        $("fb").textContent = `Missed! That's ${el.dataset.l}. Try again!`; speak(hint); } });
+  };
+  next();
+}
+
+/* K: Kingston's Hop Along - number-line hopping (replaces Kickabout) */
+function hopalong(){
+  let round = 0, score = 0; const ROUNDS = 8, K = byL("K");
+  const lvl = Math.min(3, 1 + Math.floor((S.hopWins || 0)/2)), MAX = lvl === 3 ? 20 : 10;
+  const ri = (a, b) => a + Math.floor(Math.random()*(b - a + 1));
+  const NUMW = ["zero","one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen","twenty"];
+  const roo = ART_HEAD && ART_HEAD.K ? `<img src="${ART_HEAD.K}" alt="Kingston" style="width:100%;height:100%;object-fit:contain">` : "🦘";
+  const next = () => {
+    if (round === ROUNDS){ if (score >= ROUNDS - 2) S.hopWins = (S.hopWins || 0) + 1; save(); return finish("Kingston's Hop Along", score, ROUNDS, hopalong); }
+    round++;
+    const back = lvl > 1 && Math.random() < 0.4, hops = ri(1, lvl === 1 ? 4 : lvl === 2 ? 5 : 8);
+    const start = back ? ri(hops, MAX) : ri(0, MAX - hops), ans = back ? start - hops : start + hops;
+    const q = back ? `Kingston is on ${start}. He hops back ${hops}. Where does he land?` : `Kingston is on ${start}. He hops ${hops} more. Where does he land?`;
+    const tile = n => `<button class="hoptile" data-n="${n}" style="position:relative;aspect-ratio:1;border-radius:.6rem;border:3px solid var(--horde,#E0533D);background:#fff;font:700 1.15rem 'Lilita One',sans-serif;color:#333">${n}<span class="hoproo" style="position:absolute;left:0;right:0;top:-1.9rem;height:1.8rem;font-size:1.5rem;line-height:1.8rem;${n === start ? "" : "display:none"}">${roo}</span></button>`;
+    let tries = 0;
+    render(`${header("Kingston's Hop Along", "games", "Games")}
+      <div class="card"><p class="count">${round} of ${ROUNDS} · Level ${lvl} · ⭐ ${score}</p>
+        <p class="say" style="margin:.3rem 0">${esc(q)}</p>
+        <div style="display:grid;grid-template-columns:repeat(${MAX > 10 ? 7 : 6},1fr);column-gap:.35rem;row-gap:2.1rem;padding-top:2rem;max-width:22rem;margin:0 auto">${Array.from({length: MAX + 1}, (_, n) => tile(n)).join("")}</div>
+        <p class="sub" style="text-align:center">${back ? "⬅️" : "➡️"} Tap the number where Kingston lands</p>
+        <button class="btn ghost" id="hear">🔊 Hear it</button><p class="feedback" id="fb" aria-live="polite"></p></div>`);
+    const tiles = [...app.querySelectorAll(".hoptile")], put = n => tiles.forEach(t => t.querySelector(".hoproo").style.display = +t.dataset.n === n ? "" : "none");
+    const hopShow = done => { for (let k = 1; k <= hops; k++) later(() => { const n = back ? start - k : start + k; put(n); tiles[n].style.background = "#FFE9A8"; speak(NUMW[k] || String(k)); buzz(8); try { SFX.pop && SFX.pop(); } catch(e){} }, k*650); later(done, hops*650 + 500); };
+    $("hear").onclick = () => speak(q);
+    speak(round === 1 ? `G'day! Kingston here. Let's hop along the numbers! ${q}` : q, null, round === 1 ? {beast: "K"} : undefined);
+    tiles.forEach(el => el.onclick = () => {
+      const n = +el.dataset.n;
+      if (n === ans){ if (tries === 0) score++; tiles.forEach(t => t.disabled = true); el.style.background = "#B8F0B0";
+        $("fb").textContent = `✅ Yes! ${start} ${back ? "take away" : "add"} ${hops} is ${ans}!`;
+        hopShow(() => { speak(`Boing! ${start} ${back ? "take away" : "add"} ${hops} makes ${NUMW[ans] || ans}!`); try { confetti && confetti(); } catch(e){} later(next, 2200); }); }
+      else { tries++; el.disabled = true; el.style.opacity = ".35";
+        const hint = tries >= 2 ? "Let's count the hops together!" : "Not quite! Count each hop from where Kingston is.";
+        $("fb").textContent = hint; speak(hint);
+        if (tries >= 2){ tiles.forEach(t => t.disabled = true); hopShow(() => { put(start); tiles.forEach(t => { t.style.background = "#fff"; t.disabled = +t.dataset.n === n; }); speak(`So, where does Kingston land?`); }); } } });
+  };
+  next();
+}
+
+/* Z: Zachary Zebra hosts the maths game (replaces Zoom Karts) */
+function zsums(){ maths("Zachary's Zebra Sums", byL("Z"), zsums); }
 
 function finish(title, score, of, again){
   const m = score === of ? "🥇" : score >= of - 2 ? "🥈" : "🥉";
