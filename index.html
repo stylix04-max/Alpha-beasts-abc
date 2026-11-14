@@ -4409,8 +4409,8 @@ function beach3dPlay(me){
       if (o.isSprite && Math.abs(o.position.x + 28) < 0.1 && Math.abs(o.position.y - 30) < 0.1) o.visible = false; });
     { const sun = new T3.Group(); sun.position.set(-9, 19, -50); sun.lookAt(0, 3, 10); G.scene.add(sun);
       // soft glow from stacked additive discs (no grainy gradients), always drawn in front of the clouds
-      [[7.5, "#FFE9A0", 0.10], [5.6, "#FFE27A", 0.16], [4.2, "#FFD95A", 0.28], [2.5, "#FFE66B", 1], [2.1, "#FFF6CF", 1]].forEach(([r, c, o], k) => {
-        const m = new T3.Mesh(new T3.CircleGeometry(r, 48), new T3.MeshBasicMaterial({color: c, fog: false, transparent: true, opacity: o, depthTest: false, depthWrite: false, blending: o < 1 ? T3.AdditiveBlending : T3.NormalBlending}));
+      [[7.5, "#FFA62B", 0.22], [5.6, "#FFB938", 0.38], [4.2, "#FFC93C", 0.6], [2.6, "#FFB000", 1], [2.15, "#FFD23F", 1]].forEach(([r, c, o], k) => {
+        const m = new T3.Mesh(new T3.CircleGeometry(r, 48), new T3.MeshBasicMaterial({color: c, fog: false, transparent: true, opacity: o, depthTest: false, depthWrite: false, blending: T3.NormalBlending}));
         m.renderOrder = 20 + k; m.position.z = k*0.01; sun.add(m); }); }
     { const R = G.rand;
             [[-3.6, -3.4, "#E63946"], [3.4, -3.6, "#3A86FF"], [-8.5, 3, "#06D6A0"], [8.8, -1.8, "#FFD166"]].forEach(([x, z, c]) => {
