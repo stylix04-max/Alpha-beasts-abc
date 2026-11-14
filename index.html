@@ -72,6 +72,8 @@ h1{font-size:2rem;white-space:nowrap} h2{font-size:1.6rem}
 .btn{background:var(--c,var(--place));color:#fff;border-radius:14px;padding:.8rem 1.2rem;font-weight:700;box-shadow:0 5px 0 rgba(0,0,0,.25)}
 .btn.ghost{background:var(--paper);color:var(--ink);box-shadow:0 5px 0 rgba(0,0,0,.15)}
 .btn.huge{font-size:1.6rem;padding:1rem 2.4rem}
+.slwrap ~ .row{flex-wrap:nowrap;gap:.5rem}
+.slwrap ~ .row > .btn.huge{padding:1rem .5rem;flex:1 1 0;min-width:0}
 .btn:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.25)}
 .opts{display:flex;gap:.9rem;justify-content:center;margin-top:1rem;flex-wrap:wrap}
 .opts .block{width:5.5rem;font-size:3rem}
@@ -983,7 +985,7 @@ function studio(){
         <div class="saddrow">${[["walkin", "🚶 Walk in"], ["talk", "💬 Talk"], ["wave", "👋 Wave"], ["dance", "💃 Dance"], ["special", "✨ Special"], ["jump", "⤴ Jump"], ["spin", "🌀 Spin"], ["walkout", "🚶 Walk off"], ["pause", "⏸ Pause"]].map(([k, t]) => `<button class="pill" data-add="${k}">＋ ${t}</button>`).join("")}</div></div>
       <div class="row" style="justify-content:flex-start"><label class="stchk"><input type="checkbox" id="smus" ${st.music ? "checked" : ""}> 🎵 Music</label><label class="stchk"><input type="checkbox" id="svoi" ${st.voice ? "checked" : ""}> 🔊 AZoomal's voice</label></div></div>
     <div class="card"><div class="stframe"><canvas id="scv" width="1080" height="1920"></canvas></div>
-      <div class="row"><button class="btn ghost" id="sprev">▶ Preview</button><button class="btn" id="srec" style="--c:#D62828">⏺ Record video</button></div>
+      <div class="row"><button class="btn ghost" id="sprev">▶︎ Preview</button><button class="btn" id="srec" style="--c:#D62828">⏺ Record video</button></div>
       <p class="sub" id="smsg" style="margin:.4rem 0 0">Keep this screen open while it records. It takes as long as the video.</p>
       <div id="sout" hidden><video id="svid" controls playsinline style="width:100%;max-height:60vh;border-radius:14px;background:#000"></video>
         <div class="row"><button class="btn" id="ssave">💾 Save / share video</button><a class="btn ghost" id="sdl" download>⬇ Download</a></div>
@@ -1175,7 +1177,7 @@ function studio(){
     if (record){ if (!cv.captureStream || !window.MediaRecorder){ $("smsg").textContent = "This phone can't record video from the app. Use Preview and your phone's screen recorder instead."; running = false; $("sprev").disabled = $("srec").disabled = false; return; }
       const tracks = [...cv.captureStream(30).getVideoTracks(), ...(dest ? dest.stream.getAudioTracks() : [])]; type = ["video/mp4;codecs=avc1,mp4a.40.2", "video/mp4", "video/webm;codecs=vp9,opus", "video/webm"].find(m => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(m)) || "";
       rec = new MediaRecorder(new MediaStream(tracks), type ? {mimeType: type, videoBitsPerSecond: 8000000} : {}); rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); }; rec.start(250); $("smsg").textContent = "⏺ Recording… keep this screen open."; }
-    else $("smsg").textContent = "▶ Previewing…";
+    else $("smsg").textContent = "▶︎ Previewing…";
     if (ac && st.music && ac.state !== "running") $("smsg").textContent = "No sound: turn the volume up, then tap again.";
     if (ac) sound(plan, ac, dest);
     const ep = EPOCH, start = performance.now(); let last = start;
@@ -1369,7 +1371,7 @@ function trace(i, lower){
       <div class="caseseg"><button class="${lower ? "" : "on"}" id="upc">${b.l}<small>Capital</small></button><button class="${lower ? "on" : ""}" id="loc">${b.l.toLowerCase()}<small>Small</small></button></div>
       <div class="tracewrap"><canvas id="gv" width="600" height="600" aria-hidden="true"></canvas><canvas id="cv" width="600" height="600" aria-label="Tracing area for letter ${ch}"></canvas></div>
       <p class="sub">Start at the green dot <b>1</b> and follow the arrows.</p>
-      <div class="row"><button class="btn" id="show" style="--c:var(--place)">▶ Show me</button><button class="btn ghost" id="clear">Start again</button><button class="btn" id="done">Done!</button></div>
+      <div class="row"><button class="btn" id="show" style="--c:var(--place)">▶︎ Show me</button><button class="btn ghost" id="clear">Start again</button><button class="btn" id="done">Done!</button></div>
     </div>`);
   $("upc").onclick = () => trace(i, false); $("loc").onclick = () => trace(i, true);
   const gv = $("gv").getContext("2d"), cv = $("cv");
@@ -2390,7 +2392,7 @@ function snakesMap(list){
         <div class="hub">${BL_MAPS.map((m, i) => `<button class="tile ${i === mi ? "sel" : ""}" style="--c:${m.cliff[0]}" data-m="${i}"><span class="ic">${m.e}</span><span><b>${m.name}</b></span></button>`).join("")}</div>
         <p class="say" style="margin-top:1rem">Board size</p>
         <div class="row">${Object.entries(BL_SIZES).map(([k, v]) => `<button class="btn ${k === sz ? "" : "ghost"}" data-s="${k}" style="--c:var(--horde)">${v.name}<br><small style="font-size:.7em">${v.rows*10} squares</small></button>`).join("")}</div>
-        <div class="row" style="margin-top:1rem"><button class="btn huge" id="go" style="--c:var(--vowels)">Let’s play! ▶</button></div></div>`);
+        <div class="row" style="margin-top:1rem"><button class="btn huge" id="go" style="--c:var(--vowels)">Let’s play! ▶︎</button></div></div>`);
     app.querySelectorAll("[data-m]").forEach(el => el.onclick = () => { mi = +el.dataset.m; speak(BL_MAPS[mi].name); draw(); });
     app.querySelectorAll("[data-s]").forEach(el => el.onclick = () => { sz = el.dataset.s; speak(BL_SIZES[sz].name + " board"); draw(); });
     $("go").onclick = () => { S.blMap = mi; S.blSize = sz; save(); snakesPlay(list, mi, sz); };
@@ -4034,6 +4036,9 @@ function start3D(fn){
   loadThree().then(() => { if (ep === EPOCH) fn(); })
     .catch(() => { const h = $("g3d"); if (h) h.innerHTML = `<p class="sub" style="padding:1rem">The 3D world needs an internet connection. Try again in a moment.</p>`; });
 }
+/* each AZoomal's own once-per-game power button */
+function powerRow(me){ return `<div class="row" style="margin-top:.4rem"><button class="btn" id="pw" style="--c:${col(me)}">⚡ ${esc(me.power || "Super Power")}</button></div>`; }
+function powerArm(me, fn){ const b = $("pw"); if (!b) return; b.onclick = () => { if (b.disabled) return; b.disabled = true; b.style.opacity = ".45"; fn(); speak(`${me.power || "Super power"}!`, null, {beast: me.l}); }; }
 function pickBeast(title, then){
   render(`${header(title, "games", "Games")}
     <div class="card"><p class="say">Pick your AZoomal</p>
@@ -4104,8 +4109,8 @@ function relay3d(){ pickBeast("Referee Rhino's Relay", relay3dPlay); }
 function camToggle(){ const w = $("g3d") && $("g3d").parentElement; if (!w || $("camv")) return; w.insertAdjacentHTML("beforeend", `<button class="slview" id="camv" aria-label="Change camera">${S.camHigh ? "🛰️" : "🎥"}</button>`);
   $("camv").onclick = () => { S.camHigh = !S.camHigh; save(); $("camv").textContent = S.camHigh ? "🛰️" : "🎥"; toast(S.camHigh ? "High view" : "Chase view"); }; }
 function relay3dPlay(me){
-  shell3D("Referee Rhino's Relay", "Swipe, or tap ◀ ▶, to change lanes. Dodge the rocks and logs, grab the golden boosts, and race all four legs!",
-    `<div class="row"><button class="btn huge" id="L" style="--c:var(--place)">◀</button><button class="btn huge rbeat" id="tapbeat" style="--c:var(--vowels);touch-action:none">👟 TAP</button><button class="btn huge" id="R" style="--c:var(--place)">▶</button></div><p class="sub" id="rhy">Tap 👟 in time with the beat to run faster!</p>`);
+  shell3D("Referee Rhino's Relay", "Swipe, or tap ◀︎ ▶︎, to change lanes. Dodge the rocks and logs, grab the golden boosts, and race all four legs!",
+    `<div class="row"><button class="btn huge" id="L" style="--c:var(--place)">◀︎</button><button class="btn huge rbeat" id="tapbeat" style="--c:var(--vowels);touch-action:none">👟 TAP</button><button class="btn huge" id="R" style="--c:var(--place)">▶︎</button></div>${powerRow(me)}<p class="sub" id="rhy">Tap 👟 in time with the beat to run faster!</p>`);
   start3D(() => { camToggle();
     const G = make3D({fog:["#CFEAF5", 18, 60]}), {T3, camera, add, mat} = G;
     const LEN = 480, LEG = LEN/4, LANES = [-1.5, 0, 1.5];
@@ -4169,13 +4174,14 @@ function relay3dPlay(me){
     const rivals = rivalTeams.map((t, k) => { const b = byL(TEAMS[t][0]); const m = G.beast(b, 0.6); const x = [-4.2, 4.2, 6.4][k];
       add(new T3.BoxGeometry(1.4, 0.21, LEN + 20), mat("#E7CF98"), x, -0.09, -LEN/2, false);
       return {b, m, x, z: 0, speed: 9.4 + Math.random()*1.6, team: t}; });
-    let lane = 1, px = 0, z = 0, speed = 0, slow = 0, legNo = 0, running = false, finished = false, boosts = 0, bounce = 0;
+    let turbo = 0, lane = 1, px = 0, z = 0, speed = 0, slow = 0, legNo = 0, running = false, finished = false, boosts = 0, bounce = 0;
     const hud = () => { const h = $("hud"); if (!h) return;
       const pct = Math.min(100, (-z)/LEN*100);
       h.innerHTML = `<div class="slp now" style="--c:${col(runners[legNo])}"><span class="av">${runners[legNo].l}</span><span class="nm">${legs[legNo].n}</span><span class="sq">${Math.round(pct)}%</span></div>
         <div class="slp"><span class="nm">⚡ ${boosts}</span></div>`; };
     const move = d => { if (!finished) lane = Math.max(0, Math.min(2, lane + d)); };
     $("L").onclick = () => move(-1); $("R").onclick = () => move(1);
+    powerArm(me, () => { turbo = 4; slow = 0; $("fb").textContent = `⚡ ${me.power || "Turbo"}! Super speed!`; G.burst(px, 0.8, z, 20, [col(me), "#FFD166"], true); });
     // rhythm running: a steady drum beat; taps that land on it build up a speed bonus
     let rhythm = 0, beatT = 0, lastBeat = -1; const BEAT = 0.5;
     $("tapbeat").onpointerdown = e => { e.preventDefault(); if (!running || finished) return; const ph = Math.min(beatT, BEAT - beatT);
@@ -4194,10 +4200,10 @@ function relay3dPlay(me){
       G.burst(px, 2, z - 1, 50, RB, true); };
     G.onFrame((dt, now) => {
       if (running && !finished){
-        slow = Math.max(0, slow - dt);
+        slow = Math.max(0, slow - dt); turbo = Math.max(0, turbo - dt);
         beatT += dt; if (beatT >= BEAT){ beatT -= BEAT; const tb = $("tapbeat"); if (tb){ tb.classList.remove("pulse"); void tb.offsetWidth; tb.classList.add("pulse"); } try { MUSIC.tick && MUSIC.tick(true); } catch(e){} }
         rhythm = Math.max(0, rhythm - dt*0.7);
-        const target = (slow > 0 ? 5 : 11 + Math.min(4, boosts*0.25)) + rhythm*0.9;
+        const target = (slow > 0 && turbo <= 0 ? 5 : 11 + Math.min(4, boosts*0.25)) + rhythm*0.9 + (turbo > 0 ? 6 : 0);
         speed += (target - speed) * Math.min(1, dt*2);
         z -= speed*dt;
         const nl = Math.min(3, Math.floor(-z/LEG));
@@ -4390,7 +4396,7 @@ function chicken3d(){
 function beach3d(){ pickBeast("Apex's Apple Catch", beach3dPlay); }
 function beach3dPlay(me){
   shell3D("Apex's Apple Catch", `Drag, or hold ◀︎ ▶︎, to catch your falling ${esc((me.boost||"boosts").toLowerCase())}. Golden ones power you up, rotten ones lose a point, and other AZoomals' things don't count. Watch out for seagulls and gusts of wind!`,
-    `<div class="row"><button class="btn huge" id="L" style="--c:var(--place);font-size:2.4rem">◀︎</button><button class="btn huge" id="R" style="--c:var(--place);font-size:2.4rem">▶︎</button></div>`);
+    `<div class="row"><button class="btn huge" id="L" style="--c:var(--place);font-size:2.4rem">◀︎</button><button class="btn huge" id="R" style="--c:var(--place);font-size:2.4rem">▶︎</button></div>${powerRow(me)}`);
   start3D(() => {
     const G = make3D({sky:["#2F8FE0","#8DD3F7","#FFF1D0"], fog:["#CFEFFA", 25, 80]}), {T3, camera, add, mat} = G;
     const canv = (w, h, draw) => { const c = document.createElement("canvas"); c.width = w; c.height = h; draw(c.getContext("2d"), w, h); const t = new T3.CanvasTexture(c); t.wrapS = t.wrapT = T3.RepeatWrapping; return t; };
@@ -4468,6 +4474,7 @@ function beach3dPlay(me){
     const hud = () => { const h = $("hud"); if (h) h.innerHTML = `<div class="slp now" style="--c:${col(me)}"><span class="av">${me.l}</span><span class="nm">${me.e || "⭐"} ${score}</span></div><div class="slp"><span class="nm">⏱️ ${Math.ceil(time)}</span></div>`; };
     const holdBtn = (id, d) => { const b = $(id); b.onpointerdown = () => hold = d; b.onpointerup = b.onpointerleave = b.onpointercancel = () => { if (hold === d) hold = 0; }; };
     holdBtn("L", -1); holdBtn("R", 1);
+    powerArm(me, () => { frenzy = 8; bucket.scale.set(1.6, 1, 1.6); $("fb").textContent = `⚡ ${me.power || "Power up"}! Giant bucket for 8 seconds!`; G.burst(px, BUCKET_Y + 0.3, 0.5, 30, ["#FFD166", "#FFFFFF"], true); });
     G.el.addEventListener("pointermove", e => { if (e.buttons || e.pointerType === "touch"){ const r = G.el.getBoundingClientRect(); px = Math.max(-4.2, Math.min(4.2, ((e.clientX - r.left)/r.width - 0.5)*10)); } });
     G.el.addEventListener("pointerdown", e => { const r = G.el.getBoundingClientRect(); px = Math.max(-4.2, Math.min(4.2, ((e.clientX - r.left)/r.width - 0.5)*10)); });
     const spawn = () => {
@@ -4771,7 +4778,7 @@ function bowl3dPlay(me){
       pins.forEach(o => { if (!o.down && o !== p && o.z < p.z + 0.05 && Math.hypot(o.x - p.x, o.z - p.z) < 0.7 && Math.random() < (power ? 0.85 : 0.62)) later(() => knock(o), 120); }); };
     $("pw").onclick = () => { if (powerUsed || rolling) return; powerUsed = power = true; $("pw").disabled = true; $("pw").style.opacity = ".45"; G.tween(400, t => ball.scale.setScalar(1 + t*0.9)); G.burst(bx0, 0.6, 0, 20, [col(me), "#FFFFFF"], true);
       $("fb").textContent = `⚡ ${me.name}'s ${me.power || "Super Barrel"}! A giant barrel!`; speak(`${me.power || "Super barrel"}! Giant barrel!`, null, {beast: me.l}); };
-    $("bowl").onclick = () => { if (rolling) return; rolling = true; bx = bx0; $("bowl").disabled = true; arrow.visible = false; ang = aim; speak("Here it goes! Steer it!"); $("fb").textContent = "Steer with ◀\uFE0E ▶\uFE0E or drag!"; };
+    $("bowl").onclick = () => { if (rolling) return; rolling = true; bx = bx0; $("bowl").disabled = true; arrow.visible = false; ang = aim; speak("Here it goes! Steer it!"); $("fb").textContent = "Steer with ◀︎\uFE0E ▶︎\uFE0E or drag!"; };
     G.onFrame((dt, now) => {
       if (target && target.m.userData.halo){ target.m.userData.halo.rotation.z = now/400; target.m.userData.halo.material.opacity = 0.55 + Math.sin(now/200)*0.3; }
       if (!rolling){ if (slide) setX(bx0 + slide*1.4*dt); guide.forEach((d, k) => { const z = -0.6 - k*((Math.abs(PZ) - 0.6)/guide.length); d.position.set(bx0, 0.06 + Math.abs(Math.sin(now/200 - k*0.5))*0.04, z); }); }
@@ -4815,7 +4822,7 @@ function huntModePick(me, mi){
           <button class="btn ${night ? "" : "ghost"}" id="nt" style="--c:var(--night)">${night ? "🌙 Night" : "☀️ Day"}<br><small>${night ? "torch-lit hunt" : "day, sunset and weather"}</small></button>
           <button class="btn ${easy ? "" : "ghost"}" id="ez" style="--c:var(--horde)">🐣 Easy ${easy ? "ON" : "off"}<br><small>for little ones</small></button>
           <button class="btn ${tr ? "" : "ghost"}" id="trc" style="--c:var(--stealth)">✏️ Trace ${tr ? "ON" : "off"}<br><small>trace each letter found</small></button></div>
-        <div class="row" style="margin-top:.6rem"><button class="btn huge" id="go" style="--c:var(--vowels)">Start ▶</button></div></div>`);
+        <div class="row" style="margin-top:.6rem"><button class="btn huge" id="go" style="--c:var(--vowels)">Start ▶︎</button></div></div>`);
     app.querySelectorAll("[data-md]").forEach(el => el.onclick = () => { mode = el.dataset.md; draw(); });
     $("nt").onclick = () => { night = !night; draw(); }; $("ez").onclick = () => { easy = !easy; draw(); }; $("trc").onclick = () => { tr = !tr; draw(); };
     $("go").onclick = () => { S.huntMode = mode; S.huntSprint = mode === "sprint"; S.huntNight = night; S.huntEasy = easy; S.huntTrace = tr; save();
@@ -4854,7 +4861,7 @@ function hunt3dPlay(me, mi, opt){
   const wordEnds = words ? [3, 6] : [];
   if (opt.daily) Math.random = realRandom;
   shell3D(`${opt.daily ? "📅 Daily: " : "🔎 "}${MAP.name}`, (opt.word ? "Spell the words! Look at the picture clue." : opt.sound ? "Listen to the sound, then find the letter that makes it!" : opt.daily ? "Today's Daily Hunt: the same letters and places for everyone!" : useName ? `Find the letters of ${esc(S.name)}'s name, in order!` : "Find the letters in alphabet order!") + " Follow the golden beam, the compass and the map. Drag the screen or use the arrows to walk, ⤴ or double-tap to jump (twice for higher), hold 🏃 to jog, two fingers to look around, 🔭 to zoom out. Every AZoomal has its own power!",
-    `<div class="huntctl"><div class="dpad"><button class="btn" id="up" style="--c:var(--place)">▲</button><div><button class="btn" id="lf" style="--c:var(--place)">◀</button><button class="btn" id="dn" style="--c:var(--place)">▼</button><button class="btn" id="rt" style="--c:var(--place)">▶</button></div></div>
+    `<div class="huntctl"><div class="dpad"><button class="btn" id="up" style="--c:var(--place)">▲</button><div><button class="btn" id="lf" style="--c:var(--place)">◀︎</button><button class="btn" id="dn" style="--c:var(--place)">▼</button><button class="btn" id="rt" style="--c:var(--place)">▶︎</button></div></div>
       <div class="huntbtns"><button class="btn jumpbtn" id="jump" style="--c:var(--vowels)">⤴<br><small>Jump</small></button><button class="btn jumpbtn" id="jog" style="--c:var(--mobster)">🏃<br><small>Jog</small></button></div></div>`);
   { const wr = app.querySelector(".slwrap"), cd = wr && wr.closest(".card"); if (cd){ cd.classList.add("fsgame"); document.body.classList.add("huntfs"); CLEAN.push(() => document.body.classList.remove("huntfs"));
     wr.insertAdjacentHTML("beforeend", `<button class="fsexit" data-go="games" aria-label="Back to games">‹</button><div class="joyv rest" id="joyv"><i></i></div>`);
@@ -5869,7 +5876,7 @@ function hunt3dPlay(me, mi, opt){
     // ---- first-time tutorial
     if (!S.huntTut){ const steps = [["👆", "Put your thumb on the left side and slide it to walk. Slide right past the circle to run!"], ["⤴", "Tap Jump, or double-tap the screen, to jump. Do it again in the air to jump higher!"], ["👉", "Slide a finger on the right side to look around. Pinch to zoom. The camera follows you as you walk."], ["☰", "Tap ☰ for more buttons: zoom, music, camera, photos and dances. Tap the map to make it big."], ["✨", "Follow the golden light and the compass to find each letter. The map shows where you are."], ["⭐", "There are 3 golden stars hidden in every world. Can you find them?"], ["🍄", "Bounce on mushrooms and trampolines, and climb the crate steps up the lookout towers. Some letters are up there!"], ["😎", "Watch out for Yareli's yellow mist, Xander's fake letters in sunglasses, and the guard on patrol!"], ["📸", "Tap the camera button to take a photo of your AZoomal."]];
       let si = 0; const wrap = $("g3d").parentElement; wrap.insertAdjacentHTML("beforeend", `<div class="tut" id="tut"><div class="tutbox"><div class="tute" id="tute"></div><p id="tutt"></p><button class="btn" id="tutn">Next ›</button></div></div>`);
-      const showStep = () => { $("tute").textContent = steps[si][0]; $("tutt").textContent = steps[si][1]; $("tutn").textContent = si === steps.length - 1 ? "Let's go! ▶" : "Next ›"; speak(steps[si][1]); };
+      const showStep = () => { $("tute").textContent = steps[si][0]; $("tutt").textContent = steps[si][1]; $("tutn").textContent = si === steps.length - 1 ? "Let's go! ▶︎" : "Next ›"; speak(steps[si][1]); };
       $("tutn").onclick = () => { si++; if (si >= steps.length){ $("tut").remove(); S.huntTut = 1; save(); speak(`Find the letter ${SAY[targets[0]]}!`); } else showStep(); }; showStep(); }
 
     // ================= PLAYER, LETTERS, BEACON =================
@@ -6167,8 +6174,8 @@ function kartLevel(me){
   $("easy").onclick = () => kart3dPlay(me, false); $("hard").onclick = () => kart3dPlay(me, true);
 }
 function kart3dPlay(me, hard){
-  shell3D("Zachary's Zoom Karts", "Hold ◀ ▶ (or the left and right of the screen) to steer. Your kart drives itself. Hit the rainbow arrows and grab stars for a speed boost. 3 laps!",
-    `<div class="row"><button class="btn huge" id="L" style="--c:var(--place);touch-action:none">◀</button><button class="btn huge" id="R" style="--c:var(--place);touch-action:none">▶</button></div>`);
+  shell3D("Zachary's Zoom Karts", "Hold ◀︎ ▶︎ (or the left and right of the screen) to steer. Your kart drives itself. Hit the rainbow arrows and grab stars for a speed boost. 3 laps!",
+    `<div class="row"><button class="btn huge" id="L" style="--c:var(--place);touch-action:none">◀︎</button><button class="btn huge" id="R" style="--c:var(--place);touch-action:none">▶︎</button></div>`);
   start3D(() => { camToggle();
     const G = make3D({fog:["#CFE6F2", 40, 120], seed: 41}), {T3, camera, add, mat, scene} = G;
     kitLook(G); Object.assign(G.sun.shadow.camera, {left:-20, right:20, top:20, bottom:-20, far:80});
@@ -6338,7 +6345,7 @@ function microTracks(me, hard){
 function micro3dPlay(me, hard, ti){
   const TR = MICRO_TRACKS[ti || 0];
   shell3D(`Indy's Micro Karts: ${TR.name}`, `Push the joystick the way you want to go (up the screen, left, right...) and your kart turns to face it. Or drag on the track, or hold ⟲ ⟳. Dodge obstacles, hit ramps and rainbow arrows. 3 laps!${TR.grip < 0.5 ? " ❄️ It's icy, so your kart slides!" : ""}`,
-    `<div class="spads"><button class="btn mkturn" id="L" style="--c:var(--place);touch-action:none">⟲</button><div class="sjoy" id="mjoy" style="--c:var(--place)"><div class="sknob"></div></div><button class="btn mkturn" id="R" style="--c:var(--place);touch-action:none">⟳</button></div>`);
+    `<div class="spads"><button class="btn mkturn" id="L" style="--c:var(--place);touch-action:none">⟲</button><div class="sjoy" id="mjoy" style="--c:var(--place)"><div class="sknob"></div></div><button class="btn mkturn" id="R" style="--c:var(--place);touch-action:none">⟳</button></div>${powerRow(me)}`);
   start3D(() => {
     const G = make3D({fog:[TR.id === "frost" ? "#E3F1FA" : "#CFE6F2", 60, 140], seed: 53 + ti*7, fov: 50, sky: TR.id === "frost" ? ["#7FB3E0","#D6ECF8","#F4FAFF"] : undefined}), {T3, camera, add, mat, scene} = G;
     kitLook(G); Object.assign(G.sun.shadow.camera, {left:-18, right:18, top:18, bottom:-18, far:80});
@@ -6473,6 +6480,7 @@ function micro3dPlay(me, hard, ti){
       return {b, g: kartMesh(b), x: x + tz*sd*1.1, z: z - tx*sd*1.1, h: Math.atan2(tx, tz), v: 0, vx: 0, vz: 0, idx: i0, lap: -1, prog: 0, boost: 0, spin: 0, air: 0, human: k === 0,
         lane: (R() - .5)*2.4, base: (hard ? 21 + R()*2 : 16 + R()*1.6)*(TR.grip < 0.5 ? 0.88 : 1), done: false, time: 0}; });
     const me0 = karts[0];
+    powerArm(me, () => { me0.boost = 3.5; $("fb").textContent = `⚡ ${me.power || "Turbo"}! Rocket boost!`; });
     // ---- controls
     const hold = {L: 0, R: 0}; let joy = null, stick = null;
     { const el = $("mjoy"), knob = el.firstElementChild; let pid = null;
@@ -7679,8 +7687,8 @@ function jellyjump(){ pickBeast("Juice's Jelly Jump", me => {
   speak("Pick a world to bounce through!");
   app.querySelectorAll("[data-m]").forEach(el => el.onclick = () => jellyPlay(me, JELLY_MAPS[+el.dataset.m])); }); }
 function jellyPlay(me, MAP){
-  shell3D("Juice's Jelly Jump", `${MAP.e} ${MAP.name}: you bounce on your own. Hold ◀ ▶ or drag to steer onto the next platform. Collect the letters A to Z in order!`,
-    `<div class="row"><button class="btn huge" id="L" style="--c:var(--horde);touch-action:none">◀</button><button class="btn huge" id="R" style="--c:var(--horde);touch-action:none">▶</button></div>`);
+  shell3D("Juice's Jelly Jump", `${MAP.e} ${MAP.name}: you bounce on your own. Hold ◀︎ ▶︎ or drag to steer onto the next platform. Collect the letters A to Z in order! Your power is a super bounce, once per go: save it for a fall!`,
+    `<div class="row"><button class="btn huge" id="L" style="--c:var(--horde);touch-action:none">◀︎</button><button class="btn huge" id="R" style="--c:var(--horde);touch-action:none">▶︎</button></div>${powerRow(me)}`);
   start3D(() => {
     const G = make3D({sky: MAP.sky, fog: [MAP.sky[1], 40, 90]}), {T3, camera, add, mat, scene} = G; kitLook(G);
     scene.fog.near = 60; scene.fog.far = 140; G.sun.position.set(6, 30, 20);
@@ -7711,7 +7719,8 @@ function jellyPlay(me, MAP){
     let nextL = 0, got = 0; const items = [];
     const addItem = y => { const l = String.fromCharCode(65 + nextL % 26); const m = new T3.Mesh(new T3.BoxGeometry(0.7, 0.7, 0.7), new T3.MeshLambertMaterial({map: G.letterTex(l, hexOf(byL(l)))})); m.position.set((R() - .5)*WID*1.6, y, 0); scene.add(m); items.push({m, l}); };
     // the player
-    const pl = G.beast(me, 0.55); let px = 0, py = 0.6, vx = 0, vy = 13, hold = 0, dead = false, best = 0, topY = 0, camY = 3;
+    const pl = G.beast(me, 0.75); let px = 0, py = 0.6, vx = 0, vy = 13, hold = 0, dead = false, best = 0, topY = 0, camY = 3;
+    powerArm(me, () => { if (dead) return; vy = 26; $("fb").textContent = `⚡ ${me.power || "Super bounce"}! Up you go!`; G.burst(px, py, 0, 20, [col(me), "#FFFFFF"], true); });
     makePlat(0, "normal").g.position.x = 0; plats[0].x = 0; for (let k = 1; k < 14; k++) makePlat(k*GAP, "normal"); topY = 13*GAP;
     for (let k = 0; k < 8; k++) addDeco(k*6); addItem(7);
     ["L", "R"].forEach((id, k) => { const b = $(id); b.onpointerdown = e => { e.preventDefault(); hold = k ? 1 : -1; }; b.onpointerup = b.onpointerleave = b.onpointercancel = () => hold = 0; });
@@ -7762,8 +7771,8 @@ function explorerFly(pilot){
     {id:"peaks", name:"The Peaks", x:86, y:18, e:"⛰️", who:"H", text:"The relay's third leg climbed high into the Peaks."},
     {id:"shadows", name:"The Shadows", x:50, y:88, e:"🕶️", who:"X", text:"Somewhere out here, the twins Xander and Yareli are plotting mischief…"}];
   const seen = new Set(S.explored || []);
-  shell3D("New Rainbow Land Explorer", "Fly your old open-top plane over New Rainbow Land! Hold ◀ ▶ (or drag) to steer, and fly through the golden rings to visit each place. The arrow points to the nearest place you haven't seen.",
-    `<div class="row"><button class="btn huge" id="L" style="--c:var(--place);touch-action:none">◀</button><button class="btn huge" id="R" style="--c:var(--place);touch-action:none">▶</button></div><div id="info" class="placeinfo"></div>`);
+  shell3D("New Rainbow Land Explorer", "Fly your old open-top plane over New Rainbow Land! Hold ◀︎ ▶︎ (or drag) to steer, and fly through the golden rings to visit each place. The arrow points to the nearest place you haven't seen.",
+    `<div class="row"><button class="btn huge" id="L" style="--c:var(--place);touch-action:none">◀︎</button><button class="btn huge" id="R" style="--c:var(--place);touch-action:none">▶︎</button></div><div id="info" class="placeinfo"></div>`);
   start3D(() => {
     const G = make3D({sky: ["#3F8EDB", "#9FD6F5", "#FFF0CF"], fog: ["#CFE9F5", 60, 170]}), {T3, camera, add, mat, scene} = G; kitLook(G);
     const TAU = Math.PI*2, W = (x, y) => [(x - 50)*1.3, (y - 50)*1.3];
@@ -8017,7 +8026,7 @@ function wilberResults(level, R){
       <div class="wstats"><span>🐺 ${R.wolves}/3</span><span>🔤 ${R.letters}/6${R.letters === 6 ? " ⭐" : ""}</span><span>🐟 ${R.fish}</span><span>❤️ ${R.hearts}</span>${R.timeBonus ? `<span>⚡ +${R.timeBonus}</span>` : ""}</div>
       <h3 class="wbtitle">Leaderboard</h3><div class="wboard" id="wboard"></div>
       <label class="wname">Name on the board <input id="wn" maxlength="14" value="${esc(who)}"></label>
-      <div class="row"><button class="btn" id="wagain" style="--c:var(--horde)">🔁 Beat it!</button>${level < WILBER_LEVELS.length ? `<button class="btn" id="wnext" style="--c:var(--stealth)">Next level ▶</button>` : ""}<button class="btn ghost" id="wlist">All levels</button></div></div>`);
+      <div class="row"><button class="btn" id="wagain" style="--c:var(--horde)">🔁 Beat it!</button>${level < WILBER_LEVELS.length ? `<button class="btn" id="wnext" style="--c:var(--stealth)">Next level ▶︎</button>` : ""}<button class="btn ghost" id="wlist">All levels</button></div></div>`);
   show();
   $("wn").onchange = $("wn").oninput = () => { const v = $("wn").value.trim().slice(0, 14) || "Player"; entry.n = v; S.wilberPlayer = v; save(); show(); };
   $("wagain").onclick = () => wilber(level); if ($("wnext")) $("wnext").onclick = () => wilber(level + 1); $("wlist").onclick = () => wilber();
@@ -8030,14 +8039,14 @@ function wilber(level){
     render(`${header("Where's Wilber?", "games", "Games")}
       <div class="card"><p class="say">Wilber the wolf, master of disguise, is hiding somewhere in every level. Help Frisk find him!</p>
         <div class="wlvls">${WILBER_LEVELS.map((L, i) => `<button class="wlvl" data-l="${i + 1}" ${i + 1 > unlocked ? "disabled" : ""}><span>${i + 1 > unlocked ? "🔒" : L.e}</span><b>${i + 1}. ${L.name}</b>${L.tag === "chase" ? `<small class="wtag">🏃 Chase!</small>` : L.tag === "split" ? `<small class="wtag">🔀 Two paths</small>` : ""}${(S.wilberBest || {})[i + 1] ? `<small class="wbest">🏆 ${S.wilberBest[i + 1].s} · ⏱️ ${S.wilberBest[i + 1].t.toFixed(1)}s</small>` : ""}</button>`).join("")}</div>
-        <p class="note">Run with ◀ ▶, jump with ⤴, and tap ⤴ again in the air for a double jump. Three Wilbers hide in every level: touch the hiding places to find them, then jump into the giant 📮 post box at the end to finish! Grab 👟 for speed, ⭐ to be unstoppable, 🔍 to see where Wilber is hiding and 🐑 to float. Collect the letters W I L B E R for a bonus star, and watch out for sticky mud! Jump on baddies to bop them!</p></div>`);
+        <p class="note">Run with ◀︎ ▶︎, jump with ⤴, and tap ⤴ again in the air for a double jump. Three Wilbers hide in every level: touch the hiding places to find them, then jump into the giant 📮 post box at the end to finish! Grab 👟 for speed, ⭐ to be unstoppable, 🔍 to see where Wilber is hiding and 🐑 to float. Collect the letters W I L B E R for a bonus star, and watch out for sticky mud! Jump on baddies to bop them!</p></div>`);
     speak("Where's Wilber? Help Frisk find him!");
     app.querySelectorAll(".wlvl").forEach(el => el.onclick = () => wilber(+el.dataset.l)); return;
   }
   const L = WILBER_LEVELS[level - 1], LEN = L.len + 280; // room at the end for the post box
   const bestT = ((S.wilberBest || {})[level] || {}).t || 0;
-  const G = canvasGame("Where's Wilber?", "Hold ◀ ▶ to run and ⤴ to jump (tap ⤴ again in the air to double jump). Find the 3 hidden Wilbers, then jump into the 📮 post box to finish!",
-    `<div class="wctl"><button class="btn" id="wl" aria-label="Left">◀</button><button class="btn" id="wr" aria-label="Right">▶</button><button class="btn wjump" id="wj" aria-label="Jump">⤴</button></div>`, 0.92);
+  const G = canvasGame("Where's Wilber?", "Hold ◀︎ ▶︎ to run and ⤴ to jump (tap ⤴ again in the air to double jump). Find the 3 hidden Wilbers, then jump into the 📮 post box to finish!",
+    `<div class="wctl"><button class="btn" id="wl" aria-label="Left">◀︎</button><button class="btn" id="wr" aria-label="Right">▶︎</button><button class="btn wjump" id="wj" aria-label="Jump">⤴</button></div>`, 0.92);
   const {g, W, H} = G, VW = 430, SC = W/VW, VH = H/SC, GY = 320;
   const frisk = new Image(); if (ART.F) frisk.src = ART.F;
   // level geometry
@@ -8307,7 +8316,7 @@ function mistmaze(level){
 function mistmazePlay(level){
   const M = MIST_MAZES[level - 1], N = M.n, WORD = M.word;
   shell3D(`Maze ${level}: ${M.name}`, "Drag your AZoomal the way you want to go, or use the arrows. Collect the letters to spell the word, find the golden key to open the gate, and reach the golden star! Every letter you find clears the mist a little.",
-    `<div class="dpad"><button class="btn" id="up" style="--c:var(--outlaw);touch-action:none" aria-label="Up">▲</button><div><button class="btn" id="lf" style="--c:var(--outlaw);touch-action:none" aria-label="Left">◀</button><button class="btn" id="dn" style="--c:var(--outlaw);touch-action:none" aria-label="Down">▼</button><button class="btn" id="rt" style="--c:var(--outlaw);touch-action:none" aria-label="Right">▶</button></div></div>
+    `<div class="dpad"><button class="btn" id="up" style="--c:var(--outlaw);touch-action:none" aria-label="Up">▲</button><div><button class="btn" id="lf" style="--c:var(--outlaw);touch-action:none" aria-label="Left">◀︎</button><button class="btn" id="dn" style="--c:var(--outlaw);touch-action:none" aria-label="Down">▼</button><button class="btn" id="rt" style="--c:var(--outlaw);touch-action:none" aria-label="Right">▶︎</button></div></div>
      <div class="row"><button class="btn ghost" id="mzhint">💡 Hint (3)</button><button class="btn ghost" id="mzmap">🗺️ Big map</button><button class="btn ghost" id="mzlist">All mazes</button></div>`);
   $("mzlist").onclick = () => mistmaze();
   start3D(() => {
@@ -8459,7 +8468,7 @@ function mistmazePlay(level){
         <div class="card mzres" style="--c:${M.badge}"><p class="count">${M.e} Maze ${level}: ${esc(M.name)}</p><div class="mzstars">${[1, 2, 3].map(i => `<span class="${i <= stars ? "on" : ""}">★</span>`).join("")}</div>
           <div class="wstats"><span>⭐ Escaped</span><span>${gotAll ? "🔤 " + WORD + " ✓" : `🔤 ${slots.filter(s => s.got).length}/${WORD.length} letters`}</span><span>⏱️ ${mazeTime(secs)}${secs <= par ? " ✓" : ` (beat ${mazeTime(par)})`}</span></div>
           ${newBest && prevBest ? `<p class="sub">⚡ New best time!</p>` : ""}${stars < 3 ? `<p class="sub">${!gotAll ? "Collect every letter" : ""}${!gotAll && secs > par ? " and " : ""}${secs > par ? `escape in under ${mazeTime(par)}` : ""} for 3 stars.</p>` : `<p class="sub">Perfect! All 3 stars!</p>`}
-          <div class="row">${level < 10 ? `<button class="btn" id="mznext" style="--c:var(--stealth)">Next maze ▶</button>` : ""}<button class="btn" id="mzagain" style="--c:var(--horde)">🔁 Play again</button><button class="btn ghost" id="mzall">All mazes</button></div></div>`);
+          <div class="row">${level < 10 ? `<button class="btn" id="mznext" style="--c:var(--stealth)">Next maze ▶︎</button>` : ""}<button class="btn" id="mzagain" style="--c:var(--horde)">🔁 Play again</button><button class="btn ghost" id="mzall">All mazes</button></div></div>`);
         if ($("mznext")) $("mznext").onclick = () => mistmazePlay(level + 1); $("mzagain").onclick = () => mistmazePlay(level); $("mzall").onclick = () => mistmaze();
         if (level === 10) speak("You escaped the Great Mist Maze! Yareli is amazed!"); }, 2600); };
     // ---------- the game loop ----------
@@ -8597,8 +8606,8 @@ function diamond3d(){
 
 /* ---------- P: Percy's Pop Can Slide (3D belly slide) ---------- */
 function popslide3d(){
-  shell3D("Percy's Pop Can Slide", "Percy slides on his belly! Swipe, or tap ◀ ▶, to change lanes. Collect pop cans and dodge the snowmen.",
-    `<div class="row"><button class="btn huge" id="L" style="--c:var(--stealth)">◀</button><button class="btn huge" id="R" style="--c:var(--stealth)">▶</button></div>`);
+  shell3D("Percy's Pop Can Slide", "Percy slides on his belly! Swipe, or tap ◀︎ ▶︎, to change lanes. Collect pop cans and dodge the snowmen.",
+    `<div class="row"><button class="btn huge" id="L" style="--c:var(--stealth)">◀︎</button><button class="btn huge" id="R" style="--c:var(--stealth)">▶︎</button></div>`);
   start3D(() => {
     const G = make3D({sky:["#6FA6DA","#CFE8F8","#F4FAFF"], fog:["#E3F1FA", 20, 70]}), {T3, camera, add, mat, scene} = G; kitLook(G);
     const R = G.rand, LEN = 500, LANES = [-1.6, 0, 1.6], slope = 0.18; const Y = z => -z*slope;
@@ -8879,8 +8888,8 @@ function bedtime(){
   const show = () => { const b = list[k]; $("dim").style.opacity = (k/list.length*0.45).toFixed(2);
     $("bw").innerHTML = `<div class="bedcard bedshow"><div class="bedletter sleepy" style="--c:${col(b)}">${ART[b.l] ? `<img src="${ART[b.l]}" alt="">` : b.l}<span class="bedzz" aria-hidden="true">💤</span></div>
       <p class="bedname">${b.l} is for ${esc(b.name)}</p><div class="beddots">${list.map((_, i) => `<i class="${i < k ? "done" : i === k ? "now" : ""}"></i>`).join("")}</div>
-      <div class="row"><button class="btn ghost bedctl" id="bpause">${paused ? "▶ Carry on" : "⏸ Pause"}</button><button class="btn ghost bedctl" id="bnext">⏭ Next</button><button class="btn ghost bedctl" data-go="home">Stop</button></div></div>`;
-    $("bpause").onclick = () => { paused = !paused; $("bpause").textContent = paused ? "▶ Carry on" : "⏸ Pause"; if (paused){ try{ speechSynthesis.cancel(); }catch(e){} token++; } else say(); };
+      <div class="row"><button class="btn ghost bedctl" id="bpause">${paused ? "▶︎ Carry on" : "⏸ Pause"}</button><button class="btn ghost bedctl" id="bnext">⏭ Next</button><button class="btn ghost bedctl" data-go="home">Stop</button></div></div>`;
+    $("bpause").onclick = () => { paused = !paused; $("bpause").textContent = paused ? "▶︎ Carry on" : "⏸ Pause"; if (paused){ try{ speechSynthesis.cancel(); }catch(e){} token++; } else say(); };
     $("bnext").onclick = () => { try{ speechSynthesis.cancel(); }catch(e){} token++; paused = false; k++; step(); }; };
   const say = () => { const my = ++token, b = list[k]; let moved = false; const go = () => { if (moved || my !== token || paused) return; moved = true; later(() => { if (my === token && !paused){ k++; step(); } }, 2200); };
     const n2 = nm(b), home = b.home || "New Rainbow Land";
