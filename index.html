@@ -833,6 +833,53 @@ function speak(text, onend, opts={}){
 }
 if ("speechSynthesis" in window){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
 
+
+/* ===== Save all voices: records every fixed line once so it's stored in Blob for good (run while subscribed to ElevenLabs) ===== */
+const VOICE_BANK = {"n": ["A banana!", "A snake charm!", "A star! Roll again!", "A to Z! The whole alphabet! Keep going!", "A woolly coat! Hold jump to float down!", "AZoomal Ludo! How many players?", "AZoomal chess! Pick your team.", "All aboard the mine cart!", "An umbrella!", "Ay says ah. Bee says buh.", "Ay, Bee, See", "Baa!", "Barrel bowling! Drag to aim, then tap bowl.", "Bawk... bawk! The chicken's very close!", "Bonk!", "Bonk! Snowman!", "Bonk! Tumbleweed!", "Boost!", "Bump!", "Charge!", "Check!", "Checkmate! Better luck next time!", "Checkmate! You win!", "Cluck cluck!", "Clyde's card shark! Find the matching pairs.", "Crack! Slide back two!", "Dusky's big flight! Drag to fly through the canyon, across the ocean, over the meadow, past the Igloo Isles, all the way to the castle!", "Easy race, or hard race?", "Eek, a shark! Find the fish!", "Final lap!", "First class!", "Flump!", "Follow the arrows, or dig at grid squares?", "Full time! Better luck next time!", "Full time! It's a draw!", "Full time! You win!", "Giddy up, Hendrix!", "Go!", "Goal! What a kick!", "Great save!", "Gulp!", "Ha ha! Fooled you! That was one of Xander's fake letters!", "Here it goes! Steer it!", "Here's your postcard from New Rainbow Land!", "Hiss! So close!", "Hmm, keep looking!", "Hooray! You found the middle of the hedge maze!", "Hop off!", "How do you want to hunt?", "How many cards do you dare play with?", "How many players?", "It's a tie!", "It's the Outlaws, Xander and Yareli! Run!", "Keepy uppy! Every kick is the next letter. Tap to start!", "Keepy uppy, or a football match?", "Look for the sparkles!", "Look! A rainbow!", "Lovely writing!", "Match big letters to small letters!", "Match each letter to its AZoomal!", "Match each letter to the AZoomal's boost!", "Match the same cards!", "Missed!", "Munch!", "Nobody to hit!", "Nope, keep looking!", "Nope, not here!", "Not a pair!", "Not here!", "Not me! ", "Not me! Try again.", "Not quite. Try again!", "Nothing here! Try following the arrows again.", "Oh no! Let's try again!", "Oh no, the chicken got away!", "Oh! It's starting to rain!", "Oi! Security Shark says: move along please!", "Oops! Twinkle Toes lets out a tiny roar!", "Ouch!", "Pawn", "Percy's pop can slide! Wheee!", "Photo time! Drag to turn the camera, then tap snap.", "Pick a book to read.", "Pick a map, and a board size.", "Pick a track.", "Pick a world to bounce through!", "Pick your AZoomal.", "Player 1", "Player 2", "Plink! You threw a penny in the wishing well. Make a wish!", "Pop! It's a decoy! Yareli got you!", "Posted!", "Promoted to a Queen!", "Puff! Try again!", "Quack quack!", "Ready. Steady.", "Ribbit! Ribbit!", "Round and round we go!", "Secret treasure! Five bonus points!", "Shh! Vance is fast asleep!", "Shot!", "So, where does Kingston land?", "Sound on!", "Spare!", "Special delivery!", "Splash!", "Splat! Oh no, the egg!", "Stalemate! It's a draw!", "Start at the flag. ", "Stop the outlaws! Pick a game.", "Stop the outlaws! Tap Xander and Yareli, but leave the good AZoomals alone!", "Super speed!", "Tackle!", "Tap strike when the marker is in the green!", "That's a turtle! Turtles don't count!", "That's all for tonight. Sweet dreams, from all the AZoomals.", "The chicken is hiding in a bush. Find the chicken!", "The chicken is hiding. Find the chicken!", "The lava's rising! Run, Frisk, run!", "The pantry's empty. Let's play a game to earn more food!", "Time to wind down. Here come the AZoomals.", "Twinkle Toes' tulip garden. Watch the tulips bloom, then copy them.", "Uh oh! A giant boulder! Run!", "Umbrellabird's umbrella glide! Tap to float up.", "Unstoppable!", "Up the ladder!", "Vance and ladders! How many players?", "W, I, L, B, E, R. Wilber! Bonus star!", "Watercolour! Go over it again to make it darker.", "What shall we keep up?", "Wheee! Higher, higher!", "Wheee! Sledge time!", "Wheeee!", "Wheeeee!", "Where shall we hunt?", "Where's Wilber? Help Frisk find him!", "Which AZoomal will you look after?", "Who am I? ", "Whoa, a whale! Find the fish!", "Whoops! Banana peel!", "Whoops! Not that one!", "Whoops! Umbrellabird got blown about!", "X marks the spot! You found the treasure!", "Yareli's yellow mist maze! Pick a maze.", "Yareli's yellow mist! Everything's backwards!", "Yellow card! No running near the referee!", "You captured the chicken!", "You escaped the Great Mist Maze! Yareli is amazed!", "You found the fairy ring in the Whispering Woods! It's magic!", "You found the golden star and escaped the yellow mist!", "You popped every single balloon! Brilliant!", "You won the relay!", "Yum!", "Yum! Now, how many are left?"], "all": ["Aww, thank you!", "Ha ha, stop it!", "Hee hee hee!", "Hello!", "I love head pats!", "Shh, I'm sleeping!", "That tickles!", "Yawn... five more minutes!", "Zzz... hmm?"], "one": {"F": ["Brilliant, Frisk! Stealth Squad rules!", "Nice one, Frisk! Special delivery!", "You made it, Frisk! First class!"], "B": ["Strike! Bonnie's doing a happy dance!"]}};
+function voiceBankList(){
+  const seen = new Set(), out = [];
+  const add = (t, v) => { if (!t) return; const k = (v || "") + "|" + t; if (!seen.has(k)){ seen.add(k); out.push([t, v || ""]); } };
+  const addN = t => splitSentences(t).forEach(p => add(p, ""));
+  VOICE_BANK.n.forEach(addN);
+  const keep = S.sounds;
+  BEASTS.forEach(b => {
+    ["letters", "phonics", "both"].forEach(m => { S.sounds = m; try { addN(line(b)); } catch(e){} });
+    if (b.team === "place") return;
+    add(BEAST_LINES[b.l] || `Hi! I'm ${b.name} the ${b.animal}!`, b.l);
+    add(`${b.power}!`, b.l); add(`Yes! I'm ${nm(b)}!`, b.l); add(`${nm(b)} is happy!`, b.l);
+    VOICE_BANK.all.forEach(t => add(t, b.l));
+  });
+  S.sounds = keep;
+  Object.entries(VOICE_BANK.one).forEach(([v, ls]) => ls.forEach(t => add(t, v)));
+  return out;
+}
+let VBANK_RUNNING = false;
+async function saveAllVoices(el){
+  if (VBANK_RUNNING) return; VBANK_RUNNING = true;
+  const list = voiceBankList(); let doneSet = new Set();
+  try { doneSet = new Set(JSON.parse(localStorage.getItem("azVoiceBank") || "[]")); } catch(e){}
+  const todo = list.filter(([t, v]) => !doneSet.has(v + "|" + t));
+  let ok = list.length - todo.length, bad = 0, streak = 0, i = 0;
+  const show = () => { el.textContent = `💾 Saving voices: ${ok} of ${list.length} done${bad ? `, ${bad} failed` : ""}. Keep this screen open.`; };
+  show();
+  const worker = async () => {
+    while (i < todo.length && streak < 4){
+      const [t, v] = todo[i++];
+      try {
+        const r = await fetch(clipURL(t, v));
+        if (r.ok){ await r.arrayBuffer(); ok++; streak = 0; doneSet.add(v + "|" + t); if (ok % 10 === 0) try { localStorage.setItem("azVoiceBank", JSON.stringify([...doneSet])); } catch(e){} }
+        else { bad++; streak++; }
+      } catch(e){ bad++; streak++; }
+      show();
+    }
+  };
+  await Promise.all([worker(), worker()]);
+  try { localStorage.setItem("azVoiceBank", JSON.stringify([...doneSet])); } catch(e){}
+  VBANK_RUNNING = false;
+  el.textContent = streak >= 4
+    ? `⚠️ Stopped after ${ok} of ${list.length}: the voice server kept failing (credits or ElevenLabs down?). Tap Save all voices again later to carry on.`
+    : `✅ Voices saved: ${ok} of ${list.length}${bad ? ` (${bad} failed, tap again to retry them)` : ""}. Now open each story book once so its pages are saved too.`;
+}
 /* ================= REWARDS ================= */
 function award(n){
   if (!S.team) return;
@@ -8964,7 +9011,7 @@ function parents(){
       <p class="sub" style="margin-top:1rem">Letter names or phonics sounds</p>${soundPicker()}
       <p class="sub" style="margin-top:1rem">Unlocks: children earn a star for every medal, and stars unlock AZoomals, outfits and worlds.</p>
       <div class="row"><button class="btn ${testAll() ? "" : "ghost"}" id="testall">🧪 Testing mode: ${testAll() ? "ON (everything open)" : "OFF (earn unlocks)"}</button></div>
-      <p class="sub" style="margin-top:1rem">Natural voice</p><div class="row"><button class="btn ghost" id="vcheck">🔊 Voice check</button><button class="btn ghost" id="vrefresh">🔄 Refresh voices</button></div><p class="note" id="vres"></p><p class="sub" style="margin:.2rem 0 0;font-size:.85rem">Changed an AZoomal's voice in ElevenLabs? Tap Refresh voices so the app stops using the old recordings.</p>
+      <p class="sub" style="margin-top:1rem">Natural voice</p><div class="row"><button class="btn ghost" id="vcheck">🔊 Voice check</button><button class="btn ghost" id="vrefresh">🔄 Refresh voices</button><button class="btn ghost" id="vbank">💾 Save all voices</button></div><p class="note" id="vres"></p><p class="sub" style="margin:.2rem 0 0;font-size:.85rem">Changed an AZoomal's voice in ElevenLabs? Tap Refresh voices so the app stops using the old recordings.</p>
       <div class="row"><button class="btn ghost" id="reset">Reset all progress</button></div></div>`);
   $("vcheck").onclick = async () => { const r = $("vres"); r.textContent = "Checking…";
     try{ const t = "Voice check " + Math.floor(Math.random()*900 + 100) + ".", res = await fetch(clipURL(t));
@@ -8975,6 +9022,7 @@ function parents(){
   $("vrefresh").onclick = async () => { S.vrev = (S.vrev || 0) + 1; save(); NV_BLOBS.clear(); NV_TS.clear(); NV_PRE.clear(); NV_FAILS = 0; NV_OFF_UNTIL = 0;
     try { if (window.caches){ for (const k of await caches.keys()){ const c = await caches.open(k); for (const rq of await c.keys()) if (rq.url.includes("/api/tts")) await c.delete(rq); } } } catch(e){}
     $("vres").textContent = "✅ Voices refreshed. Each line will load fresh the next time it plays."; };
+  $("vbank").onclick = () => saveAllVoices($("vres"));
   wireSoundPicker(parents);
   $("testall").onclick = () => { S.testAll = !testAll(); save(); toast(testAll() ? "Everything unlocked for testing" : "Unlocks now earned by playing"); parents(); };
   $("savename").onclick = () => { S.name = $("cn").value.trim(); save(); toast("Name saved"); };
