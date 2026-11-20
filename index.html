@@ -2380,17 +2380,25 @@ const SFX = (() => { let ctx = null; const ac = () => { if (!ctx){ try{ ctx = ne
   const noise = (d, vol, delay, hp) => { if (S.mute) return; const c = ac(); if (!c) return; const t = c.currentTime + (delay || 0), b = c.createBuffer(1, c.sampleRate*d, c.sampleRate), ch = b.getChannelData(0); for (let i = 0; i < ch.length; i++) ch[i] = (Math.random()*2 - 1)*(1 - i/ch.length);
     const s = c.createBufferSource(), g = c.createGain(), f = c.createBiquadFilter(); f.type = "highpass"; f.frequency.value = hp || 800; s.buffer = b; g.gain.value = vol || 0.2; s.connect(f).connect(g).connect(c.destination); s.start(t); };
   document.addEventListener("pointerdown", ac, {capture: true, passive: true});
+  /* real recorded sounds (ElevenLabs), with the old beeps as a fallback until they load */
+  const BUF = {}, NAMES = ["roll","hop","ladder","launch","bang","gulp","slide","pop","star","win"];
+  let loading = false;
+  const load = () => { if (loading) return; const c = ac(); if (!c) return; loading = true;
+    NAMES.forEach(n => fetch("/sfx/" + n + ".mp3").then(r => r.ok ? r.arrayBuffer() : Promise.reject()).then(b => new Promise((res, rej) => c.decodeAudioData(b, res, rej))).then(d => { BUF[n] = d; }).catch(() => {})); };
+  document.addEventListener("pointerdown", load, {capture: true, passive: true});
+  const play = (n, rate, vol) => { if (S.mute) return false; const c = ac(); if (!c || !BUF[n]) return false;
+    const s = c.createBufferSource(), g = c.createGain(); s.buffer = BUF[n]; s.playbackRate.value = rate || 1; g.gain.value = vol || 0.7; s.connect(g).connect(c.destination); s.start(); return true; };
   return {
-    roll(){ for (let k = 0; k < 6; k++) noise(0.05, 0.12, k*0.07, 2000); },
-    hop(n){ tone(420 + (n || 0)*30, 0.09, "triangle", 0.12, 620 + (n || 0)*30); },
-    ladder(){ [523, 659, 784, 1047, 1319].forEach((f, k) => tone(f, 0.16, "square", 0.06, null, k*0.09)); },
-    launch(){ tone(300, 0.5, "sawtooth", 0.04, 1400); noise(0.4, 0.05, 0, 3000); },
-    bang(){ noise(0.5, 0.35, 0, 200); tone(90, 0.3, "sine", 0.25, 40); for (let k = 0; k < 8; k++) noise(0.03, 0.08, 0.15 + Math.random()*0.5, 4000); },
-    gulp(){ tone(220, 0.18, "sine", 0.2, 90); tone(160, 0.2, "sine", 0.15, 70, 0.15); },
-    slide(){ tone(900, 1.2, "sine", 0.1, 180); },
-    pop(){ tone(700, 0.08, "square", 0.08, 1400); noise(0.08, 0.1, 0, 1500); },
-    star(){ [880, 1175, 1568].forEach((f, k) => tone(f, 0.2, "triangle", 0.08, null, k*0.07)); },
-    win(){ [523, 659, 784, 1047, 784, 1047].forEach((f, k) => tone(f, 0.25, "square", 0.07, null, k*0.15)); }
+    roll(){ if (play("roll")) return; for (let k = 0; k < 6; k++) noise(0.05, 0.12, k*0.07, 2000); },
+    hop(n){ if (play("hop", 1 + (n || 0)*0.04, 0.6)) return; tone(420 + (n || 0)*30, 0.09, "triangle", 0.12, 620 + (n || 0)*30); },
+    ladder(){ if (play("ladder")) return; [523, 659, 784, 1047, 1319].forEach((f, k) => tone(f, 0.16, "square", 0.06, null, k*0.09)); },
+    launch(){ if (play("launch", 1, 0.6)) return; tone(300, 0.5, "sawtooth", 0.04, 1400); noise(0.4, 0.05, 0, 3000); },
+    bang(){ if (play("bang", 0.9 + Math.random()*0.2, 0.7)) return; noise(0.5, 0.35, 0, 200); tone(90, 0.3, "sine", 0.25, 40); for (let k = 0; k < 8; k++) noise(0.03, 0.08, 0.15 + Math.random()*0.5, 4000); },
+    gulp(){ if (play("gulp")) return; tone(220, 0.18, "sine", 0.2, 90); tone(160, 0.2, "sine", 0.15, 70, 0.15); },
+    slide(){ if (play("slide")) return; tone(900, 1.2, "sine", 0.1, 180); },
+    pop(){ if (play("pop", 0.95 + Math.random()*0.1, 0.6)) return; tone(700, 0.08, "square", 0.08, 1400); noise(0.08, 0.1, 0, 1500); },
+    star(){ if (play("star", 1, 0.6)) return; [880, 1175, 1568].forEach((f, k) => tone(f, 0.2, "triangle", 0.08, null, k*0.07)); },
+    win(){ if (play("win", 1, 0.8)) return; [523, 659, 784, 1047, 784, 1047].forEach((f, k) => tone(f, 0.25, "square", 0.07, null, k*0.15)); }
   };
 })();
 /* ---- speech that waits its turn (for fast games) ---- */
