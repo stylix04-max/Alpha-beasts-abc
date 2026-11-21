@@ -1480,7 +1480,7 @@ const GAMES = [
   ["relay3d","🏃","Relay Rumble 3D","--place"],
   ["joust3d","🛡️","Royal Joust 3D","--unknown"],
   ["chicken3d","🐔","Capture the Chicken 3D","--outlaw"],
-  ["beach3d","🏖️","AZoomals at the Beach 3D","--stealth"],
+  ["beach3d","🏖️","Apex's Apple Catch","--stealth"],
   ["ludo3d","🏠","AZoomal Ludo 3D","--vowels"],
   ["bowl3d","🎳","Barrel Bowling 3D","--mobster"],
   ["hunt3d","🔎","Letter Hunt 3D","--horde"],
@@ -4447,7 +4447,7 @@ function chicken3d(){
   });
 }
 
-/* ---------- BEASTS AT THE BEACH (Book 5) ---------- */
+/* ---------- APEX'S APPLE CATCH (A) ---------- */
 function beach3d(){ pickBeast("Apex's Apple Catch", beach3dPlay); }
 function beach3dPlay(me){
   shell3D("Apex's Apple Catch", `Drag, or hold ◀︎ ▶︎, to catch your falling ${esc((me.boost||"boosts").toLowerCase())}. Golden ones power you up, rotten ones lose a point, and other AZoomals' things don't count. Watch out for seagulls and gusts of wind!`,
@@ -4541,7 +4541,7 @@ function beach3dPlay(me){
       const fast = 1 + level*0.12; items.push({ob, gull, kind, db, x, y: 8, vy: (gull ? 3.6 : 2.4 + Math.random()*1.4)*fast, sway: Math.random()*6});
     };
     const end = () => { playing = false; const m = score >= 25 ? "🥇" : score >= 15 ? "🥈" : "🥉";
-      medal(m, "AZoomals at the Beach"); award(Math.min(10, Math.ceil(score/3)));
+      medal(m, "Apex's Apple Catch"); award(Math.min(10, Math.ceil(score/3)));
       if (bestStreak >= 10) medal(bestStreak >= 50 ? "🥇" : bestStreak >= 25 ? "🥈" : "🥉", "Catch Streak");
       $("fb").innerHTML = `${m} You scored ${score} points, catching ${caught} ${esc(word)}! Best streak: ${bestStreak}.<div class="row"><button class="btn" id="again">Play again</button><button class="btn ghost" data-go="games">More games</button></div>`;
       $("again").onclick = beach3d; speak(`Time's up! You caught ${score}!`); G.burst(px, 2, 0.5, 40, RB, true); };
@@ -4576,7 +4576,7 @@ function beach3dPlay(me){
       }
       camera.position.set(0, 2.7, 8.2); camera.lookAt(0, 2.6, -3);
     });
-    hud(); $("fb").textContent = `Catch ${me.name}'s ${(me.boost||"boosts").toLowerCase()}!`; speak(`AZoomals at the beach! Catch the ${me.boost || "treats"}, and dodge the seagulls!`);
+    hud(); $("fb").textContent = `Catch ${me.name}'s ${(me.boost||"boosts").toLowerCase()}!`; speak(`Apple Catch! Catch the ${me.boost || "treats"}, and dodge the seagulls!`);
     later(() => { playing = true; }, 2400);
   });
 }
