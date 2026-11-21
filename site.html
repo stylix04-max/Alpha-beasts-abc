@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,6 +12,11 @@
 <meta name="apple-mobile-web-app-title" content="AZoomals">
 
 <!-- Open Graph / social share preview -->
+<link rel="canonical" href="https://azoomals.co.uk/" />
+<meta name="robots" content="index, follow" />
+<meta property="og:site_name" content="AZoomals" />
+<meta property="og:locale" content="en_GB" />
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://azoomals.co.uk/#org", "name": "AZoomals", "url": "https://azoomals.co.uk", "logo": "https://abc.azoomals.co.uk/icon-512.png", "founder": {"@type": "Person", "name": "Martin Aspinall"}}, {"@type": "WebSite", "@id": "https://azoomals.co.uk/#site", "url": "https://azoomals.co.uk", "name": "AZoomals", "publisher": {"@id": "https://azoomals.co.uk/#org"}, "inLanguage": "en-GB"}, {"@type": "Book", "name": "AZoomals: Meet The 26", "author": {"@type": "Person", "name": "Martin Aspinall"}, "illustrator": {"@type": "Person", "name": "Louise Pyke"}, "genre": "Children's picture book", "audience": {"@type": "PeopleAudience", "suggestedMinAge": 5}, "isPartOf": {"@type": "BookSeries", "name": "AZoomals"}, "publisher": {"@id": "https://azoomals.co.uk/#org"}, "inLanguage": "en-GB"}, {"@type": "SoftwareApplication", "name": "AZoomals ABC", "applicationCategory": "EducationalApplication", "operatingSystem": "Web", "url": "https://abc.azoomals.co.uk", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "GBP"}}]}</script>
 <meta property="og:type" content="website" />
 <meta property="og:title" content="AZoomals: learn A to Z with 26 characters | Illustrated books, free app &amp; trading cards" />
 <meta property="og:description" content="Meet the AZoomals: an illustrated book series, free phonics app and trading cards where every letter of the alphabet is a character. Join the launch list for books, cards and the shop." />
@@ -197,6 +202,10 @@
 
   /* FILTER CHIPS */
   .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 28px; }
+  .vid-row { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 18px 2px 10px; -webkit-overflow-scrolling: touch; }
+  .vid { flex: 0 0 auto; width: 46vw; max-width: 220px; margin: 0; scroll-snap-align: start; text-align: center; }
+  .vid video { width: 100%; aspect-ratio: 9 / 16; border-radius: 16px; background: #222; display: block; box-shadow: 0 6px 18px rgba(0,0,0,.15); }
+  .vid figcaption { font-weight: 800; font-size: .85rem; margin-top: 8px; }
   .chip {
     font-family: 'SF Mono','Menlo','Consolas',monospace; font-size: 0.72rem; font-weight: 700;
     padding: 6px 12px; border-radius: 999px; border: 2px solid; cursor: pointer;
@@ -405,6 +414,7 @@
     <div class="navlinks">
       <a href="#books">Books</a>
       <a href="#roster">AZoomals</a>
+      <a href="#videos">Videos</a>
       <a href="#shop">Shop</a>
       <a href="#cards">Cards</a>
       <a class="play-link" href="https://abc.azoomals.co.uk" target="_blank" rel="noopener">Play free</a>
@@ -417,6 +427,7 @@
   <div class="mobile-menu" id="mobileMenu">
     <a href="#books">Books</a>
     <a href="#roster">Meet the AZoomals</a>
+    <a href="#videos">Hear them talk</a>
     <a href="#teams">Teams</a>
     <a href="#shop">Shop</a>
     <a href="#cards">Trading cards</a>
@@ -487,6 +498,35 @@
   <div class="chips" id="chips"></div>
   <div class="roster-grid collapsed" id="rosterGrid"></div>
   <div class="more-row"><button class="cta cta-alt" id="rosterMore">Show all 26</button></div>
+</section>
+
+<section id="videos">
+  <p class="sec-eyebrow mono">Hear them talk</p>
+  <h2 class="sec-title display">The AZoomals speak!</h2>
+  <p class="notify-sub">Tap play to hear each AZoomal's catchphrase. Swipe for more. Wilber, Xander, Yareli and Zachary are coming soon&hellip;</p>
+  <div class="vid-row">
+    <figure class="vid"><video controls playsinline preload="none" poster="/clips/A.jpg" src="/clips/A.mp4" aria-label="Apex Alligator says their catchphrase"></video><figcaption>Apex Alligator</figcaption></figure>
+    <figure class="vid"><video controls playsinline preload="none" poster="/clips/B.jpg" src="/clips/B.mp4" aria-label="Bonnie Brash Badger says their catchphrase"></video><figcaption>Bonnie Brash Badger</figcaption></figure>
+    <figure class="vid"><video controls playsinline preload="none" poster="/clips/C.jpg" src="/clips/C.mp4" aria-label="Clyde Cowboy Cheetah says their catchphrase"></video><figcaption>Clyde Cowboy Cheetah</figcaption></figure>
+    <figure class="vid"><video controls playsinline preload="none" poster="/clips/D.jpg" src="/clips/D.mp4" aria-label="Dusky Dragon says their catchphrase"></video><figcaption>Dusky Dragon</figcaption></figure>
+    <figure class="vid"><video controls playsinline preload="none" poster="/clips/E.jpg" src="/clips/E.mp4" aria-label="Easy E Elephant says their catchphrase"></video><figcaption>Easy E Elephant</figcaption></figure>
+    <figure class="vid"><video controls playsinline preload="none" poster="/clips/F.jpg" src="/clips/F.mp4" aria-label="Frisk Fox says their catchphrase"></video><figcaption>Frisk Fox</figcaption></figure>
+    <figure class="vid"><video controls playsinline preload="none" poster="/clips/G.jpg" src="/clips/G.mp4" aria-label="Gotti Giraffe says their catchphrase"></video><figcaption>Gotti Giraffe</figcaption></figure>
+    <figure class="vid"><video controls playsinline preload="none" poster="/clips/H.jpg" src="/clips/H.mp4" aria-label="Hendrix Hill Horse says their catchphrase"></video><figcaption>Hendrix Hill Horse</figcaption></figure>
+    <figure class="vid"><video controls playsinline preload="none" poster="/clips/I.jpg" src="/clips/I.mp4" aria-label="Indy Iguana says their catchphrase"></video><figcaption>Indy Iguana</figcaption></figure>
+    <figure class="vid"><video controls playsinline preload="none" poster="/clips/J.jpg" src="/clips/J.mp4" aria-label="Juice Jackal says their catchphrase"></video><figcaption>Juice Jackal</figcaption></figure>
+    <figure class="vid"><video controls playsinline preload="none" poster="/clips/K.jpg" src="/clips/K.mp4" aria-label="Kingston Kangaroo says their catchphrase"></video><figcaption>Kingston Kangaroo</figcaption></figure>
+    <figure class="vid"><video controls playsinline preload="none" poster="/clips/L.jpg" src="/clips/L.mp4" aria-label="Lucky Lobster says their catchphrase"></video><figcaption>Lucky Lobster</figcaption></figure>
+    <figure class="vid"><video controls playsinline preload="none" poster="/clips/M.jpg" src="/clips/M.mp4" aria-label="Magic Monkey says their catchphrase"></video><figcaption>Magic Monkey</figcaption></figure>
+    <figure class="vid"><video controls playsinline preload="none" poster="/clips/O.jpg" src="/clips/O.mp4" aria-label="Otto Octopus says their catchphrase"></video><figcaption>Otto Octopus</figcaption></figure>
+    <figure class="vid"><video controls playsinline preload="none" poster="/clips/P.jpg" src="/clips/P.mp4" aria-label="Percy Penguin says their catchphrase"></video><figcaption>Percy Penguin</figcaption></figure>
+    <figure class="vid"><video controls playsinline preload="none" poster="/clips/Q.jpg" src="/clips/Q.mp4" aria-label="Queen Quilla says their catchphrase"></video><figcaption>Queen Quilla</figcaption></figure>
+    <figure class="vid"><video controls playsinline preload="none" poster="/clips/R.jpg" src="/clips/R.mp4" aria-label="Referee Rhino says their catchphrase"></video><figcaption>Referee Rhino</figcaption></figure>
+    <figure class="vid"><video controls playsinline preload="none" poster="/clips/S.jpg" src="/clips/S.mp4" aria-label="Security Shark says their catchphrase"></video><figcaption>Security Shark</figcaption></figure>
+    <figure class="vid"><video controls playsinline preload="none" poster="/clips/T.jpg" src="/clips/T.mp4" aria-label="Twinkle Toes Tiger says their catchphrase"></video><figcaption>Twinkle Toes Tiger</figcaption></figure>
+    <figure class="vid"><video controls playsinline preload="none" poster="/clips/U.jpg" src="/clips/U.mp4" aria-label="Umbrellabird says their catchphrase"></video><figcaption>Umbrellabird</figcaption></figure>
+    <figure class="vid"><video controls playsinline preload="none" poster="/clips/V.jpg" src="/clips/V.mp4" aria-label="Vance Viper says their catchphrase"></video><figcaption>Vance Viper</figcaption></figure>
+  </div>
 </section>
 
 <section id="shop" class="shop">
@@ -782,6 +822,9 @@ const STANDINGS = [
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 const byLetter = Object.fromEntries(BEASTS.map(b => [b.l, b]));
 
+/* ---- AZoomal videos: only one plays at a time ---- */
+document.querySelectorAll(".vid video").forEach(v => v.addEventListener("play", () => { document.querySelectorAll(".vid video").forEach(o => { if (o !== v) o.pause(); }); try { if (voiceAudio) voiceAudio.pause(); } catch(e){} }));
+
 /* ---- Trading cards ---- */
 const cardGrid = document.getElementById("cardGrid");
 CARDS.forEach(cd => {
@@ -809,7 +852,7 @@ CARDS.forEach(cd => {
       </div>
     </div>
   `;
-  tile.addEventListener("click", () => tile.classList.toggle("flipped"));
+  tile.addEventListener("click", () => { if (tile.classList.toggle("flipped")) playVoice(cd.l); });
   cardGrid.appendChild(tile);
 });
 
