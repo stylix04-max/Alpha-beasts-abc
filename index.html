@@ -1507,7 +1507,7 @@ function games(){
     <div class="azgames">${GAMES_AZ.map(([l, key, name]) => { const b = byL(l);
       return `<button class="azg ${key ? "" : "soon"}" style="--c:${col(b)}" ${key ? `data-go="${key}"` : "disabled"}>
         <span class="azl">${ART_HEAD[l] ? `<img src="${ART_HEAD[l]}" alt="">` : l}</span><span class="azn"><b>${esc(name)}</b>${key ? "" : "<small>🔒 Coming soon</small>"}</span></button>`; }).join("")}</div>
-    <details class="card" style="margin-top:1rem;text-align:left"><summary><b>More games</b> <small>(including 🔢 AZoomal Maths)</small></summary>
+    <details class="card" style="margin-top:1rem;text-align:left"><summary><b>More games</b></summary>
       <div class="hub" style="margin-top:.8rem">${extras.map(g=>`<button class="tile" style="--c:var(${g[3]})" data-go="${g[0]}"><span class="ic" aria-hidden="true">${g[1]}</span><b>${g[2]}</b></button>`).join("")}</div></details>`);
 }
 
