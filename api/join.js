@@ -33,8 +33,21 @@ async function welcome(entry){
   <p style="text-align:center;margin:26px 0"><a href="https://abc.azoomals.co.uk" style="background:#2db59b;color:#fff;text-decoration:none;font-weight:bold;padding:14px 26px;border-radius:999px;display:inline-block">Play the free AZoomals ABC app</a></p>
   <p style="font-size:16px;line-height:1.5">Let the AZoomal Games begin!<br><b>Queen Quilla</b> 👑</p>
   <p style="font-size:12px;color:#8a7f6a;margin-top:28px">You're getting this because you joined the launch list at azoomals.co.uk. Don't want these emails? Just reply and say so.</p></div>`;
-  const msg = { from, to: [entry.email], subject: "👑 You're on the AZoomals launch list!", html };
-  if (process.env.RESEND_REPLY_TO) msg.reply_to = process.env.RESEND_REPLY_TO;
+  const text = `Welcome, welcome, ${hi}!
+
+I am Queen Quilla, ruler of New Rainbow Land, and your name is now on my royal launch list. Security Shark has stamped your Pazooport himself.
+
+You'll be the very first to hear when the AZoomals books, trading cards and shop open their gates. Until then, play the free AZoomals ABC app: https://abc.azoomals.co.uk
+
+Let the AZoomal Games begin!
+Queen Quilla
+
+You're getting this because you joined the launch list at azoomals.co.uk. Don't want these emails? Just reply and say so.`;
+  const msg = { from, to: [entry.email], subject: "👑 You're on the AZoomals launch list!", html, text };
+  if (process.env.RESEND_REPLY_TO){
+    msg.reply_to = process.env.RESEND_REPLY_TO;
+    msg.headers = { "List-Unsubscribe": "<mailto:" + process.env.RESEND_REPLY_TO + "?subject=Unsubscribe%20me%20from%20AZoomals>" };
+  }
   const r = await fetch("https://api.resend.com/emails", { method: "POST",
     headers: { Authorization: "Bearer " + key, "Content-Type": "application/json", "Idempotency-Key": "welcome-" + entry.email.toLowerCase() },
     body: JSON.stringify(msg) });
