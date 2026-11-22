@@ -188,7 +188,7 @@
   /* TEAMS */
   .team-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 32px; }
   @media (max-width: 900px) { .team-grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 520px) { .team-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 520px) { .team-grid { grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; } .team-grid .team-card { padding: 12px; } .team-grid .team-card h3 { font-size: 1rem; } .team-grid .team-card p.tagline { font-size: .8rem; margin-bottom: 6px; } }
   .team-card {
     text-align: left; padding: 20px; border-radius: 18px; border: 2px solid;
     cursor: pointer; background: none; font: inherit; color: inherit;
@@ -266,7 +266,7 @@
 
   /* AUTHORITY / OUTLAW */
   .split { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 8px; }
-  @media (max-width: 700px) { .split { grid-template-columns: 1fr; } }
+  @media (max-width: 700px) { .split { gap: 10px; } .split .side-card { padding: 12px; font-size: .85rem; } .split .side-card h3 { font-size: 1rem; } .split .side-card ul { margin: 6px 0 0; padding-left: 0; } }
   .side-card { padding: 22px; border-radius: 18px; border: 2px solid; }
   .side-card ul { list-style: none; margin: 12px 0 0; padding: 0; }
   .side-card li { font-weight: 600; font-size: 0.9rem; margin-bottom: 6px; display: flex; gap: 8px; }
@@ -362,9 +362,10 @@
     .hero-ctas { justify-content: center; }
     .hero-pic { order: -1; } .hero-pic img { max-width: 210px; }
   }
-  .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 22px; }
-  .why-card { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 20px; }
-  .why-card h3 { margin: 8px 0 6px; font-size: 1.05rem; }
+  .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 18px; }
+  .why-card { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 12px 14px; display: grid; grid-template-columns: auto 1fr; column-gap: 12px; align-items: center; }
+  .why-card .why-ic { grid-row: span 2; }
+  .why-card h3 { margin: 0 0 2px; font-size: 1rem; }
   .why-card p { margin: 0; color: var(--muted); font-size: .93rem; line-height: 1.45; }
   .why-ic { font-size: 1.8rem; }
   .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 14px; }
@@ -390,7 +391,7 @@
   .wants label { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,.1); padding: 8px 12px; border-radius: 999px; font-size: .88rem; cursor: pointer; }
   .wants input { accent-color: var(--hrd); width: 16px; height: 16px; }
   .join-form button { background: var(--hrd) !important; font-size: .9rem !important; padding: 14px 26px !important; }
-  .card-grid.collapsed > *:nth-child(n+9) { display: none; }
+  .card-grid.collapsed > *:nth-child(n+5) { display: none; }
   .roster-grid.collapsed > .beast-card:nth-child(n+7) { display: none; }
   .roster-soon { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; border-radius:14px; border:2px dashed currentColor; opacity:.75; }
   .roster-soon span { font-size:3.4rem; font-weight:800; line-height:1; }
@@ -420,7 +421,7 @@
       <a href="#books">Books</a>
       <a href="#roster">AZoomals</a>
       <a href="#videos">Videos</a>
-      <a href="#shop">Shop</a>
+      <a href="#join">Shop</a>
       <a href="#cards">Cards</a>
       <a class="play-link" href="https://abc.azoomals.co.uk" target="_blank" rel="noopener">Play free</a>
       <a class="join-link" href="#join">Join the list</a>
@@ -434,9 +435,8 @@
     <a href="#roster">Meet the AZoomals</a>
     <a href="#videos">Hear them talk</a>
     <a href="#teams">Teams</a>
-    <a href="#shop">Shop</a>
+    <a href="#join">Shop</a>
     <a href="#cards">Trading cards</a>
-    <a href="#standings">Standings</a>
     <a class="play-link" href="https://abc.azoomals.co.uk" target="_blank" rel="noopener">Play the free app</a>
     <a class="join-link" href="#join">Join the launch list</a>
   </div>
@@ -467,9 +467,9 @@
   <p class="sec-eyebrow mono">For little learners</p>
   <h2 class="sec-title display">Why families love AZoomals</h2>
   <div class="why-grid">
-    <div class="why-card"><span class="why-ic">🔤</span><h3>Letters that stick</h3><p>Every letter is a character with a name, a team and a special power, so A to Z becomes a cast of friends rather than a list to memorise.</p></div>
-    <div class="why-card"><span class="why-ic">📚</span><h3>Stories to share</h3><p>Four Season 1 illustrated books full of races, jousts and rivalries, with puzzles to solve at the back.</p></div>
-    <div class="why-card"><span class="why-ic">📱</span><h3>Screen time that teaches</h3><p>The free AZoomals ABC app: letter tracing, phonics, 26 games and a 3D Letter Hunt. No adverts, no sign-up.</p></div>
+    <div class="why-card"><span class="why-ic">🔤</span><h3>Letters that stick</h3><p>Every letter is a character with a name, a team and a power.</p></div>
+    <div class="why-card"><span class="why-ic">📚</span><h3>Stories to share</h3><p>Four illustrated books of races, jousts and rivalries.</p></div>
+    <div class="why-card"><span class="why-ic">📱</span><h3>Screen time that teaches</h3><p>The free ABC app: tracing, phonics and 26 games. No adverts.</p></div>
   </div>
   <a class="app-card" href="https://abc.azoomals.co.uk" target="_blank" rel="noopener">
     <span class="app-icon" aria-hidden="true">ABC</span>
@@ -500,7 +500,7 @@
   <p class="sec-eyebrow mono">Choose a side</p>
   <h2 class="sec-title display">Four teams, four philosophies</h2>
   <div class="team-grid" id="teamGrid"></div>
-  <div class="split" id="splitSection" style="margin-top:20px"></div>
+  <div class="split" id="splitSection" style="margin-top:10px"></div>
 </section>
 
 <section id="roster">
@@ -540,27 +540,13 @@
   </div>
 </section>
 
-<section id="shop" class="shop">
-  <p class="sec-eyebrow mono">The shop · opening with Book 1</p>
-  <h2 class="sec-title display">Coming to the AZoomals shop</h2>
-  <p class="notify-sub">Tap anything you'd like and we'll let you know the moment it's ready. It also tells us what to make first.</p>
-  <div class="shop-grid">
-    <button class="shop-card" data-want="books"><span class="shop-ic">📚</span><b>The Season 1 books</b><span>Four illustrated books, paperback</span><em>Notify me</em></button>
-    <button class="shop-card hot" data-want="personalised"><span class="shop-ic">✍️</span><b>Personalised book</b><span>Your child's name in the story</span><em>Notify me</em></button>
-    <button class="shop-card" data-want="cards"><span class="shop-ic">🃏</span><b>AZoomal trading cards</b><span>52 cards to collect, with rare variants</span><em>Notify me</em></button>
-    <button class="shop-card hot" data-want="monthly"><span class="shop-ic">📬</span><b>Monthly letterbox pack</b><span>A new AZoomal card and a surprise every month</span><em>Notify me</em></button>
-    <button class="shop-card" data-want="bundles"><span class="shop-ic">🎁</span><b>Gift bundles</b><span>Book and plush, or the complete set</span><em>Notify me</em></button>
-    <button class="shop-card" data-want="merch"><span class="shop-ic">👕</span><b>Merch</b><span>Tees, team pins, posters and card games</span><em>Notify me</em></button>
-  </div>
-</section>
-
 <section id="join" class="join">
-  <span id="notify"></span>
+  <span id="notify"></span><span id="shop"></span>
   <div class="join-box">
-    <p class="sec-eyebrow mono">The launch list</p>
+    <p class="sec-eyebrow mono">Launch list · shop opens with Book 1</p>
     <h2 class="sec-title display">Be first in New Rainbow Land</h2>
     <div id="notifyDefault">
-      <p class="notify-sub">Join the list for launch days, new AZoomals and early-bird offers. Only AZoomals news, and you can leave any time.</p>
+      <p class="notify-sub">Join for launch days and early-bird offers, and tick what you'd like from the shop so we know what to make first. Only AZoomals news; leave any time.</p>
       <!-- Sign-ups are saved by /api/join; see them at /api/signups?pin=YOUR-PIN -->
       <form class="notify-form join-form" id="joinForm" name="launch-list" method="POST" action="/api/join">
         <input type="hidden" name="form-name" value="launch-list">
@@ -568,11 +554,11 @@
         <input type="hidden" name="interested_in" id="wantField" value="">
         <input type="text" name="name" placeholder="Your first name (optional)" aria-label="First name" autocomplete="given-name">
         <input type="email" name="email" placeholder="you@example.com" required aria-label="Email address" autocomplete="email">
-        <fieldset class="wants"><legend class="mono">I'm interested in</legend>
+        <fieldset class="wants"><legend class="mono">Coming to the shop: I'd like</legend>
           <label><input type="checkbox" value="books"> Books</label>
-          <label><input type="checkbox" value="personalised"> Personalised book</label>
-          <label><input type="checkbox" value="cards"> Trading cards</label>
-          <label><input type="checkbox" value="monthly"> Monthly pack</label>
+          <label><input type="checkbox" value="personalised"> Personalised book (your child's name in it)</label>
+          <label><input type="checkbox" value="cards"> Trading cards (52, with rare variants)</label>
+          <label><input type="checkbox" value="monthly"> Monthly letterbox pack</label>
           <label><input type="checkbox" value="bundles"> Gift bundles</label>
           <label><input type="checkbox" value="merch"> Merch</label>
         </fieldset>
@@ -594,7 +580,7 @@
   <div class="more-row"><button class="cta cta-alt" id="cardsMore">Show all 52 cards</button><a class="cta cta-main" href="#join" data-want="cards">Collect them: get notified</a></div>
 </section>
 
-<section id="standings">
+<section id="standings" hidden>
   <p class="sec-eyebrow mono">Season 1</p>
   <h2 class="sec-title display">Team standings</h2>
   <p class="notify-sub">The AZoomal Games kick off in Book 2. Every team starts on zero. Who will be crowned champion?</p>
@@ -620,7 +606,7 @@
 <footer>
   <p class="fbrand">AZOOMALS</p>
   <p>By Martin Aspinall · Illustrated by Louise Pyke · Inspired by Harper + Hudson</p>
-  <p class="flinks"><a href="https://abc.azoomals.co.uk" target="_blank" rel="noopener">Play the free app</a> · <a href="#join">Join the launch list</a> · <a href="#shop">Shop</a></p>
+  <p class="flinks"><a href="https://abc.azoomals.co.uk" target="_blank" rel="noopener">Play the free app</a> · <a href="#join">Join the launch list</a> · <a href="#join">Shop</a></p>
   <p class="fcopy">© <span id="yr"></span> Martin Aspinall. All rights reserved.</p>
 </footer>
 
