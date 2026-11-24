@@ -904,8 +904,8 @@ function home(){
     games: ["games","🎮","Games","26 to play","--mobster"], meet: ["meet","🦁","Meet the AZoomals",`${BEASTS.filter(b => MODELS[b.l]).length} of 26 in 3D`,"--stealth"],
     cards: ["cards","🃏","AZoomal cards",`${cards} of 26`,"--horde"], stickers: ["stickers","⭐","Sticker book",`${traced} of 26`,"--authority"],
     draw: ["draw","✏️","Draw an AZoomal","Make your own","--stealth"], colour: ["colour","🎨","Colouring","Colour a letter","--unknown"],
-    standings: ["standings","🏆","Standings",S.team?TEAMNAME[S.team]:"Pick a team","--place"], bedtime: ["bedtime","🌙","Bedtime","Sleepy A to Z","--night"],
-    unlocks: ["unlocks","🎁","Unlocks",`⭐ ${(S.medals || []).length} stars`,"--vowels"]
+    standings: ["standings","🏆","My team",S.team?TEAMNAME[S.team]:"Pick a team","--place"], bedtime: ["bedtime","🌙","Bedtime","Sleepy A to Z","--night"],
+    unlocks: ["unlocks","🎁","Unlocks",`🏅 ${(S.medals || []).length} medals`,"--vowels"]
   };
   const tile = t => `<button class="tile" style="--c:var(${t[4]})" data-go="${t[0]}"><span class="ic" aria-hidden="true">${t[1]}</span><span><b>${t[2]}</b><br><span class="n">${t[3]}</span></span></button>`;
   const sec = (icon, name, keys) => `<h3 class="sec"><span aria-hidden="true">${icon}</span> ${name}</h3><div class="hub">${keys.map(k => tile(T[k])).join("")}</div>`;
@@ -914,10 +914,10 @@ function home(){
   const tip = tips[new Date().getDate() % tips.length];
   const hello = S.name ? `Hello, ${esc(S.name)}!` : "Welcome to New Rainbow Land!";
   render(`
-    <div class="top homebar"><div class="brand"><img src="/icon-192.png" alt="" onerror="this.remove()"><h1>AZoomals<sup class="tm">™</sup></h1></div>
+    <div class="top homebar"><div class="brand" id="brandtap"><img src="/icon-192.png" alt="" onerror="this.remove()"><h1>AZoomals<sup class="tm">™</sup></h1></div>
       <span style="display:flex;gap:.4rem"><button class="pill" data-mute aria-label="Sound on or off">${S.mute ? "🔇" : "🔊"}</button><button class="pill" data-go="grownups" aria-label="Grown-ups">🔒</button></span></div>
     <div class="hero"><div class="hero-txt"><p class="hero-hi">${hello}</p><p class="hero-bub">${hero.name} says: ${tip}</p>
-      ${S.team ? `<span class="hero-team" style="--c:${tcol(S.team)}">${TEAMNAME[S.team]}</span>` : `<button class="btn hero-btn" data-go="pickteam">Pick my team</button>`}</div>
+      ${S.team ? `<span class="hero-team" style="--c:${tcol(S.team)}">${TEAMNAME[S.team]}</span>` : ""}</div>
       ${ART[hero.l] ? `<button class="hero-pic" id="heropic" aria-label="Say hello to ${hero.name}"><img src="${ART[hero.l]}" alt=""></button>` : ""}</div>
     <div class="big3">${[["games","🎮","Games","--mobster"],["letters","🔤","Letters","--vowels"],["books3d","📚","Books","--place"]].map(b => `<button class="tile bigt" style="--c:var(${b[3]})" data-go="${b[0]}"><span class="ic" aria-hidden="true">${b[1]}</span><b>${b[2]}</b></button>`).join("")}</div>
     <div class="hub" style="margin-top:.9rem">${huntTile()}${petTile()}</div>
@@ -934,6 +934,8 @@ function home(){
     hp.onclick = () => { hp.classList.remove("wig"); void hp.offsetWidth; hp.classList.add("wig"); buzz(15); if (busy) return;
       const t = jokes[j % jokes.length]; j++; S.jokeAt = j; save(); busy = true; if (bub) bub.textContent = `${hero.name}: ${t}`;
       const done = () => { busy = false; }; later(done, 9000); speak(t, done, {beast: hero.l}); }; }
+  const bt = $("brandtap"); if (bt){ let taps = 0, tt = 0; bt.onclick = () => { taps++; clearTimeout(tt); tt = setTimeout(() => taps = 0, 2500);
+    if (taps >= 5){ taps = 0; S.dev = !S.dev; save(); toast(S.dev ? "🛠️ Maker tools on (in Grown-ups)" : "Maker tools hidden"); } }; }
 }
 
 function pickTeam(then){
@@ -1471,7 +1473,7 @@ const GAMES = [
   ["spell","📛","Spell my name","--authority"],
   ["relay","🏃","Relay race","--place"],
   ["joust","🛡️","Jousting","--unknown"],
-  ["chicken","🐔","Capture the Chicken","--outlaw"],
+  ["chicken","🐔","Capture The Chicken","--outlaw"],
   ["board","🎲","Boost Trail","--vowels"],
   ["outlaws","🕶️","Stop the Outlaws","--outlaw"],
   ["missing","🔡","Missing letter","--place"],
@@ -1479,7 +1481,7 @@ const GAMES = [
   ["snakes","🐍","Vance & Ladders","--horde"],
   ["relay3d","🏃","Relay Rumble 3D","--place"],
   ["joust3d","🛡️","Royal Joust 3D","--unknown"],
-  ["chicken3d","🐔","Capture the Chicken 3D","--outlaw"],
+  ["chicken3d","🐔","Capture The Chicken 3D","--outlaw"],
   ["beach3d","🏖️","Apex's Apple Catch","--stealth"],
   ["ludo3d","🏠","AZoomal Ludo 3D","--vowels"],
   ["bowl3d","🎳","Barrel Bowling 3D","--mobster"],
@@ -1495,7 +1497,7 @@ const GAMES_AZ = [
   ["E","eggstomp","Easy E's Egg Bop"], ["F","fishing","Frisk's Fishing"], ["G","beastle","Gotti's Guess"], ["H","horseshoe","Hendrix's Horseshoe Toss"],
   ["I","micro3d","Indy's Micro Karts"], ["J","jellyjump","Juice's Jelly Jump"], ["K","hopalong","Kingston's Hop Along"], ["L","ludo3d","Lucky's Loot Ludo"],
   ["M","missing","Magic Monkey's Missing Letters"], ["N","explorer","New Rainbow Land Explorer"], ["O","chess3d","Otto's Chess"], ["P","popslide3d","Percy's Pop Can Slide"],
-  ["Q","hunt3d","Queen Quilla's Letter Hunt"], ["R","relay3d","Referee Rhino's Relay"], ["S","chicken3d","Security Shark's Capture the Chicken"], ["T","tulips","Twinkle Toes' Tulip Garden"],
+  ["Q","hunt3d","Queen Quilla's Letter Hunt"], ["R","relay3d","Referee Rhino's Relay"], ["S","chicken3d","Security Shark's Capture The Chicken"], ["T","tulips","Twinkle Toes' Tulip Garden"],
   ["U","glide","Umbrellabird's Umbrella Glide"], ["V","snakes","Vance and Ladders"], ["W","wilber","Where's Wilber?"], ["X","xmarks","Xander's X Marks the Spot"],
   ["Y","mistmaze","Yareli's Yellow Mist Maze"], ["Z","zsums","Zachary's Zebra Sums"]
 ];
@@ -1846,10 +1848,10 @@ function joust(){
 function chicken(){
   let round = 0, caught = 0;
   const next = () => {
-    if (round === 3) return finish("Capture the Chicken", caught, 3, chicken);
+    if (round === 3) return finish("Capture The Chicken", caught, 3, chicken);
     round++;
     const hide = Math.floor(Math.random()*16); let taps = 0, lastD = null; const max = 6;
-    render(`${header("Capture the Chicken", "games", "Games")}
+    render(`${header("Capture The Chicken", "games", "Games")}
       <div class="card"><p class="count">Round ${round} of 3</p>
         <p class="say">Find the chicken!</p><p class="sub" id="left">${max} goes left</p>
         <div class="bushes">${Array.from({length:16},(_,i)=>`<button class="bush" data-i="${i}" aria-label="Bush ${i+1}">🌳</button>`).join("")}</div>
@@ -4374,7 +4376,7 @@ function joust3dPlay(me){
 
 /* ---------- CAPTURE THE CHICKEN 3D (Book 4) ---------- */
 function chicken3d(){
-  shell3D("Security Shark's Capture the Chicken", "Tap a bush to search it. Warmer means closer, colder means further away. Watch out for Yareli's decoy chickens!");
+  shell3D("Security Shark's Capture The Chicken", "Tap a bush to search it. Warmer means closer, colder means further away. Watch out for Yareli's decoy chickens!");
   start3D(() => {
     const G = make3D({fog:["#CFEAF5", 22, 70]}), {T3, camera, add, mat} = G;
     add(new T3.BoxGeometry(120, 0.1, 120), new T3.MeshLambertMaterial({color:"#4FB3E8"}), 0, -0.6, 0, false);
@@ -4412,7 +4414,7 @@ function chicken3d(){
     const chick = chickenMesh();
     const hud = () => { const h = $("hud"); if (h) h.innerHTML = `<div class="slp now" style="--c:var(--outlaw)"><span class="av">🐔</span><span class="nm">Round ${round} of 3</span><span class="sq">${left} goes</span></div><div class="slp"><span class="nm">Caught ${caught}</span></div>`; };
     const newRound = () => {
-      if (round === 3){ return finish("Capture the Chicken 3D", caught, 3, chicken3d); }
+      if (round === 3){ return finish("Capture The Chicken 3D", caught, 3, chicken3d); }
       round++; left = 6; lastD = null; busy = false; chick.set(0, -5, 0);
       bushes.forEach(b => G.remove(b)); bushes = spots.map(([x, z], i) => { const b = add(bushG, bushM[i % 2], x, 0.75, z, true); b.userData = {i}; return b; });
       hide = Math.floor(Math.random()*16); do { decoy = Math.floor(Math.random()*16); } while (decoy === hide);
@@ -4861,7 +4863,7 @@ function huntMapPick(me){
   render(`${header("Letter Hunt", "games", "Games")}
     <div class="card" style="margin-bottom:.8rem"><button class="tile wide" id="daily" style="--c:#F08A24;width:100%">${calIcon()}<span><b>Today's Daily Hunt</b><br><span class="n">${HUNT_MAPS[dmi].e} ${HUNT_MAPS[dmi].name} · the same hunt for everyone today${(S.dailyBest || {})[dk] ? ` · your best ${S.dailyBest[dk]}s` : ""}</span></span></button></div>
     <div class="card"><p class="say">Where shall we hunt?</p>
-      <div class="hub">${HUNT_MAPS.map((m, i) => worldOpen(m.id) ? `<button class="tile" style="--c:${["#2A9D8F","#6A4C93","#C9992A","#3A86FF"][i]}" data-m="${i}"><span class="ic">${m.e}</span><span><b>${m.name}</b><br><span class="n">${m.sub}${(S.huntBest || {})[m.id] ? `<br>⏱️ Best ${S.huntBest[m.id]}s · ⭐ ${(S.huntStars || {})[m.id] || 0}/3` : ""}</span></span></button>` : `<button class="tile" style="--c:#9AA6BF;opacity:.6" disabled><span class="ic">🔒</span><span><b>${m.name}</b><br><span class="n">⭐ ${WORLD_STARS[m.id]} stars to unlock</span></span></button>`).join("")}</div></div>`);
+      <div class="hub">${HUNT_MAPS.map((m, i) => worldOpen(m.id) ? `<button class="tile" style="--c:${["#2A9D8F","#6A4C93","#C9992A","#3A86FF"][i]}" data-m="${i}"><span class="ic">${m.e}</span><span><b>${m.name}</b><br><span class="n">${m.sub}${(S.huntBest || {})[m.id] ? `<br>⏱️ Best ${S.huntBest[m.id]}s · ⭐ ${(S.huntStars || {})[m.id] || 0}/3` : ""}</span></span></button>` : `<button class="tile" style="--c:#9AA6BF;opacity:.6" disabled><span class="ic">🔒</span><span><b>${m.name}</b><br><span class="n">🏅 ${WORLD_STARS[m.id]} medals to unlock</span></span></button>`).join("")}</div></div>`);
   speak("Where shall we hunt?");
   app.querySelectorAll("[data-m]").forEach(el => el.onclick = () => huntModePick(me, +el.dataset.m));
   $("daily").onclick = () => hunt3dPlay(me, dmi, {daily: dk});
@@ -6150,7 +6152,7 @@ function hunt3dPlay(me, mi, opt){
       // the magic portal
       portal.g.rotation.y = now/1500; portal.disc.rotation.z = now/400; portal.cool = Math.max(0, portal.cool - dt);
       if (!done && portal.cool === 0 && Math.hypot(portal.x - pos[0], portal.z - pos[1]) < 1.6){ portal.cool = 8; const nmi = (mi + 1) % HUNT_MAPS.length, nm2 = HUNT_MAPS[nmi];
-        if (!worldOpen(nm2.id)) say(`The portal to ${nm2.name} is locked. Earn more stars to open it!`);
+        if (!worldOpen(nm2.id)) say(`The portal to ${nm2.name} is locked. Win more medals to open it!`);
         else { $("fb").innerHTML = `✨ A magic portal to ${nm2.e} ${nm2.name}! Your hunt there will start fresh.<div class="row"><button class="btn" id="goport">Jump in ✨</button><button class="btn ghost" id="stayport">Stay here</button></div>`; speak(`A magic portal to ${nm2.name.replace("’", "")}! Jump in?`);
           $("goport").onclick = () => hunt3dPlay(me, nmi, {...opt, daily: false}); $("stayport").onclick = () => { $("fb").textContent = "OK, keep hunting!"; }; } }
       // day, sunset, night and weather
@@ -6935,7 +6937,8 @@ const BOOKS3D = [
     {ill:"The Announcement", text:{h:"The Announcement", p:["Queen Quilla addressed the crowd once more.","“Ladies and gentlemen, boys and girls, AZoomals of all ages,” she began, “please join me in giving great congratulations to the winners of the first event — relay champions, the Mobster Crew. They showed passion, intelligence, and — putting some questionable tactics aside — an irresistible will to win.”","Applause rang out.","“The AZoomal Games don’t stop there, though,” she continued. “No, no, no. We move on to the next stage. So prepare yourselves to begin battle once more, this time in a traditional bout of royal jousting.”"]}},
     {ill:"Luck of the Draw", text:{h:"Luck of the Draw", p:["Queen Quilla turned to her aides, gesturing for them to bring her a hat with the team names inside. She passed it along.","“Ref Rhino, will you do the honours?” she asked. “Please go into the crowd and find a lucky little person to draw the names out.”","“Yes, ma’am, it’ll be my privilege,” Ref Rhino beamed.","He plodded out into the crowd that had gathered in the royal square. Approaching a little girl holding flowers, he crouched down.","“Hello, sweetheart, how are you doing?” Ref Rhino asked.","“Oh my gosh, I love you!” the girl squealed."]}},
     {ill:"The draw and the bracket reveal", text:{p:["“Ah, well, thank you very much. How would you like to help me out today?” Ref Rhino said, smiling.","“Yes, yes, of course I will,” she replied.","“Very good. Just pop that little hand of yours in this hat, and pick out a name,” he said gently.","As the girl plunged her hand in, Ref Rhino informed the crowd using his microphone.","“First up is — drum roll, please — The Horde, and their opponents will beeeee… The Vowels!” he bellowed.","“On the other side, it’ll be Mobster Crew versus Stealth Squad. A final between the advancing teams will decide the overall winners. A third-place play-off will also take place,” Ref Rhino continued, and pointed back over to Queen Quilla."]}}]},
-  {n:4, title:"Capture the Chicken", colour:"#7C4DCC", soon:true}
+  {n:4, title:"Capture The Chicken", colour:"#7C4DCC", blurb:"One bright orange chicken. One whole island. Decoys, traps and nobody, not even the referee, is safe.",
+   spreads:[{"ill": "Queen Quilla announces Capture The Chicken", "text": {"h": "The Announcement", "p": ["“Ladies and gentlemen, boys and girls, AZoomals of all ages. Our grand finale is upon us, and this one is very close to my heart — I came up with it myself. I call it Capture The Chicken.” Queen Quilla giggled to herself.", "“Here I have a bright orange chicken, totally unmistakable and totally unmissable.” She passed it over to Security Shark.", "“My ever-reliable security team here will place this chicken somewhere on the island. The first team to bring it back to me, alive, of course, will be declared the winner. Their team wins ten points. Everyone else gets nothing. To give Security Shark time to hide it, we shall begin in one hour.”"]}}, {"ill": "Wilber’s seagull disguise, caught by Otto", "text": {"h": "Playing by the Rules", "p": ["“Wilber, Wilber, quick, follow that chicken!” Frisk turned around, looking for the wolf.", "“Already on it, boss,” Wilber replied, fully dressed as a seagull.", "“Uhh, good, good.” Frisk looked him up and down, not convinced.", "“Yoink.” Otto plucked the seagull costume clean off him. “You heard the Queen. One hour before we start. No cheating.”"]}}, {"ill": "Clyde slides milk bottles along the bar", "text": {"h": "Drinks Are on Me", "p": ["Meanwhile at the bar, the Mobster Crew were making the most of the free time.", "“Drinks are on me, boys,” Clyde shouted, sliding milk bottles across the bar to Hendrix and Gotti. He slid a third one down for Lucky Lobster, but strangely, Lucky was nowhere to be seen.", "“I guess that makes mine a double.” Hendrix smiled, guzzling them both down."]}}]}
 ];
 
 function books3d(){
@@ -8720,15 +8723,15 @@ function checkUnlocks(before){
 function unlocks(){
   const n = stars(), all = [...UNLOCK_ORDER.map(beastStars), ...OUTFITS.map(o => o[2]), ...Object.values(WORLD_STARS)].filter(v => v > n).sort((a, b) => a - b), nextAt = all[0];
   render(`${header("Unlocks")}
-    <div class="card"><p class="say">⭐ ${n} star${n === 1 ? "" : "s"}</p><p class="sub">Win a medal in any game to earn a star. Stars unlock new AZoomals, outfits and worlds!</p>
-      ${testAll() ? `<p class="note">🧪 Testing mode: everything is unlocked. Grown-ups can switch this off in Settings.</p>` : nextAt ? `<div class="xpbar"><span style="width:${Math.min(100, n/nextAt*100)}%"></span></div><p class="sub">${nextAt - n} more star${nextAt - n === 1 ? "" : "s"} to the next unlock</p>` : `<p class="sub">You've unlocked everything! 🏆</p>`}</div>
+    <div class="card"><p class="say">🏅 ${n} medal${n === 1 ? "" : "s"}</p><p class="sub">Win medals in the games to unlock new AZoomals, outfits and worlds!</p>
+      ${testAll() ? `<p class="note">🧪 Testing mode: everything is unlocked.</p>` : nextAt ? `<div class="xpbar"><span style="width:${Math.min(100, n/nextAt*100)}%"></span></div><p class="sub">${nextAt - n} more medal${nextAt - n === 1 ? "" : "s"} to the next unlock</p>` : `<p class="sub">You've unlocked everything! 🏆</p>`}</div>
     <div class="card"><h2>AZoomals</h2><div class="unlockgrid">${BEASTS.filter(b => b.team !== "place").map(b => { const open = beastOpen(b.l);
-      return `<div class="ub ${open ? "" : "lockd"}" style="--c:${col(b)}">${ART_HEAD[b.l] && open ? `<img src="${ART_HEAD[b.l]}" alt="">` : open ? b.l : "🔒"}<small>${open ? esc(b.name.split(" ")[0]) : `⭐ ${beastStars(b.l)}`}</small></div>`; }).join("")}</div></div>
+      return `<div class="ub ${open ? "" : "lockd"}" style="--c:${col(b)}">${ART_HEAD[b.l] && open ? `<img src="${ART_HEAD[b.l]}" alt="">` : open ? b.l : "🔒"}<small>${open ? esc(b.name.split(" ")[0]) : `🏅 ${beastStars(b.l)}`}</small></div>`; }).join("")}</div></div>
     <div class="card"><h2>Outfits</h2><p class="sub">Your AZoomal wears this in the 3D games.</p><div class="outfits">${OUTFITS.map(([id, name, need, e]) => { const open = outfitOpen(id);
-      return `<button class="outfit ${S.outfit === id || (!S.outfit && id === "none") ? "sel" : ""} ${open ? "" : "lockd"}" data-o="${id}" ${open ? "" : "disabled"}><span>${open ? e : "🔒"}</span><small>${open ? esc(name) : `⭐ ${need}`}</small></button>`; }).join("")}</div></div>
-    <div class="card"><h2>Letter Hunt worlds</h2><div class="outfits">${HUNT_MAPS.map(m => `<div class="outfit ${worldOpen(m.id) ? "" : "lockd"}"><span>${worldOpen(m.id) ? m.e : "🔒"}</span><small>${worldOpen(m.id) ? esc(m.name) : `⭐ ${WORLD_STARS[m.id]}`}</small></div>`).join("")}</div></div>`);
+      return `<button class="outfit ${S.outfit === id || (!S.outfit && id === "none") ? "sel" : ""} ${open ? "" : "lockd"}" data-o="${id}" ${open ? "" : "disabled"}><span>${open ? e : "🔒"}</span><small>${open ? esc(name) : `🏅 ${need}`}</small></button>`; }).join("")}</div></div>
+    <div class="card"><h2>Letter Hunt worlds</h2><div class="outfits">${HUNT_MAPS.map(m => `<div class="outfit ${worldOpen(m.id) ? "" : "lockd"}"><span>${worldOpen(m.id) ? m.e : "🔒"}</span><small>${worldOpen(m.id) ? esc(m.name) : `🏅 ${WORLD_STARS[m.id]}`}</small></div>`).join("")}</div></div>`);
   app.querySelectorAll("[data-o]").forEach(el => el.onclick = () => { S.outfit = el.dataset.o; save(); speak(OUTFITS.find(o => o[0] === S.outfit)[1]); unlocks(); });
-  speak(`You have ${n} stars!`);
+  speak(`You have ${n} medal${n === 1 ? "" : "s"}!`);
 }
 /* the outfit hat, added to the player's beast in 3D games */
 function outfitMesh(T3, id, s){
@@ -8784,8 +8787,8 @@ function stickers(){
 function standings(){
   if (!S.team) return pickTeam(standings);
   const rows = Object.keys(TEAMS).sort((a,b)=>S.pts[b]-S.pts[a]);
-  render(`${header("Standings")}
-    <div class="card" style="text-align:left"><p class="say" style="text-align:center">The AZoomal Invitational</p>
+  render(`${header("My team")}
+    <div class="card" style="text-align:left"><p class="say" style="text-align:center">The AZoomal Games</p>
       <table>${rows.map((t,i)=>`<tr class="${t===S.team?"me":""}"><td class="p">${i+1}</td>
         <td><span class="chip" style="--c:${tcol(t)}"></span>${TEAMNAME[t]}${t===S.team?" (you)":""}</td><td class="pts">${S.pts[t]}</td></tr>`).join("")}</table>
       <p class="note">Win points for ${TEAMNAME[S.team]} by tracing letters and playing games.</p></div>`);
@@ -9002,44 +9005,46 @@ function parents(){
         <tr><td>Drawings saved</td><td class="pts">${DRAWINGS.length}</td></tr>
         <tr><td>AZoomal care days</td><td class="pts">${(S.careDays||[]).length}</td></tr></table>
       <p class="note">${practise ? `Letters to practise next: ${practise}` : "Every available letter has been traced."}</p></div>
-    <div class="card" style="text-align:left"><h2>🎬 Shorts studio</h2><p class="sub">Make YouTube Shorts: AZoomal Evolution (sketch, colour, 3D) and adverts, with music and voices, saved straight to your phone.</p>
-      <div class="row" style="justify-content:flex-start"><button class="btn" data-go="studio">Open the studio</button></div></div>
+    ${S.dev ? `<div class="card" style="text-align:left"><h2>🎬 Shorts studio</h2><p class="sub">Make YouTube Shorts: AZoomal Evolution (sketch, colour, 3D) and adverts, with music and voices, saved straight to your phone.</p>
+      <div class="row" style="justify-content:flex-start"><button class="btn" data-go="studio">Open the studio</button></div></div>` : ""}
     <div class="card" style="text-align:left"><h2>The AZoomals Series</h2>
-      <p class="sub">The AZoomals in this app star in a picture book series by Martin Aspinall, illustrated by Louise Pyke.</p>
-      <p style="margin:.3rem 0"><b>1.</b> Arrival Day<br><b>2.</b> Ready, Set, Go!<br><b>3.</b> A Right Royal Joust<br><b>4.</b> Capture the Chicken</p>
+      <p class="sub">The AZoomals in this app star in an illustrated book series by Martin Aspinall, illustrated by Louise Pyke.</p>
+      <p style="margin:.3rem 0"><b>1.</b> Arrival Day<br><b>2.</b> Ready, Set, Go!<br><b>3.</b> A Right Royal Joust<br><b>4.</b> Capture The Chicken</p>
       <div class="row"><a class="btn" href="https://www.azoomals.co.uk/#books" target="_blank" rel="noopener" style="text-decoration:none">See the books</a></div></div>
     <div class="card" style="text-align:left"><h2>Stay in the loop</h2>
       <p class="sub">Get an email when new AZoomals, games and books arrive. No spam.</p>
-      <form action="https://formsubmit.co/stylix04@yahoo.co.uk" method="POST">
-        <input type="hidden" name="_subject" value="New AZoomals ABC app signup!">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="source" value="ABC app">
-        <input type="hidden" name="_next" value="https://abc.beastabet.co.uk/?signed=1">
+      <form id="appjoin">
         <label for="em">Grown-up's email</label>
         <input id="em" type="email" name="email" required placeholder="you@example.com">
-        <div class="row"><button class="btn" type="submit">Notify me</button></div>
+        <div class="row"><button class="btn" type="submit" id="joinbtn">Notify me</button></div>
       </form>
       <p class="note">We'll only use this to tell you about new AZoomals books and app updates.</p></div>
     <div class="card" style="text-align:left"><h2>Settings</h2>
       <label for="cn">Child's name</label><input id="cn" maxlength="14" value="${esc(S.name)}">
       <div class="row"><button class="btn" id="savename">Save name</button><button class="btn ghost" id="team">Change team</button></div>
       <p class="sub" style="margin-top:1rem">Letter names or phonics sounds</p>${soundPicker()}
-      <p class="sub" style="margin-top:1rem">Unlocks: children earn a star for every medal, and stars unlock AZoomals, outfits and worlds.</p>
+      ${S.dev ? `<h2 style="margin-top:1.2rem">🛠️ Maker tools</h2><p class="sub" style="margin-top:1rem">Unlocks: medals won in the games unlock AZoomals, outfits and worlds.</p>
       <div class="row"><button class="btn ${testAll() ? "" : "ghost"}" id="testall">🧪 Testing mode: ${testAll() ? "ON (everything open)" : "OFF (earn unlocks)"}</button></div>
       <p class="sub" style="margin-top:1rem">Natural voice</p><div class="row"><button class="btn ghost" id="vcheck">🔊 Voice check</button><button class="btn ghost" id="vrefresh">🔄 Refresh voices</button><button class="btn ghost" id="vbank">💾 Save all voices</button></div><p class="note" id="vres"></p><p class="sub" style="margin:.2rem 0 0;font-size:.85rem">Changed an AZoomal's voice in ElevenLabs? Tap Refresh voices so the app stops using the old recordings.</p>
-      <div class="row"><button class="btn ghost" id="reset">Reset all progress</button></div></div>`);
-  $("vcheck").onclick = async () => { const r = $("vres"); r.textContent = "Checking…";
+      ` : ""}<div class="row"><button class="btn ghost" id="reset">Reset all progress</button></div></div>`);
+  if ($("vcheck")) $("vcheck").onclick = async () => { const r = $("vres"); r.textContent = "Checking…";
     try{ const t = "Voice check " + Math.floor(Math.random()*900 + 100) + ".", res = await fetch(clipURL(t));
       if (res.ok){ r.textContent = "✅ The natural voice is working."; NV_OK = true; NV_FAILS = 0; NV_OFF_UNTIL = 0; const a2 = new Audio(URL.createObjectURL(await res.blob())); a2.play().catch(() => {}); }
       else { let info = ""; try{ const j = await res.json(); info = `${j.status || res.status}: ${j.detail || j.error || ""}`; }catch(e){ info = String(res.status); }
         r.textContent = "❌ The voice server said " + info + (res.status === 503 ? " (the ElevenLabs settings are missing in Vercel)" : /quota|credit|limit/i.test(info) ? " (you've used up your ElevenLabs credits, or hit the key's credit limit)" : /401|invalid|unauthor/i.test(info) ? " (the API key is wrong or has been switched off)" : ""); } }
     catch(e){ r.textContent = "❌ Couldn't reach the voice server. Is the phone online?"; } };
-  $("vrefresh").onclick = async () => { S.vrev = (S.vrev || 0) + 1; save(); NV_BLOBS.clear(); NV_TS.clear(); NV_PRE.clear(); NV_FAILS = 0; NV_OFF_UNTIL = 0;
+  if ($("vrefresh")) $("vrefresh").onclick = async () => { S.vrev = (S.vrev || 0) + 1; save(); NV_BLOBS.clear(); NV_TS.clear(); NV_PRE.clear(); NV_FAILS = 0; NV_OFF_UNTIL = 0;
     try { if (window.caches){ for (const k of await caches.keys()){ const c = await caches.open(k); for (const rq of await c.keys()) if (rq.url.includes("/api/tts")) await c.delete(rq); } } } catch(e){}
     $("vres").textContent = "✅ Voices refreshed. Each line will load fresh the next time it plays."; };
-  $("vbank").onclick = () => saveAllVoices($("vres"));
+  if ($("vbank")) $("vbank").onclick = () => saveAllVoices($("vres"));
   wireSoundPicker(parents);
-  $("testall").onclick = () => { S.testAll = !testAll(); save(); toast(testAll() ? "Everything unlocked for testing" : "Unlocks now earned by playing"); parents(); };
+  if ($("testall")) $("testall").onclick = () => { S.testAll = !testAll(); save(); toast(testAll() ? "Everything unlocked for testing" : "Unlocks now earned by playing"); parents(); };
+  $("appjoin").onsubmit = async (e) => { e.preventDefault(); const em = $("em").value.trim(), bt = $("joinbtn"); if (!em) return;
+    bt.disabled = true; bt.textContent = "Sending…";
+    try { const r = await fetch("/api/join", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded", "Accept": "application/json" }, body: new URLSearchParams({ email: em, name: S.name || "", interested_in: "ABC app" }) });
+      if (!r.ok) throw new Error(await r.text());
+      $("appjoin").outerHTML = `<p class="say">🎉 You're on the list! Queen Quilla will be in touch.</p>`; S.joined = true; save(); }
+    catch (err) { bt.disabled = false; bt.textContent = "Notify me"; toast("Couldn't send just now. Please try again."); } };
   $("savename").onclick = () => { S.name = $("cn").value.trim(); save(); toast("Name saved"); };
   $("team").onclick = () => pickTeam(parents);
   let armed = false;
