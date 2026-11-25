@@ -3591,7 +3591,7 @@ function ottoModel(T3){
 /* ---------- P: Percy Penguin ---------- */
 function wilberModel(T3){
   const K = beastKit(T3, 57), {g, M, B, part, grp, S, C, BX, CO, TO} = K;
-  const fur = M("#4E5C7A"), furL = M("#8E9AB2"), furD = M("#2E3850"), wool = M("#EEDDB6"), woolS = M("#DCC596"), zip = M("#5B54C4"), pink = M("#E58AA0"), dark = M("#1E1E24"), claw = M("#2A2A30");
+  const fur = M("#4E5C7A"), furL = M("#8E9AB2"), furD = M("#2E3850"), wool = M("#ECE2D0"), woolS = M("#D8C6A3"), furM = M("#6E7B98"), zip = M("#5B54C4"), pink = M("#E58AA0"), dark = M("#1E1E24"), claw = M("#2A2A30");
   const legs = [-1, 1].map(s => K.leg(s, {thighM: wool, shinM: wool, hip: 0.92, r: 0.17, thigh: 0.42, shin: 0.32, foot: (Kn, y) => { const f = part(S(0.17), fur, 0, y - 0.1, 0.08, Kn, 0.08); f.scale.set(1.1, 0.6, 1.5);
     [-1, 0, 1].forEach(c => { const cl = part(CO(0.03, 0.09, 6), claw, c*0.07, y - 0.12, 0.32, Kn); cl.rotation.x = Math.PI/2; }); }}));
   const body = grp(g);
@@ -3601,12 +3601,13 @@ function wilberModel(T3){
   for (let i = 0; i < 14; i++){ const a = i*2.399, y = 0.85 + (i % 7)*0.13, r = 0.34; const t = part(S(0.06, 8, 6), wool, Math.sin(a)*r, y, Math.cos(a)*r, body, 0.03); t.scale.set(1, 0.6, 0.45); }
   // purple zip down the front, open at the top to show grey fur
   part(BX(0.035, 0.95, 0.03), zip, 0, 1.15, 0.38, body);
-  const chest = part(CO(0.16, 0.42, 3), fur, 0, 1.55, 0.33, body); chest.rotation.set(Math.PI, 0, 0); chest.scale.z = 0.3;
+  const chest = part(S(0.14, 14, 10), fur, 0, 1.6, 0.3, body, 0.04); chest.scale.set(0.9, 1.9, 0.5);
   part(S(0.025, 8, 6), zip, 0, 1.62, 0.4, body);
   const armO = {sleeve: wool, skin: fur, handM: fur, r: 0.13, upper: 0.36, lower: 0.26};
   const woolArm = K.arm(body, -1, armO), freeArm = K.arm(body, 1, armO);
   // purple cuff and the rolled-up wool boost with its purple tag
   part(C(0.13, 0.13, 0.05, 16), zip, 0, woolArm.handY + 0.08, 0, woolArm.fore);
+  [woolArm, freeArm].forEach(a => { for (let i = 0; i < 8; i++){ const an = i/8*Math.PI*2; part(S(0.045, 8, 6), wool, Math.sin(an)*0.12, a.handY + 0.14, Math.cos(an)*0.12, a.fore, 0.03); } });
   const roll = grp(woolArm.fore, 0, woolArm.handY - 0.1, 0.08); roll.rotation.set(0, 0, Math.PI/2);
   part(C(0.11, 0.11, 0.24, 20), wool, 0, 0, 0, roll, 0.06);
   [-1, 1].forEach(s => { const sw = part(TO(0.055, 0.012, 6, 18), woolS, 0, s*0.121, 0, roll); sw.rotation.x = Math.PI/2; });
@@ -3615,7 +3616,7 @@ function wilberModel(T3){
   part(S(0.36, 22, 16), fur, 0, 0, 0, head, 0.045).scale.set(1, 0.97, 0.95);
   const muz = part(S(0.2, 16, 12), furL, 0, -0.1, 0.4, head, 0.05); muz.scale.set(0.78, 0.6, 2.3); muz.rotation.x = 0.08;
   const bridge = part(S(0.16, 14, 10), fur, 0, 0.0, 0.42, head, 0.05); bridge.scale.set(0.8, 0.55, 2.0); bridge.rotation.x = -0.12;
-  [-1, 1].forEach(s => { const ck = part(S(0.14, 14, 10), furL, s*0.2, -0.16, 0.12, head, 0.05); ck.scale.set(0.9, 0.85, 0.8); });
+  [-1, 1].forEach(s => { const ck = part(S(0.14, 14, 10), furM, s*0.2, -0.16, 0.12, head, 0.05); ck.scale.set(0.9, 0.85, 0.8); });
   part(S(0.065, 10, 8), dark, 0, -0.04, 0.84, head).scale.set(1.25, 0.8, 0.85);
   const smile = part(TO(0.12, 0.018, 6, 16, Math.PI), dark, 0, -0.21, 0.6, head); smile.rotation.set(-0.35, 0, Math.PI);
   const tongue = part(S(0.07, 10, 8), pink, 0, -0.28, 0.6, head); tongue.scale.set(1.1, 0.5, 0.8);
