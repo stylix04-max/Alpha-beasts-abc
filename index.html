@@ -4150,6 +4150,14 @@ function meshyModel(T3, l){
   api.update = (t, mv = 0) => {
     const dt = lastT == null ? 0 : Math.min(0.1, Math.max(0, t - lastT)); lastT = t;
     if (!mixer) return;
+    if (!Object.keys(acts).length){   // unrigged model (octopus, snake, lobster...): simple hop / sway / spin
+      let y = Math.sin(t*2)*0.02 + mv*Math.abs(Math.sin(t*7))*0.12, rz = mv*Math.sin(t*7)*0.06, ry = 0; const e = api.emote;
+      if (e){ const et = t - e.t0; if (et > 2.2) api.emote = null;
+        else if (e.k === "wave"){ y += Math.abs(Math.sin(et*6))*0.25*(1 - et/2.2); rz = Math.sin(et*9)*0.12; }
+        else if (e.k === "dance"){ ry = Math.sin(et*5)*0.6; rz = Math.sin(et*10)*0.1; y += Math.abs(Math.sin(et*10))*0.15; }
+        else { ry = et*Math.PI*2/1.1; y += Math.sin(Math.min(1, et/1.1)*Math.PI)*0.9; } }
+      body.position.y = y; body.rotation.set(0, ry, rz); return;
+    }
     if (api.emote && api.emote !== lastEm){ lastEm = api.emote; const k = api.emote.k === "wave" ? "wave" : api.emote.k === "dance" ? "dance" : "special"; if (acts[k]){ oneShot = k; play(k, 0.2); } }
     if (!oneShot) play(mv > 0.5 ? "walk" : "idle", 0.3);
     mixer.update(dt);
