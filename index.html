@@ -4146,7 +4146,7 @@ function meshyModel(T3, l){
   const H = 2.95, api = {group: g, height: H, emote: null, ready: false};
   loadMeshy(T3, MESHY[l]).then(({geo, tex}) => {
     geo.computeBoundingBox(); const bb = geo.boundingBox, k = H/(bb.max.y - bb.min.y);
-    const m = new T3.Mesh(geo, new T3.MeshLambertMaterial(tex ? {map: tex, side: T3.DoubleSide} : {color: "#cccccc"}));
+    const m = new T3.Mesh(geo, new T3.MeshLambertMaterial(tex ? {map: tex, color: "#ECEFFA", side: T3.DoubleSide} : {color: "#cccccc"}));
     m.castShadow = true; m.scale.set(k, k, k); m.position.set(-(bb.max.x + bb.min.x)/2*k, -bb.min.y*k, -(bb.max.z + bb.min.z)/2*k);
     body.add(m); api.ready = true;
   }).catch(() => { api.failed = true; });
