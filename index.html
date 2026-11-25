@@ -4123,7 +4123,7 @@ function vanceModel(T3){
 }
 
 /* Meshy (AI image-to-3D) models: rigged, textured GLBs with Idle / Wave / Dance / Cheer / Walking clips, loaded on demand */
-const MESHY = { W: "/models/W.glb" };
+const MESHY = Object.fromEntries("ACDEFGHIJKLMOPQRSTUVW".split("").map(l => [l, `/models/${l}.glb`]));
 const MESHY_CLIPS = {idle: "Idle", wave: "Wave_One_Hand", dance: "Joyful_Dance_with_Hand_Sway", special: "Victory_Cheer", walk: "Walking"};
 let GLTF_READY = null;
 function gltfLoader(){
@@ -4140,7 +4140,7 @@ function meshyModel(T3, l){
     .then(buf => new Promise((res, rej) => new T3.GLTFLoader().parse(buf, "", res, rej))).then(gl => {
       const root = gl.scene; root.traverse(o => { if (o.isMesh){ o.castShadow = true; o.frustumCulled = false; if (o.material){ o.material.metalness = 0; o.material.roughness = 1; if (o.material.map){ o.material.map.encoding = T3.LinearEncoding; o.material.needsUpdate = true; } } } });
       let gb = null; root.traverse(o => { if (o.isMesh && !gb){ o.geometry.computeBoundingBox(); gb = o.geometry.boundingBox; } });
-      const k = gb ? H/Math.max(0.01, gb.max.y - gb.min.y) : H/1.7;   // skinned: use the bind-pose mesh size (the armature carries its own 0.01 scale)
+      const k = gb ? Math.min(H/Math.max(0.01, gb.max.y - gb.min.y), 3.1/Math.max(0.01, gb.max.x - gb.min.x, gb.max.z - gb.min.z)) : H/1.7;   // wide ones (Easy E on all fours) are fitted by width   // skinned: use the bind-pose mesh size (the armature carries its own 0.01 scale)
       root.scale.set(k, k, k); root.position.y = gb ? -gb.min.y*k : 0; body.add(root);
       mixer = new T3.AnimationMixer(root);
       Object.entries(MESHY_CLIPS).forEach(([key, name]) => { const c = gl.animations.find(a => a.name === name); if (c){ const a = mixer.clipAction(c); if (key !== "idle" && key !== "walk"){ a.setLoop(T3.LoopOnce, 1); a.clampWhenFinished = true; } acts[key] = a; } });
