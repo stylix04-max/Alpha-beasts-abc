@@ -3591,14 +3591,14 @@ function ottoModel(T3){
 /* ---------- P: Percy Penguin ---------- */
 function wilberModel(T3){
   const K = beastKit(T3, 57), {g, M, B, part, grp, S, C, BX, CO, TO} = K;
-  const fur = M("#4E5C7A"), furL = M("#8E9AB2"), furD = M("#2E3850"), wool = M("#F3E7CC"), woolS = M("#E2CFA6"), zip = M("#5B54C4"), pink = M("#E58AA0"), dark = M("#1E1E24"), claw = M("#2A2A30");
+  const fur = M("#4E5C7A"), furL = M("#8E9AB2"), furD = M("#2E3850"), wool = M("#EEDDB6"), woolS = M("#DCC596"), zip = M("#5B54C4"), pink = M("#E58AA0"), dark = M("#1E1E24"), claw = M("#2A2A30");
   const legs = [-1, 1].map(s => K.leg(s, {thighM: wool, shinM: wool, hip: 0.92, r: 0.17, thigh: 0.42, shin: 0.32, foot: (Kn, y) => { const f = part(S(0.17), fur, 0, y - 0.1, 0.08, Kn, 0.08); f.scale.set(1.1, 0.6, 1.5);
     [-1, 0, 1].forEach(c => { const cl = part(CO(0.03, 0.09, 6), claw, c*0.07, y - 0.12, 0.32, Kn); cl.rotation.x = Math.PI/2; }); }}));
   const body = grp(g);
   K.torso(body, wool, 1.38, 1.0);
   part(C(0.36, 0.38, 0.26), wool, 0, 0.95, 0, body, 0.05);
   // fluffy wool tufts all over the onesie
-  for (let i = 0; i < 22; i++){ const a = i*2.399, y = 0.85 + (i % 7)*0.13, r = 0.36 + Math.sin(i)*0.02; part(S(0.07, 8, 6), i % 3 ? wool : woolS, Math.sin(a)*r, y, Math.cos(a)*r, body, 0.03); }
+  for (let i = 0; i < 14; i++){ const a = i*2.399, y = 0.85 + (i % 7)*0.13, r = 0.34; const t = part(S(0.06, 8, 6), wool, Math.sin(a)*r, y, Math.cos(a)*r, body, 0.03); t.scale.set(1, 0.6, 0.45); }
   // purple zip down the front, open at the top to show grey fur
   part(BX(0.035, 0.95, 0.03), zip, 0, 1.15, 0.38, body);
   const chest = part(CO(0.16, 0.42, 3), fur, 0, 1.55, 0.33, body); chest.rotation.set(Math.PI, 0, 0); chest.scale.z = 0.3;
@@ -3613,14 +3613,15 @@ function wilberModel(T3){
   part(BX(0.05, 0.08, 0.015), zip, 0.05, 0.16, 0.1, roll);
   const head = grp(body, 0, 2.08, 0.03);
   part(S(0.36, 22, 16), fur, 0, 0, 0, head, 0.045).scale.set(1, 0.97, 0.95);
-  const muz = part(S(0.2, 16, 12), furL, 0, -0.1, 0.34, head, 0.05); muz.scale.set(0.85, 0.62, 1.9); muz.rotation.x = 0.1;
+  const muz = part(S(0.2, 16, 12), furL, 0, -0.1, 0.4, head, 0.05); muz.scale.set(0.78, 0.6, 2.3); muz.rotation.x = 0.08;
+  const bridge = part(S(0.16, 14, 10), fur, 0, 0.0, 0.42, head, 0.05); bridge.scale.set(0.8, 0.55, 2.0); bridge.rotation.x = -0.12;
   [-1, 1].forEach(s => { const ck = part(S(0.14, 14, 10), furL, s*0.2, -0.16, 0.12, head, 0.05); ck.scale.set(0.9, 0.85, 0.8); });
-  part(S(0.06, 10, 8), dark, 0, -0.05, 0.71, head).scale.set(1.25, 0.8, 0.85);
-  const smile = part(TO(0.11, 0.018, 6, 16, Math.PI), dark, 0, -0.2, 0.52, head); smile.rotation.set(-0.35, 0, Math.PI);
-  const tongue = part(S(0.07, 10, 8), pink, 0, -0.27, 0.53, head); tongue.scale.set(1.1, 0.5, 0.8);
+  part(S(0.065, 10, 8), dark, 0, -0.04, 0.84, head).scale.set(1.25, 0.8, 0.85);
+  const smile = part(TO(0.12, 0.018, 6, 16, Math.PI), dark, 0, -0.21, 0.6, head); smile.rotation.set(-0.35, 0, Math.PI);
+  const tongue = part(S(0.07, 10, 8), pink, 0, -0.28, 0.6, head); tongue.scale.set(1.1, 0.5, 0.8);
   const eyes = K.eyes(head, {x: 0.14, y: 0.06, z: 0.3, r: 0.07, iris: "#E0A030", lid: fur, brow: furD, browTilt: -0.15, lidRest: 0.4});
   // the sheep hood: a ring of woolly curls round his face
-  for (let i = 0; i < 18; i++){ const a = -Math.PI*0.85 + i/17*Math.PI*1.7; part(S(0.1 + (i % 2)*0.02, 10, 8), i % 4 ? wool : woolS, Math.sin(a)*0.42, Math.cos(a)*0.4 + 0.02, -0.06 + Math.cos(a)*0.05, head, 0.04); }
+  for (let i = 0; i < 18; i++){ const a = -Math.PI*0.85 + i/17*Math.PI*1.7; part(S(0.075 + (i % 2)*0.015, 10, 8), i % 4 ? wool : woolS, Math.sin(a)*0.37, Math.cos(a)*0.36 + 0.02, -0.08 + Math.cos(a)*0.04, head, 0.04); }
   [-1, 1].forEach(s => { const e = part(CO(0.13, 0.34, 8), fur, s*0.2, 0.52, 0.02, head, 0.07); e.rotation.z = -s*0.2; e.scale.z = 0.55; const ei = part(CO(0.07, 0.22, 8), pink, s*0.2, 0.5, 0.06, head); ei.rotation.z = -s*0.2; ei.scale.z = 0.45; });
   // his real grey tail poking out of the costume, darker at the tip
   const tail = grp(g, 0, 0.9, -0.3), segs = [];
