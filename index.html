@@ -4123,7 +4123,7 @@ function vanceModel(T3){
 }
 
 /* Meshy (AI image-to-3D) models: rigged, textured GLBs with Idle / Wave / Dance / Cheer / Walking clips, loaded on demand */
-const MESHY = Object.fromEntries("ACDEFGHIJKLMPQRTUVW".split("")   /* O (flat) and S (seagulls fused on) wait for cleaner pictures */.map(l => [l, `/models/${l}.glb`]));
+const MESHY = Object.fromEntries("ACDEFGHIJKLMOPQRSTUVW".split("").map(l => [l, `/models/${l}.glb`]));
 const MESHY_CLIPS = {idle: "Idle", wave: "Wave_One_Hand", dance: "Joyful_Dance_with_Hand_Sway", special: "Victory_Cheer", walk: "Walking"};
 let GLTF_READY = null;
 function gltfLoader(){
