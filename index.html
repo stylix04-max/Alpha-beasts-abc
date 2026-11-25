@@ -962,7 +962,7 @@ function meetBeast(b){
   const c = col(b);
   render(`${header(b.name, "meet", "AZoomals")}
     <div class="card meetcard"><div class="meetstage" id="g3d" style="--c:${c}"></div>
-      <div class="meetbar"><button class="btn ghost" id="mrl" aria-label="Turn left">⟲</button><button class="btn" id="mwave">👋 Wave</button><button class="btn" id="mdance">💃 Dance</button><button class="btn" id="mspec">${b.e} Special</button><button class="btn ghost" id="mwalk">🚶 Walk</button><button class="btn ghost" id="mrr" aria-label="Turn right">⟳</button></div>
+      <div class="meetbar"><button class="btn ghost" id="mrl" aria-label="Turn left">⟲</button><button class="btn" id="mwave">👋 Wave</button><button class="btn" id="mdance">💃 Dance</button><button class="btn" id="mspec">${b.e} Special</button>${MESHY[b.l] ? `<button class="btn ghost" id="mswap">✨ Old model</button>` : ""}<button class="btn ghost" id="mwalk">🚶 Walk</button><button class="btn ghost" id="mrr" aria-label="Turn right">⟳</button></div>
       <p class="sub" style="margin:.5rem 0 0">Drag to spin ${b.name} all the way round. Pinch to zoom in close.</p></div>
     <div class="card"><div class="meethead"><span class="ml" style="--c:${c}">${b.l}</span><div><h3 style="margin:0">${b.name}</h3><span class="sub">the ${b.animal}</span></div><button class="pill" id="mtalk" style="margin-left:auto">🔊 Hear me</button></div>
       <div class="meetinfo"><b>Team</b><span>${TEAMNAME[b.team] || b.team}</span><b>Home</b><span>${b.home || "New Rainbow Land"}</span><b>Power</b><span>⚡ ${b.power || "—"}</span><b>Boost</b><span>${b.e || ""} ${b.boost || "—"}</span></div>
@@ -981,7 +981,10 @@ function meetBeast(b){
     kitFlowers(G, Array.from({length: 22}, (_, k) => { const a = k/22*Math.PI*2, r = 3 + (k % 3)*1.4; return [Math.cos(a)*r, Math.sin(a)*r]; }), null);
     kitTrees(G, Array.from({length: 9}, (_, k) => { const a = k/9*Math.PI*2 + 0.3; return [Math.cos(a)*7.2, Math.sin(a)*7.2 - 1.5, 1.2]; }), null, {pineShare: 0.3, blossom: 0.3});
     // the beast
-    const mdl = MODELS[b.l](T3), turn = new T3.Group(), k0 = 2.1/mdl.height; mdl.group.scale.set(k0, k0, k0); mdl.group.position.y = 0.53; turn.add(mdl.group); scene.add(turn);
+    const turn = new T3.Group(); scene.add(turn); let mdl = null, useMeshy = !!MESHY[b.l];
+    const putModel = () => { if (mdl) turn.remove(mdl.group); mdl = useMeshy ? meshyModel(T3, b.l) : MODELS[b.l](T3); const k0 = 2.1/mdl.height; mdl.group.scale.set(k0, k0, k0); mdl.group.position.y = 0.53; turn.add(mdl.group);
+      const sw = $("mswap"); if (sw) sw.textContent = useMeshy ? "✨ Old model" : "✨ New model"; };
+    putModel(); if ($("mswap")) $("mswap").onclick = () => { useMeshy = !useMeshy; putModel(); buzz(15); };
     // controls: drag to spin (with a little glide), pinch or scroll to zoom, rests into a slow spin
     let rot = 0.35, vel = 0, dist = 5, idle = 0, walk = 0, drag = null; const pts = new Map(); let pinch = null;
     const el = G.el; el.style.touchAction = "none";
@@ -4119,6 +4122,46 @@ function vanceModel(T3){
   api.update(0, 0); return api;
 }
 
+/* Meshy (AI image-to-3D) models: a textured GLB per AZoomal, loaded on demand. They stand and spin (no walking rig yet). */
+const MESHY = { W: "/models/W.glb" };
+const MESHY_CACHE = {};
+function loadMeshy(T3, url){
+  if (MESHY_CACHE[url]) return MESHY_CACHE[url];
+  return MESHY_CACHE[url] = fetch(url).then(r => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); }).then(buf => {
+    const dv = new DataView(buf), jl = dv.getUint32(12, true), J = JSON.parse(new TextDecoder().decode(new Uint8Array(buf, 20, jl))), bin = 20 + jl + 8;
+    const view = i => { const v = J.bufferViews[i]; return {o: bin + (v.byteOffset || 0), n: v.byteLength}; };
+    const arr = i => { const a = J.accessors[i], v = view(a.bufferView), k = {SCALAR: 1, VEC2: 2, VEC3: 3}[a.type];
+      const C = a.componentType === 5126 ? Float32Array : a.componentType === 5125 ? Uint32Array : Uint16Array; return new C(buf.slice(v.o, v.o + a.count*k*C.BYTES_PER_ELEMENT)); };
+    const p = J.meshes[0].primitives[0], geo = new T3.BufferGeometry();
+    geo.setAttribute("position", new T3.BufferAttribute(arr(p.attributes.POSITION), 3));
+    geo.setAttribute("normal", new T3.BufferAttribute(arr(p.attributes.NORMAL), 3));
+    geo.setAttribute("uv", new T3.BufferAttribute(arr(p.attributes.TEXCOORD_0), 2));
+    geo.setIndex(new T3.BufferAttribute(arr(p.indices), 1));
+    const iv = view(J.images[0].bufferView), url2 = URL.createObjectURL(new Blob([buf.slice(iv.o, iv.o + iv.n)], {type: J.images[0].mimeType}));
+    return new Promise(res => new T3.TextureLoader().load(url2, tex => { tex.flipY = false; res({geo, tex}); }, undefined, () => res({geo, tex: null})));
+  });
+}
+function meshyModel(T3, l){
+  const g = new T3.Group(), body = new T3.Group(); g.add(body);
+  const H = 2.95, api = {group: g, height: H, emote: null, ready: false};
+  loadMeshy(T3, MESHY[l]).then(({geo, tex}) => {
+    geo.computeBoundingBox(); const bb = geo.boundingBox, k = H/(bb.max.y - bb.min.y);
+    const m = new T3.Mesh(geo, new T3.MeshLambertMaterial(tex ? {map: tex, side: T3.DoubleSide} : {color: "#cccccc"}));
+    m.castShadow = true; m.scale.set(k, k, k); m.position.set(-(bb.max.x + bb.min.x)/2*k, -bb.min.y*k, -(bb.max.z + bb.min.z)/2*k);
+    body.add(m); api.ready = true;
+  }).catch(() => { api.failed = true; });
+  api.update = (t, mv = 0) => {
+    let y = Math.sin(t*2)*0.02 + mv*Math.abs(Math.sin(t*7))*0.12, rz = mv*Math.sin(t*7)*0.06, ry = 0, sq = 1 + Math.sin(t*2)*0.01;
+    const e = api.emote;
+    if (e){ const et = t - e.t0;
+      if (et > 2.2) api.emote = null;
+      else if (e.k === "wave"){ y += Math.abs(Math.sin(et*6))*0.25*(1 - et/2.2); rz = Math.sin(et*9)*0.12; }
+      else if (e.k === "dance"){ ry = Math.sin(et*5)*0.6; rz = Math.sin(et*10)*0.1; y += Math.abs(Math.sin(et*10))*0.15; }
+      else { ry = et*Math.PI*2/1.1; y += Math.sin(Math.min(1, et/1.1)*Math.PI)*0.9; } }
+    body.position.y = y; body.rotation.set(0, ry, rz); body.scale.set(1, sq, 1);
+  };
+  api.update(0, 0); return api;
+}
 const MODELS = { A: apexModel, B: bonnieModel, C: clydeModel, D: duskyModel, E: easyModel, F: friskModel, G: gottiModel, H: hendrixModel, I: indyModel, J: juiceModel, K: kingstonModel, L: luckyModel, M: magicModel, O: ottoModel, P: percyModel, Q: quillaModel, R: rhinoModel, S: sharkModel, T: twinkleModel, U: umbrellabirdModel, V: vanceModel, W: wilberModel };
 
 /* ================= SHARED 3D ENGINE ================= */
