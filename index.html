@@ -6762,6 +6762,9 @@ function micro3dPlay(me, hard, ti){
         else if (o.kind === "ramp" && k.air <= 0 && k.v > 8){ k.air = 0.55; if (k.human) G.burst(k.x, 0.5, k.z, 10, ["#FFD166","#ffffff"], true); }
         else if (o.kind === "barrel" && k.air <= 0){ const nx = (k.x - o.x)/(dd || 1), nz = (k.z - o.z)/(dd || 1); k.x = o.x + nx*(o.r + 0.41); k.z = o.z + nz*(o.r + 0.41); k.v *= 0.7; k.vx *= 0.5; k.vz *= 0.5; } }
       for (const s of solids){ const dx = k.x - s.x, dz = k.z - s.z, dd = Math.hypot(dx, dz); if (dd < s.r + 0.4){ k.x = s.x + dx/dd*(s.r + 0.4); k.z = s.z + dz/dd*(s.r + 0.4); k.v *= 0.7; k.vx *= 0.5; k.vz *= 0.5; } }
+      // wedged against something for a couple of seconds? pop back onto the middle of the track
+      if (racing && !k.done && k.air <= 0){ k.stuckT = Math.hypot(k.vx, k.vz) < 1.2 ? (k.stuckT || 0) + dt : 0;
+        if (k.stuckT > 2.2){ k.stuckT = 0; const [cx, cz] = P[k.idx], [tx, tz] = Tn[k.idx]; k.x = cx; k.z = cz; k.h = Math.atan2(tx, tz); k.v = 0; k.vx = 0; k.vz = 0; k.spin = 0; if (k.human){ speak("Back on track!"); G.burst(cx, 0.6, cz, 14, RB, true); } } }
       k.x = Math.max(BX[0], Math.min(BX[1], k.x)); k.z = Math.max(BZ[0], Math.min(BZ[1], k.z));
       for (const p of pads) if (Math.hypot(p.x - k.x, p.z - k.z) < 1.1 && k.boost <= 0){ k.boost = 1.1; if (k.human){ speak("Boost!"); G.burst(k.x, 0.4, k.z, 10, RB, true); } }
       for (const s of stars) if (s.cool <= 0 && Math.hypot(s.x - k.x, s.z - k.z) < 0.9){ s.cool = 6; s.m.visible = false; k.boost = Math.max(k.boost, 0.8); if (k.human) G.burst(s.x, 0.6, s.z, 12, ["#FFD166","#ffffff"], true); }
