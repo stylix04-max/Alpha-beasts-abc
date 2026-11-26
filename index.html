@@ -4124,7 +4124,7 @@ function vanceModel(T3){
 
 /* Meshy (AI image-to-3D) models: rigged, textured GLBs with Idle / Wave / Dance / Cheer / Walking clips, loaded on demand */
 const MESHY = Object.fromEntries("ACDEFGHIJKLMOPQRSTUVW".split("").map(l => [l, `/models/${l}.glb`]));
-const MESHY_CLIPS = {idle: "Idle", wave: "Wave_One_Hand", dance: "Joyful_Dance_with_Hand_Sway", special: "Victory_Cheer", walk: "Walking"};
+const MESHY_CLIPS = {idle: "Idle", wave: "Wave_One_Hand", dance: "Joyful_Dance_with_Hand_Sway", special: "Victory_Cheer", walk: "Walking", run: "Running"};
 let GLTF_READY = null;
 function gltfLoader(){
   if (window.THREE && THREE.GLTFLoader) return Promise.resolve();
@@ -4145,7 +4145,7 @@ function meshyModel(T3, l){
       const k = gb ? Math.min(H/Math.max(0.01, gb.max.y - gb.min.y), 3.1/Math.max(0.01, gb.max.x - gb.min.x, gb.max.z - gb.min.z)) : H/1.7;   // wide ones (Easy E on all fours) are fitted by width   // skinned: use the bind-pose mesh size (the armature carries its own 0.01 scale)
       root.scale.set(k, k, k); root.position.y = gb ? -gb.min.y*k : 0; body.add(root);
       mixer = new T3.AnimationMixer(root);
-      Object.entries(MESHY_CLIPS).forEach(([key, name]) => { const c = gl.animations.find(a => a.name === name); if (c){ const a = mixer.clipAction(c); if (key !== "idle" && key !== "walk"){ a.setLoop(T3.LoopOnce, 1); a.clampWhenFinished = true; } acts[key] = a; } });
+      Object.entries(MESHY_CLIPS).forEach(([key, name]) => { const c = gl.animations.find(a => a.name === name); if (c){ const a = mixer.clipAction(c); if (key !== "idle" && key !== "walk" && key !== "run"){ a.setLoop(T3.LoopOnce, 1); a.clampWhenFinished = true; } acts[key] = a; } });
       mixer.addEventListener("finished", e => { if (oneShot && e.action === acts[oneShot]){ oneShot = null; play("idle", 0.35); } });
       play("idle", 0); api.ready = true;
     }).catch(() => { api.failed = true; });
@@ -4161,7 +4161,9 @@ function meshyModel(T3, l){
       body.position.y = y; body.rotation.set(0, ry, rz); return;
     }
     if (api.emote && api.emote !== lastEm){ lastEm = api.emote; const k = api.emote.k === "wave" ? "wave" : api.emote.k === "dance" ? "dance" : "special"; if (acts[k]){ oneShot = k; play(k, 0.2); } }
-    if (!oneShot) play(mv > 0.5 ? "walk" : "idle", 0.3);
+    if (!oneShot){ const k = mv > 0.5 ? (api.run && acts.run && !(api.spd < 1.6) ? "run" : "walk") : "idle"; play(k, 0.25);
+      if (k !== "idle" && api.spd) acts[k].timeScale = Math.max(0.7, Math.min(1.7, api.spd/(k === "run" ? 4.5 : 1.6))); }
+    api.state = cur && cur.getClip().name;
     mixer.update(dt);
   };
   return api;
@@ -4223,8 +4225,8 @@ function make3D(o = {}){
   const beast = (b, size) => { const s = size || 0.6, fit = OUTFIT_FOR === b.l && S.outfit && S.outfit !== "none" && outfitOpen(S.outfit) ? S.outfit : null;
     if (MODELS[b.l]){ const mdl = MODELS[b.l](T3), outer = new T3.Group(), k = s*2.5/mdl.height; mdl.group.scale.set(k, k, k); mdl.group.position.y = -s*0.6; outer.add(mdl.group); scene.add(outer);
       if (fit){ const hat = outfitMesh(T3, fit, s*1.1); hat.position.y = s*1.9; if (fit === "shades"){ hat.position.y = s*1.62; hat.position.z = s*0.05; } outer.add(hat); }
-      outer.userData = outer.userData || {}; outer.userData.mdl = mdl; const rec = {outer, mdl, lx: 0, lz: 0, mv: 0}; models.push(rec); if (models.length === 1) onFrame((dt, now) => models.forEach(r => { const d = Math.hypot(r.outer.position.x - r.lx, r.outer.position.z - r.lz); r.lx = r.outer.position.x; r.lz = r.outer.position.z;
-        r.mv += ((d > 0.004 ? 1 : 0) - r.mv)*Math.min(1, dt*8); r.mdl.update(now/1000, r.mv); })); return outer; }
+      outer.userData = outer.userData || {}; outer.userData.mdl = mdl; mdl.run = true; const rec = {outer, mdl, lx: 0, lz: 0, mv: 0}; (window.LIVE_MODELS = window.LIVE_MODELS || []).push(mdl); models.push(rec); if (models.length === 1) onFrame((dt, now) => models.forEach(r => { const d = Math.hypot(r.outer.position.x - r.lx, r.outer.position.z - r.lz); r.lx = r.outer.position.x; r.lz = r.outer.position.z;
+        r.mv += ((d > 0.004 ? 1 : 0) - r.mv)*Math.min(1, dt*8); r.mdl.spd = (r.mdl.spd || 0) + (d/Math.max(dt, 0.001) - (r.mdl.spd || 0))*Math.min(1, dt*6); r.mdl.update(now/1000, r.mv); })); return outer; }
     if (ART[b.l]){ const sp = artSprite(T3, b.l, s*2.4); scene.add(sp); return sp; } const ob = new T3.Mesh(new T3.BoxGeometry(s, s*1.2, s), new T3.MeshLambertMaterial({map: letterTex(b.l, hexOf(b))}));
     ob.castShadow = true; scene.add(ob); if (fit){ const hat = outfitMesh(T3, fit, s*0.95); hat.position.y = s*0.6; if (fit === "shades"){ hat.position.y = s*0.52; hat.position.z = s*0.2; } ob.add(hat); } return ob; };
   const tweens = [], frames = []; let alive = true, raf, last = performance.now();
