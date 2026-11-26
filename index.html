@@ -4137,13 +4137,26 @@ function propModel(T3, name, size, o = {}){
       .then(buf => new Promise((res, rej) => new T3.GLTFLoader().parse(buf, "", res, rej)))
       .then(gl => { gl.scene.traverse(x => { if (x.isMesh && x.material){ x.material.metalness = 0; x.material.roughness = 0.8; if (x.material.map) x.material.map.encoding = T3.LinearEncoding; x.material.needsUpdate = true; } }); return gl; })))
     .then(gl => {
-      const m = gl.scene.clone(true); m.traverse(x => { if (x.isMesh){ x.castShadow = o.shadow !== false; x.frustumCulled = false; } });
+      const m = gl.scene.clone(true); m.traverse(x => { if (x.isMesh){ x.castShadow = o.shadow !== false; x.frustumCulled = false; if (o.recolor && x.material && x.material.map){ x.material = x.material.clone(); x.material.map = recolorTex(T3, x.material.map, o.recolor, name); }
+        if (o.tint && x.material){ x.material = x.material.clone(); x.material.color = new T3.Color(o.tint); if (o.glow){ x.material.emissive = new T3.Color(o.tint); x.material.emissiveIntensity = o.glow; } } } });
       const bb = new T3.Box3().setFromObject(m), sz = bb.getSize(new T3.Vector3()), k = size/(o.byHeight ? sz.y : Math.max(sz.x, sz.y, sz.z));
       m.scale.setScalar(k); m.position.set(-(bb.min.x + bb.max.x)/2*k, o.center ? -(bb.min.y + bb.max.y)/2*k : -bb.min.y*k, -(bb.min.z + bb.max.z)/2*k);
       const piv = new T3.Group(); if (o.rot) piv.rotation.set(o.rot[0], o.rot[1], o.rot[2]); piv.add(m); g.add(piv); g.userData.ready = true; if (o.onload) o.onload(g);
     }).catch(() => { g.userData.failed = true; });
   return g;
 }
+// put a prop inside an existing simple mesh: the mesh turns invisible once the model has loaded (so game code that moves/removes it still works)
+let PROP_HIDE = null; const RECOLOR = {};
+// shift the strong reds in a prop's texture to another colour (one kart per AZoomal colour)
+function recolorTex(T3, tex, hex, key){
+  const id = key + hex; if (RECOLOR[id]) return RECOLOR[id];
+  const im = tex.image, c = document.createElement("canvas"); c.width = im.width; c.height = im.height; const x = c.getContext("2d"); x.drawImage(im, 0, 0);
+  const d = x.getImageData(0, 0, c.width, c.height), p = d.data, tc = new T3.Color(hex), th = {}; tc.getHSL(th);
+  for (let i = 0; i < p.length; i += 4){ const r = p[i]/255, g = p[i+1]/255, b = p[i+2]/255, mx = Math.max(r, g, b), mn = Math.min(r, g, b), s = mx - mn;
+    if (mx === r && s > 0.28 && g < 0.55 && b < 0.55){ const l = (mx + mn)/2, nl = Math.min(0.92, Math.max(0.08, th.l + (l - 0.45)*0.9)), col = new T3.Color().setHSL(th.h, Math.min(1, th.s*1.05), nl); p[i] = col.r*255; p[i+1] = col.g*255; p[i+2] = col.b*255; } }
+  x.putImageData(d, 0, 0); const t = new T3.CanvasTexture(c); t.flipY = tex.flipY; t.encoding = tex.encoding; t.wrapS = tex.wrapS; t.wrapT = tex.wrapT; return (RECOLOR[id] = t);
+}
+function propSwap(T3, mesh, name, size, o = {}){ const p = propModel(T3, name, size, Object.assign({center: true}, o, {onload: () => { mesh.material = PROP_HIDE || (PROP_HIDE = new T3.MeshBasicMaterial({visible: false})); mesh.castShadow = false; }})); mesh.add(p); return p; }
 const resultSlot = () => `<div class="rbeast" id="rbeast"></div>`;
 // the player's 3D AZoomal celebrates (or sulks) on the results card
 function resultBeast(won){
@@ -5872,6 +5885,7 @@ function hunt3dPlay(me, mi, opt){
       // ---- chickens (Claw City)
       const chickens = FC.chickens ? Array.from({length: 7}, () => { const g = new T3.Group(), bd = new T3.Mesh(new T3.SphereGeometry(0.28, 10, 8), mat(Math.random() < 0.5 ? "#FFFFFF" : "#C8793A")); bd.scale.set(0.9, 0.9, 1.2); bd.position.y = 0.38; bd.castShadow = true; g.add(bd);
         const hd = new T3.Mesh(new T3.SphereGeometry(0.14, 8, 6), bd.material); hd.position.set(0, 0.62, 0.22); g.add(hd); const cm = new T3.Mesh(new T3.BoxGeometry(0.04, 0.1, 0.12), mat("#E63946")); cm.position.set(0, 0.77, 0.22); g.add(cm); const bk = new T3.Mesh(new T3.ConeGeometry(0.04, 0.1, 5), mat("#F08A24")); bk.rotation.x = Math.PI/2; bk.position.set(0, 0.6, 0.38); g.add(bk);
+        g.add(propModel(T3, "chicken", 0.8, {byHeight: true, onload: () => [bd, hd, cm, bk].forEach(m => m.visible = false)}));
         scene.add(g); const a = Math.random()*TAU, r = Math.random()*FC.chickens.r; const x = FC.chickens.x + Math.cos(a)*r, z = FC.chickens.z + Math.sin(a)*r; return {g, x, z, tx: x, tz: z, wt: Math.random()*3, hop: 0, ry: Math.random()*6}; }) : [];
       if (FC.chickens){ const {x, z} = FC.chickens, y = H(x - 3, z - 3); add(new T3.BoxGeometry(2.2, 1.6, 1.8), mat("#C8323E"), x - 3, y + 0.8, z - 3, true); const rf = add(new T3.ConeGeometry(1.8, 0.9, 4), mat("#5A3A1A"), x - 3, y + 2.05, z - 3, true); rf.rotation.y = Math.PI/4; box(x - 3, z - 3, 2.4, 2); }
       // ---- balloons to pop
@@ -6439,6 +6453,7 @@ function kart3dPlay(me, hard){
       [-0.45, 0.45].forEach(x => { const s = new T3.Mesh(new T3.BoxGeometry(0.06, 0.35, 0.06), mat("#1D2B4F")); s.position.set(x, 0.68, -0.95); g.add(s); });
       const wheels = []; [[-0.68, 0.7], [0.68, 0.7], [-0.68, -0.7], [0.68, -0.7]].forEach(([x, z]) => { const w = new T3.Mesh(new T3.CylinderGeometry(0.28, 0.28, 0.25, 14), mat("#222222")); w.rotation.z = Math.PI/2; w.position.set(x, 0.28, z); w.castShadow = true; g.add(w); wheels.push(w); });
       const drv = ART[b.l] ? artSprite(T3, b.l, 1.5) : new T3.Mesh(new T3.BoxGeometry(0.55, 0.62, 0.55), new T3.MeshLambertMaterial({map: G.letterTex(b.l, c)})); drv.position.set(0, ART[b.l] ? 0.75 : 0.9, -0.1); drv.castShadow = true; g.add(drv);
+      const old = g.children.slice(); g.add(propModel(T3, "kart", 2.3, {rot: [0, Math.PI/2, 0], recolor: c, onload: () => old.forEach(m => { if (m !== drv) m.visible = false; })}));
       scene.add(g); return {g, wheels}; };
     const rivalsB = shuffle(BEASTS.filter(x => x.team !== "place" && x.l !== me.l)).slice(0, 5);
     const karts = [me, ...rivalsB].map((b, k) => { const row = Math.floor((k + 1)/2), sd = k % 2 ? 1 : -1, i0 = (N - 6 - row*7) % N, [x, z] = P[i0], [tx, tz] = Tn[i0];
@@ -6650,7 +6665,7 @@ function micro3dPlay(me, hard, ti){
     [0.12, 0.28, 0.43, 0.58, 0.73, 0.87].forEach((f, k) => { const [x, z] = at(f, (k % 3 - 1)*1.5); obst.push({kind: "cone", x, z, r: 0.35, m: add(new T3.ConeGeometry(0.3, 0.8, 12), mat(coneCol), x, 0.4, z, true), hit: 0}); });
     [0.2, 0.5, 0.8].forEach((f, k) => { const [x, z] = at(f, (k % 2 ? 1 : -1)*1.2); const m = add(new T3.CylinderGeometry(0.9, 0.9, 0.03, 20), new T3.MeshPhongMaterial({color: TR.oil, shininess: 120, specular: "#8888aa", transparent: TR.id === "beach", opacity: 0.8}), x, 0.09, z, false); m.scale.set(1.2, 1, 0.8); obst.push({kind: "oil", x, z, r: 0.95}); });
     [0.35, 0.67].forEach(f => { const [x, z, ang] = at(f, 0); const m = add(new T3.BoxGeometry(HALF*1.4, 0.4, 1.4), mat("#FFD166"), x, 0.15, z, true); m.rotation.set(-0.25, ang, 0, "YXZ"); obst.push({kind: "ramp", x, z, r: 1}); });
-    [0.25, 0.38, 0.63, 0.93].forEach((f, k) => { const [x, z] = at(f, ((k + 1) % 3 - 1)*1.4); add(new T3.CylinderGeometry(0.4, 0.4, 0.8, 14), mat(k % 2 ? "#3A86FF" : "#E63946"), x, 0.4, z, true); obst.push({kind: "barrel", x, z, r: 0.45}); });
+    [0.25, 0.38, 0.63, 0.93].forEach((f, k) => { const [x, z] = at(f, ((k + 1) % 3 - 1)*1.4); propSwap(T3, add(new T3.CylinderGeometry(0.4, 0.4, 0.8, 14), mat(k % 2 ? "#3A86FF" : "#E63946"), x, 0.4, z, true), "barrel", 0.9, {byHeight: true}); obst.push({kind: "barrel", x, z, r: 0.45}); });
     [0.07, 0.4, 0.55, 0.83].forEach((f, k) => { const [x, z, ang] = at(f, ((k + 2) % 3 - 1)*1.4); for (let j = 0; j < 2; j++){ const a = add(new T3.ConeGeometry(0.4, 0.7, 3), new T3.MeshBasicMaterial({color: RB[(k + j) % 7]}), x + Math.sin(ang)*j*0.55, 0.1, z + Math.cos(ang)*j*0.55, false); a.rotation.set(Math.PI/2, 0, -ang); a.scale.set(1, 1, 0.1); } pads.push({x: x + Math.sin(ang)*0.3, z: z + Math.cos(ang)*0.3}); });
     const starG = new T3.OctahedronGeometry(0.3, 0);
     [0.15, 0.32, 0.47, 0.62, 0.77, 0.97].forEach(f => [-1.3, 1.3].forEach(o => { const [x, z] = at(f, o); stars.push({x, z, cool: 0, m: add(starG, new T3.MeshLambertMaterial({color: "#FFD166", emissive: "#6b4e00"}), x, 0.6, z, true)}); }));
@@ -8768,7 +8783,7 @@ function diamond3d(){
       ice: () => { const m = new T3.Mesh(new T3.ConeGeometry(0.6, 2.2, 6), new T3.MeshLambertMaterial({color: "#BFE6F7", emissive: "#2A5A7A"})); m.rotation.z = Math.PI; return m; },
       cannon: () => new T3.Mesh(new T3.SphereGeometry(0.75, 14, 12), mat("#2B2B33")) };
     ZONES.forEach((zn, zi) => { for (let zz = -zi*ZL - (zi ? 6 : 25); zz > -(zi + 1)*ZL + 8; zz -= 6 + R()*5){ const x = (R() - .5)*12, y = 1 + R()*6;
-      if (R() < 0.62){ const m = add(gemG, new T3.MeshLambertMaterial({color: rnd(RB), emissive: "#402060"}), x, y, zz, true); things.push({kind: "gem", m, x, y, z: zz}); }
+      if (R() < 0.62){ const gc = rnd(RB), m = add(gemG, new T3.MeshLambertMaterial({color: gc, emissive: "#402060"}), x, y, zz, true); propSwap(T3, m, "diamond", 1.05, {tint: new T3.Color(gc).lerp(new T3.Color("#FFFFFF"), 0.45), glow: 0.25}); things.push({kind: "gem", m, x, y, z: zz}); }
       else { const m = hz[zn.hazard](); m.position.set(x, y, zz); scene.add(m); things.push({kind: "bad", m, x, y, z: zz, haz: zn.hazard}); } } });
     const flames = []; let fireCool = 0, burnt = 0;
     const flameM = new T3.MeshBasicMaterial({color: "#FFB020"}), flameCore = new T3.MeshBasicMaterial({color: "#FFF3A0"});
@@ -8820,7 +8835,7 @@ function popslide3d(){
     const things = [];
     for (let z = -20; z > -LEN + 10; z -= 7 + R()*5){ const ln = Math.floor(R()*3);
       if (R() < 0.45){ const x = LANES[ln], m = new T3.Group(); m.position.set(x, Y(z), z); scene.add(m); [[0.45, 0.45], [0.32, 1.05], [0.24, 1.5]].forEach(([r, y]) => { const s = new T3.Mesh(new T3.SphereGeometry(r, 12, 10), mat("#FFFFFF")); s.position.y = y; s.castShadow = true; m.add(s); }); things.push({kind: "snow", m, x, z}); }
-      const l2 = (ln + 1 + Math.floor(R()*2)) % 3; const can = add(new T3.CylinderGeometry(0.22, 0.22, 0.55, 14), mat(rnd(RB)), LANES[l2], Y(z) + 0.5, z, true); things.push({kind: "can", m: can, x: LANES[l2], z}); }
+      const l2 = (ln + 1 + Math.floor(R()*2)) % 3; const can = add(new T3.CylinderGeometry(0.22, 0.22, 0.55, 14), mat(rnd(RB)), LANES[l2], Y(z) + 0.5, z, true); propSwap(T3, can, "popcan", 0.62, {byHeight: true}); things.push({kind: "can", m: can, x: LANES[l2], z}); }
     const percy = G.beast(byL("P"), 0.55); let lane = 1, px = 0, z = 0, speed = 10, cans = 0, hitT = 0, over = false;
     const move = d => { lane = Math.max(0, Math.min(2, lane + d)); }; $("L").onclick = () => move(-1); $("R").onclick = () => move(1);
     let sx = null; G.el.addEventListener("pointerdown", e => sx = e.clientX); G.el.addEventListener("pointerup", e => { if (sx === null) return; const dx = e.clientX - sx; sx = null; move(Math.abs(dx) > 25 ? (dx > 0 ? 1 : -1) : (e.clientX < G.el.getBoundingClientRect().left + G.el.clientWidth/2 ? -1 : 1)); });
