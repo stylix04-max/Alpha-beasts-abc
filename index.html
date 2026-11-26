@@ -6554,7 +6554,7 @@ function microTracks(me, hard){
 function micro3dPlay(me, hard, ti){
   const TR = MICRO_TRACKS[ti || 0];
   shell3D(`Indy's Micro Karts: ${TR.name}`, `Push the joystick the way you want to go (up the screen, left, right...) and your kart turns to face it. Or drag on the track, or hold ⟲ ⟳. Dodge obstacles, hit ramps and rainbow arrows. 3 laps!${TR.grip < 0.5 ? " ❄️ It's icy, so your kart slides!" : ""}`,
-    `<div class="spads"><button class="btn mkturn" id="L" style="--c:var(--place);touch-action:none">⟲</button><div class="sjoy" id="mjoy" style="--c:var(--place)"><div class="sknob"></div></div><button class="btn mkturn" id="R" style="--c:var(--place);touch-action:none">⟳</button></div>${powerRow(me)}`);
+    `<div class="spads"><button class="btn mkturn" id="L" style="--c:var(--place);touch-action:none">⟲</button><div class="sjoy" id="mjoy" style="--c:var(--place)"><div class="sknob"></div></div><button class="btn mkturn" id="R" style="--c:var(--place);touch-action:none">⟳</button></div><div class="row" style="justify-content:center;margin:.4rem 0"><button class="btn" id="mkhop" style="--c:#3A86FF">⤴ Hop</button></div>${powerRow(me)}`);
   start3D(() => {
     const G = make3D({fog:[TR.id === "frost" ? "#E3F1FA" : "#CFE6F2", 60, 140], seed: 53 + ti*7, fov: 50, sky: TR.id === "frost" ? ["#7FB3E0","#D6ECF8","#F4FAFF"] : undefined}), {T3, camera, add, mat, scene} = G;
     kitLook(G); Object.assign(G.sun.shadow.camera, {left:-18, right:18, top:18, bottom:-18, far:80});
@@ -6690,6 +6690,9 @@ function micro3dPlay(me, hard, ti){
       return {b, g: kartMesh(b), x: x + tz*sd*1.1, z: z - tx*sd*1.1, h: Math.atan2(tx, tz), v: 0, vx: 0, vz: 0, idx: i0, lap: -1, prog: 0, boost: 0, spin: 0, air: 0, human: k === 0,
         lane: (R() - .5)*2.4, base: (hard ? 21 + R()*2 : 16 + R()*1.6)*(TR.grip < 0.5 ? 0.88 : 1), done: false, time: 0}; });
     const me0 = karts[0];
+    $("mkhop").onclick = () => { if (me0.air > 0 || me0.done) return; me0.air = 0.55; SFX.hop && SFX.hop(5); me0.stuckT = 0;
+      const [cx, cz] = P[me0.idx], d = Math.hypot(cx - me0.x, cz - me0.z); if (d > HALF - 0.5){ const k2 = Math.min(d, 2.2)/Math.max(d, 0.01); me0.x += (cx - me0.x)*k2; me0.z += (cz - me0.z)*k2; }
+      me0.v = Math.max(me0.v, 4); };
     powerArm(me, () => { me0.boost = 3.5; $("fb").textContent = `⚡ ${me.power || "Turbo"}! Rocket boost!`; });
     // ---- controls
     const hold = {L: 0, R: 0}; let joy = null, stick = null;
