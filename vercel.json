@@ -1,6 +1,6 @@
 {
   "routes": [
-    { "src": "/", "has": [{ "type": "host", "value": "www.azoomals.co.uk" }], "status": 308, "headers": { "Location": "https://azoomals.co.uk/" } },
+    { "src": "/(.*)", "has": [{ "type": "host", "value": "www.azoomals.co.uk" }], "status": 308, "headers": { "Location": "https://azoomals.co.uk/$1" } },
     { "src": "/(index\\.html)?", "has": [{ "type": "host", "value": "azoomals.co.uk" }], "dest": "/site.html" },
     { "handle": "filesystem" }
   ]
