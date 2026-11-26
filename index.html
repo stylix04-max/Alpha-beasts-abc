@@ -6683,6 +6683,7 @@ function micro3dPlay(me, hard, ti){
       const exhaust = new T3.Mesh(new T3.CylinderGeometry(0.06*S, 0.06*S, 0.3*S, 8), chrome); exhaust.rotation.x = Math.PI/2; exhaust.position.set(0.25*S, 0.35*S, -0.85*S); g.add(exhaust);
       let drv; if (MODELS[b.l]){ const mdl = MODELS[b.l](T3), k = 0.95/mdl.height; mdl.group.scale.setScalar(k); mdl.update(0, 0); drv = mdl.group; drv.position.set(0, 0.28*S, -0.2*S); g.userData.mdl = mdl; }
       else if (ART[b.l]){ drv = artSprite(T3, b.l, 1.1); drv.position.set(0, 0.95*S, -0.2*S); } else { drv = new T3.Mesh(new T3.BoxGeometry(0.5*S, 0.5*S, 0.5*S), new T3.MeshLambertMaterial({map: G.letterTex(b.l, c)})); drv.position.set(0, 0.8*S, -0.2*S); }
+      const old = g.children.slice(); g.add(propModel(T3, "kart", 1.75, {rot: [0, Math.PI/2, 0], recolor: c, onload: () => old.forEach(m => { m.visible = false; })}));
       g.add(drv); g.traverse(o => { if (o.isMesh) o.castShadow = true; }); g.userData.wheels = wheels; scene.add(g); return g; };
     const rivalsB = shuffle(BEASTS.filter(x => x.team !== "place" && x.l !== me.l)).slice(0, 5);
     const karts = [me, ...rivalsB].map((b, k) => { const row = Math.floor(k/2), sd = k % 2 ? 1 : -1, i0 = (N - 5 - row*5) % N, [x, z] = P[i0], [tx, tz] = Tn[i0];
