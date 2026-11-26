@@ -4124,10 +4124,10 @@ function vanceModel(T3){
 }
 
 /* Meshy (AI image-to-3D) models: rigged, textured GLBs with Idle / Wave / Dance / Cheer / Walking clips, loaded on demand */
-const MESHY = Object.fromEntries("ACDEFGHIJKLMOPQRSTUVW".split("").map(l => [l, `/models/${l}.glb`]));
+const MESHY = Object.fromEntries("ACDEFGHIJKLMOPQRSTUVWX".split("").map(l => [l, `/models/${l}.glb`]));
 const MESHY_CLIPS = {idle: "Idle", wave: "Wave_One_Hand", dance: "Joyful_Dance_with_Hand_Sway", special: "Victory_Cheer", walk: "Walking", run: "Running", win: "Win", lose: "Lose", power: "Power", party: "Party"};
 let GLTF_READY = null;
-const MESHY_RIG = "ACDFGHIJKMOPRSTW";
+const MESHY_RIG = "ACDFGHIJKMOPRSTWX";
 let LAST_ME = null, LAST_MDL = null; const LASTME = b => (LAST_ME = b, LAST_MDL = null, b);
 // Meshy-made 3D props (chicken, apple, kart...). Returns a group at once; the model drops in when loaded.
 const PROP_BUF = {}, PROP_OF = {"🍎": "apple", "💎": "diamond", "🐟": "fish", "🥤": "popcan", "🍮": "jelly", "🌷": "tulip"};
