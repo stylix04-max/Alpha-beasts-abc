@@ -67,7 +67,7 @@ h1{font-size:2rem;white-space:nowrap} h2{font-size:1.6rem}
 .sub{color:var(--muted);margin:0 0 .6rem}
 .count{color:var(--muted);margin:0 0 .4rem;font-weight:700}
 .emoji{font-size:5rem;line-height:1.2}
-.medal{font-size:6rem;line-height:1.2}
+.medal{font-size:6rem;line-height:1.2}.rbeast{height:240px;margin:-.4rem auto -.6rem;max-width:320px}.rbeast:empty{display:none}.rbeast canvas{display:block;margin:0 auto;max-width:none;aspect-ratio:auto;background:none;border-radius:0;box-shadow:none;border:0}
 .row{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;margin-top:1rem}
 .btn{background:var(--c,var(--place));color:#fff;border-radius:14px;padding:.8rem 1.2rem;font-weight:700;box-shadow:0 5px 0 rgba(0,0,0,.25)}
 .btn.ghost{background:var(--paper);color:var(--ink);box-shadow:0 5px 0 rgba(0,0,0,.15)}
@@ -894,7 +894,7 @@ function gotRight(b){
   if (S.correct[b.l] >= 3 && !S.cards[b.l]){ S.cards[b.l] = true; toast(`New AZoomal card: ${b.name}!`); }
   save();
 }
-function medal(icon, title){ setTimeout(confetti, 200); buzz([30, 40, 30]); const before = (S.medals || []).length; addFood(1); S.medals.push({i:icon,t:title}); setTimeout(() => checkUnlocks(before), 0); if (S.medals.length > 60) S.medals.shift(); save(); }
+function medal(icon, title){ if (LAST_MDL){ LAST_MDL.emote = {k: icon === "🥉" ? "lose" : "win", t0: performance.now()/1000}; } setTimeout(confetti, 200); buzz([30, 40, 30]); const before = (S.medals || []).length; addFood(1); S.medals.push({i:icon,t:title}); setTimeout(() => checkUnlocks(before), 0); if (S.medals.length > 60) S.medals.shift(); save(); }
 
 /* ================= HOME HUB ================= */
 function home(){
@@ -962,7 +962,7 @@ function meetBeast(b){
   const c = col(b);
   render(`${header(b.name, "meet", "AZoomals")}
     <div class="card meetcard"><div class="meetstage" id="g3d" style="--c:${c}"></div>
-      <div class="meetbar"><button class="btn ghost" id="mrl" aria-label="Turn left">⟲</button><button class="btn" id="mwave">👋 Wave</button><button class="btn" id="mdance">💃 Dance</button><button class="btn" id="mspec">${b.e} Special</button>${MESHY[b.l] ? `<button class="btn ghost" id="mswap">✨ Old model</button>` : ""}<button class="btn ghost" id="mwalk">🚶 Walk</button><button class="btn ghost" id="mrr" aria-label="Turn right">⟳</button></div>
+      <div class="meetbar"><button class="btn ghost" id="mrl" aria-label="Turn left">⟲</button><button class="btn" id="mwave">👋 Wave</button><button class="btn" id="mdance">💃 Dance</button><button class="btn" id="mspec">${b.e} Special</button>${MESHY_RIG.includes(b.l) ? `<button class="btn" id="mparty">🪩 Party</button><button class="btn" id="mwin">🏆 Win</button><button class="btn" id="mlose">😤 Sulk</button>` : ""}${MESHY[b.l] ? `<button class="btn ghost" id="mswap">✨ Old model</button>` : ""}<button class="btn ghost" id="mwalk">🚶 Walk</button><button class="btn ghost" id="mrr" aria-label="Turn right">⟳</button></div>
       <p class="sub" style="margin:.5rem 0 0">Drag to spin ${b.name} all the way round. Pinch to zoom in close.</p></div>
     <div class="card"><div class="meethead"><span class="ml" style="--c:${c}">${b.l}</span><div><h3 style="margin:0">${b.name}</h3><span class="sub">the ${b.animal}</span></div><button class="pill" id="mtalk" style="margin-left:auto">🔊 Hear me</button></div>
       <div class="meetinfo"><b>Team</b><span>${TEAMNAME[b.team] || b.team}</span><b>Home</b><span>${b.home || "New Rainbow Land"}</span><b>Power</b><span>⚡ ${b.power || "—"}</span><b>Boost</b><span>${b.e || ""} ${b.boost || "—"}</span></div>
@@ -1000,6 +1000,7 @@ function meetBeast(b){
     $("mrl").onclick = () => spinTo(-Math.PI/4); $("mrr").onclick = () => spinTo(Math.PI/4);
     const emote = k => { mdl.emote = {k, t0: performance.now()/1000}; idle = 0; buzz(15); if (k === "special") G.burst(0, 2.2, 0, 40, RB, true); if (k === "dance") MUSIC.cheer && MUSIC.cheer(); };
     $("mwave").onclick = () => { emote("wave"); speak(`Hello!`, null, {beast: b.l}); }; $("mdance").onclick = () => emote("dance"); $("mspec").onclick = () => { emote("special"); speak(`${b.power}!`, null, {beast: b.l}); };
+    if ($("mparty")){ $("mparty").onclick = () => { emote("party"); MUSIC.cheer && MUSIC.cheer(); }; $("mwin").onclick = () => { emote("win"); G.burst(0, 2.2, 0, 30, RB, true); speak("I win!", null, {beast: b.l}); }; $("mlose").onclick = () => { emote("lose"); speak("Aww, not fair!", null, {beast: b.l}); }; }
     $("mwalk").onclick = () => { walk = walk ? 0 : 1; $("mwalk").textContent = walk ? "✋ Stop" : "🚶 Walk"; };
     let mv = 0;
     G.onFrame((dt, now) => { idle += dt;
@@ -1688,9 +1689,9 @@ function finish(title, score, of, again){
   const m = score === of ? "🥇" : score >= of - 2 ? "🥈" : "🥉";
   medal(m, title);
   render(`${header(title, "games", "Games")}
-    <div class="card"><div class="medal">${m}</div><p class="say">You got ${score} out of ${of}!</p>
+    <div class="card">${resultSlot()}<div class="medal">${m}</div><p class="say">You got ${score} out of ${of}!</p>
       <div class="row"><button class="btn" id="again">Play again</button><button class="btn ghost" data-go="games">More games</button></div></div>`);
-  speak(`Well done! You got ${score} out of ${of}!`);
+  speak(`Well done! You got ${score} out of ${of}!`); resultBeast(m !== "🥉");
   $("again").onclick = again;
 }
 
@@ -4124,8 +4125,44 @@ function vanceModel(T3){
 
 /* Meshy (AI image-to-3D) models: rigged, textured GLBs with Idle / Wave / Dance / Cheer / Walking clips, loaded on demand */
 const MESHY = Object.fromEntries("ACDEFGHIJKLMOPQRSTUVW".split("").map(l => [l, `/models/${l}.glb`]));
-const MESHY_CLIPS = {idle: "Idle", wave: "Wave_One_Hand", dance: "Joyful_Dance_with_Hand_Sway", special: "Victory_Cheer", walk: "Walking", run: "Running"};
+const MESHY_CLIPS = {idle: "Idle", wave: "Wave_One_Hand", dance: "Joyful_Dance_with_Hand_Sway", special: "Victory_Cheer", walk: "Walking", run: "Running", win: "Win", lose: "Lose", power: "Power", party: "Party"};
 let GLTF_READY = null;
+const MESHY_RIG = "ACDFGHIJKMOPRSTW";
+let LAST_ME = null, LAST_MDL = null; const LASTME = b => (LAST_ME = b, LAST_MDL = null, b);
+// Meshy-made 3D props (chicken, apple, kart...). Returns a group at once; the model drops in when loaded.
+const PROP_BUF = {}, PROP_OF = {"🍎": "apple", "💎": "diamond", "🐟": "fish", "🥤": "popcan", "🍮": "jelly", "🌷": "tulip"};
+function propModel(T3, name, size, o = {}){
+  const g = new T3.Group();
+  gltfLoader().then(() => PROP_BUF[name] || (PROP_BUF[name] = fetch(`/props/${name}.glb`).then(r => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
+      .then(buf => new Promise((res, rej) => new T3.GLTFLoader().parse(buf, "", res, rej)))
+      .then(gl => { gl.scene.traverse(x => { if (x.isMesh && x.material){ x.material.metalness = 0; x.material.roughness = 0.8; if (x.material.map) x.material.map.encoding = T3.LinearEncoding; x.material.needsUpdate = true; } }); return gl; })))
+    .then(gl => {
+      const m = gl.scene.clone(true); m.traverse(x => { if (x.isMesh){ x.castShadow = o.shadow !== false; x.frustumCulled = false; } });
+      const bb = new T3.Box3().setFromObject(m), sz = bb.getSize(new T3.Vector3()), k = size/(o.byHeight ? sz.y : Math.max(sz.x, sz.y, sz.z));
+      m.scale.setScalar(k); m.position.set(-(bb.min.x + bb.max.x)/2*k, o.center ? -(bb.min.y + bb.max.y)/2*k : -bb.min.y*k, -(bb.min.z + bb.max.z)/2*k);
+      const piv = new T3.Group(); if (o.rot) piv.rotation.set(o.rot[0], o.rot[1], o.rot[2]); piv.add(m); g.add(piv); g.userData.ready = true; if (o.onload) o.onload(g);
+    }).catch(() => { g.userData.failed = true; });
+  return g;
+}
+const resultSlot = () => `<div class="rbeast" id="rbeast"></div>`;
+// the player's 3D AZoomal celebrates (or sulks) on the results card
+function resultBeast(won){
+  const el = $("rbeast"); if (!el) return;
+  let b = LAST_ME && MESHY[LAST_ME.l] ? LAST_ME : null;
+  if (!b){ const mine = (TEAMS[S.team] || "").split("").filter(l => MESHY_RIG.includes(l)); b = byL(mine.length ? rnd(mine) : rnd(MESHY_RIG.split(""))); }
+  loadThree().then(() => {
+    if (!document.contains(el)) return;
+    const T3 = THREE, w = el.clientWidth || 260, h = 240, R = new T3.WebGLRenderer({antialias: true, alpha: true}); R.setPixelRatio(Math.min(2, window.devicePixelRatio || 1)); R.setSize(w, h); el.appendChild(R.domElement);
+    const sc = new T3.Scene(); sc.add(new T3.HemisphereLight(0xffffff, 0x8a7a6a, 0.95)); const dl = new T3.DirectionalLight(0xffffff, 0.7); dl.position.set(2, 5, 6); sc.add(dl);
+    const cam = new T3.PerspectiveCamera(30, w/h, 0.1, 50); cam.position.set(0, 1.5, 7.2); cam.lookAt(0, 1.35, 0);
+    const mdl = meshyModel(T3, b.l); sc.add(mdl.group); mdl.group.rotation.y = 0.35; if (won){ mdl.group.position.x = -0.55; const tr = propModel(T3, "trophy", 1.25, {byHeight: true}); tr.position.set(1.35, 0, 0.3); tr.rotation.y = -0.4; sc.add(tr); }
+    let fired = false; const t0 = performance.now();
+    const loop = () => { if (!document.contains(el)){ R.dispose(); return; } const t = (performance.now() - t0)/1000;
+      if (mdl.ready && !fired && t > 0.3){ fired = true; mdl.emote = {k: won ? "win" : "lose", t0: t}; if (won) later(() => { mdl.emote = {k: "party", t0: (performance.now() - t0)/1000}; }, 3200); }
+      mdl.update(t, 0); R.render(sc, cam); requestAnimationFrame(loop); };
+    loop();
+  }).catch(() => {});
+}
 function gltfLoader(){
   if (window.THREE && THREE.GLTFLoader) return Promise.resolve();
   const one = src => new Promise((res, rej) => { const sc = document.createElement("script"); sc.src = src; sc.onload = res; sc.onerror = () => rej(new Error(src)); document.head.appendChild(sc); });
@@ -4156,11 +4193,12 @@ function meshyModel(T3, l){
       let y = Math.sin(t*2)*0.02 + mv*Math.abs(Math.sin(t*7))*0.12, rz = mv*Math.sin(t*7)*0.06, ry = 0; const e = api.emote;
       if (e){ const et = t - e.t0; if (et > 2.2) api.emote = null;
         else if (e.k === "wave"){ y += Math.abs(Math.sin(et*6))*0.25*(1 - et/2.2); rz = Math.sin(et*9)*0.12; }
-        else if (e.k === "dance"){ ry = Math.sin(et*5)*0.6; rz = Math.sin(et*10)*0.1; y += Math.abs(Math.sin(et*10))*0.15; }
+        else if (e.k === "lose"){ y -= Math.min(1, et*3)*0.06; rz = Math.sin(et*2)*0.05; body.rotation.x = 0.25; }
+        else if (e.k === "dance" || e.k === "party"){ ry = Math.sin(et*5)*0.6; rz = Math.sin(et*10)*0.1; y += Math.abs(Math.sin(et*10))*0.15; }
         else { ry = et*Math.PI*2/1.1; y += Math.sin(Math.min(1, et/1.1)*Math.PI)*0.9; } }
-      body.position.y = y; body.rotation.set(0, ry, rz); return;
+      body.position.y = y; body.rotation.set(e && e.k === "lose" ? 0.25 : 0, ry, rz); return;
     }
-    if (api.emote && api.emote !== lastEm){ lastEm = api.emote; const k = api.emote.k === "wave" ? "wave" : api.emote.k === "dance" ? "dance" : "special"; if (acts[k]){ oneShot = k; play(k, 0.2); } }
+    if (api.emote && api.emote !== lastEm){ lastEm = api.emote; const e = api.emote.k, k = e === "wave" ? "wave" : e === "dance" ? "dance" : e === "special" ? (acts.power ? "power" : "special") : e === "win" ? (acts.win ? "win" : "special") : e === "party" ? (acts.party ? "party" : "dance") : e === "lose" ? "lose" : "special"; if (acts[k]){ oneShot = k; play(k, 0.2); } }
     if (!oneShot){ const k = mv > 0.5 ? (api.run && acts.run && !(api.spd < 1.6) ? "run" : "walk") : "idle"; play(k, 0.25);
       if (k !== "idle" && api.spd) acts[k].timeScale = Math.max(0.7, Math.min(1.7, api.spd/(k === "run" ? 4.5 : 1.6))); }
     api.state = cur && cur.getClip().name;
@@ -4225,7 +4263,7 @@ function make3D(o = {}){
   const beast = (b, size) => { const s = size || 0.6, fit = OUTFIT_FOR === b.l && S.outfit && S.outfit !== "none" && outfitOpen(S.outfit) ? S.outfit : null;
     if (MODELS[b.l]){ const mdl = MODELS[b.l](T3), outer = new T3.Group(), k = s*2.5/mdl.height; mdl.group.scale.set(k, k, k); mdl.group.position.y = -s*0.6; outer.add(mdl.group); scene.add(outer);
       if (fit){ const hat = outfitMesh(T3, fit, s*1.1); hat.position.y = s*1.9; if (fit === "shades"){ hat.position.y = s*1.62; hat.position.z = s*0.05; } outer.add(hat); }
-      outer.userData = outer.userData || {}; outer.userData.mdl = mdl; mdl.run = true; const rec = {outer, mdl, lx: 0, lz: 0, mv: 0}; (window.LIVE_MODELS = window.LIVE_MODELS || []).push(mdl); models.push(rec); if (models.length === 1) onFrame((dt, now) => models.forEach(r => { const d = Math.hypot(r.outer.position.x - r.lx, r.outer.position.z - r.lz); r.lx = r.outer.position.x; r.lz = r.outer.position.z;
+      outer.userData = outer.userData || {}; outer.userData.mdl = mdl; mdl.run = true; const rec = {outer, mdl, lx: 0, lz: 0, mv: 0}; (window.LIVE_MODELS = window.LIVE_MODELS || []).push(mdl); if (b === LAST_ME) LAST_MDL = mdl; models.push(rec); if (models.length === 1) onFrame((dt, now) => models.forEach(r => { const d = Math.hypot(r.outer.position.x - r.lx, r.outer.position.z - r.lz); r.lx = r.outer.position.x; r.lz = r.outer.position.z;
         r.mv += ((d > 0.004 ? 1 : 0) - r.mv)*Math.min(1, dt*8); r.mdl.spd = (r.mdl.spd || 0) + (d/Math.max(dt, 0.001) - (r.mdl.spd || 0))*Math.min(1, dt*6); r.mdl.update(now/1000, r.mv); })); return outer; }
     if (ART[b.l]){ const sp = artSprite(T3, b.l, s*2.4); scene.add(sp); return sp; } const ob = new T3.Mesh(new T3.BoxGeometry(s, s*1.2, s), new T3.MeshLambertMaterial({map: letterTex(b.l, hexOf(b))}));
     ob.castShadow = true; scene.add(ob); if (fit){ const hat = outfitMesh(T3, fit, s*0.95); hat.position.y = s*0.6; if (fit === "shades"){ hat.position.y = s*0.52; hat.position.z = s*0.2; } ob.add(hat); } return ob; };
@@ -4504,7 +4542,8 @@ function chicken3d(){
     const chickenMesh = () => { const g = []; const body = add(new T3.SphereGeometry(0.35, 14, 12), mat("#F08A24"), 0, -5, 0, true);
       const head = add(new T3.SphereGeometry(0.2, 12, 10), mat("#F08A24"), 0, -5, 0, true); const comb = add(new T3.BoxGeometry(0.06, 0.14, 0.2), mat("#E63946"), 0, -5, 0, false);
       const beak = add(new T3.ConeGeometry(0.07, 0.18, 8), mat("#FFD166"), 0, -5, 0, false); beak.rotation.x = Math.PI/2;
-      const set = (x, y, z) => { body.position.set(x, y, z); head.position.set(x, y + 0.36, z + 0.18); comb.position.set(x, y + 0.58, z + 0.18); beak.position.set(x, y + 0.34, z + 0.42); };
+      const cp = propModel(T3, "chicken", 0.95, {byHeight: true, onload: () => [body, head, comb, beak].forEach(m => m.visible = false)}); cp.position.y = -5; G.scene.add(cp);
+      const set = (x, y, z) => { body.position.set(x, y, z); head.position.set(x, y + 0.36, z + 0.18); comb.position.set(x, y + 0.58, z + 0.18); beak.position.set(x, y + 0.34, z + 0.42); cp.position.set(x, y - 0.33, z); };
       return {set}; };
     const chick = chickenMesh();
     const hud = () => { const h = $("hud"); if (h) h.innerHTML = `<div class="slp now" style="--c:var(--outlaw)"><span class="av">🐔</span><span class="nm">Round ${round} of 3</span><span class="sq">${left} goes</span></div><div class="slp"><span class="nm">Caught ${caught}</span></div>`; };
@@ -4593,7 +4632,7 @@ function beach3dPlay(me){
         const eye = new T3.Mesh(new T3.SphereGeometry(0.04, 6, 5), mat("#1D2B4F")); eye.position.set(sd*0.07, 0.15, 0.12); crab.add(eye); }); G.scene.add(crab);
       G.onFrame((dt, now) => { const t = now/1000; boats.forEach((b, k) => { b.g.position.set(b.x + Math.sin(t*0.08 + k)*6, -0.1 + Math.sin(t*1.2 + k)*0.08, b.z); b.g.rotation.z = Math.sin(t + k)*0.05; });
         crab.position.set(Math.sin(t*0.5)*5, 0.12, 3.8 + Math.sin(t*0.9)*0.3); crab.rotation.y = Math.PI/2; }); }
-    const player = G.beast(me, 0.85);
+    const player = G.beast(LASTME(me), 0.85);
     const bucket = new T3.Group(); G.scene.add(bucket);
     { const bm = mat(RB[4], {side: T3.DoubleSide}), b1 = new T3.Mesh(new T3.CylinderGeometry(0.46, 0.34, 0.5, 18, 1, true), bm); bucket.add(b1);
       const bot = new T3.Mesh(new T3.CylinderGeometry(0.34, 0.34, 0.03, 18), bm); bot.position.y = -0.24; bucket.add(bot);
@@ -4634,7 +4673,9 @@ function beach3dPlay(me){
       let ob, db = null;
       if (gull){ ob = makeGull(); ob.position.set(x, 8, 0.5); }
       else { let m = boostMat; if (kind === "gold") m = goldMat; if (kind === "rot") m = rotMat; if (kind === "decoy"){ db = rnd(others); m = decoyMats[db.l] || (decoyMats[db.l] = emojiTex(db.e)); }
-        ob = new T3.Sprite(m); ob.scale.set(kind === "gold" ? 0.95 : 0.75, kind === "gold" ? 0.95 : 0.75, 1); ob.position.set(x, 8, 0.5); G.scene.add(ob); }
+        const pn = (kind === "good" || kind === "decoy") && PROP_OF[kind === "decoy" ? db.e : me.e];
+        if (pn){ ob = propModel(T3, pn, 0.8, {center: true}); ob.position.set(x, 8, 0.5); G.scene.add(ob); }
+        else { ob = new T3.Sprite(m); ob.scale.set(kind === "gold" ? 0.95 : 0.75, kind === "gold" ? 0.95 : 0.75, 1); ob.position.set(x, 8, 0.5); G.scene.add(ob); } }
       const fast = 1 + level*0.12; items.push({ob, gull, kind, db, x, y: 8, vy: (gull ? 3.6 : 2.4 + Math.random()*1.4)*fast, sway: Math.random()*6});
     };
     const end = () => { playing = false; const m = score >= 25 ? "🥇" : score >= 15 ? "🥈" : "🥉";
@@ -4655,7 +4696,7 @@ function beach3dPlay(me){
         for (let k = items.length - 1; k >= 0; k--){ const it = items[k];
           it.y -= it.vy*dt; it.x = Math.max(-4.6, Math.min(4.6, it.x + wind*dt)); const xx = it.gull ? it.x + Math.sin(now/300 + it.sway)*1.2 : it.x;
           it.ob.position.set(xx, it.y, 0.5); if (it.gull){ const flap = Math.sin(now/90 + it.sway); it.ob.userData.wings.forEach(w => { w.pv.rotation.x = w.sd*flap*0.7; }); it.ob.rotation.y = Math.cos(now/300 + it.sway) > 0 ? 0 : Math.PI; it.ob.rotation.z = -0.25; }
-          else it.ob.material.rotation = Math.sin(now/250 + it.sway)*0.3;
+          else if (it.ob.material) it.ob.material.rotation = Math.sin(now/250 + it.sway)*0.3; else it.ob.rotation.set(Math.sin(now/250 + it.sway)*0.3, now/500 + it.sway, 0);
           if (it.y < BUCKET_Y + 0.45 && it.y > BUCKET_Y - 0.15 && Math.abs(xx - px) < (frenzy > 0 ? 1.05 : 0.62)){
             const say2 = t => { if (sayCool <= 0){ speak(t); sayCool = 2.2; } };
             if (it.gull){ score = Math.max(0, score - 2); streak = 0; say2("Oh no, a seagull!"); G.burst(px, BUCKET_Y, 0.5, 14, ["#ffffff","#D9DDE8"], true); }
@@ -4885,7 +4926,7 @@ function bowl3dPlay(me){
       [0.62, 0.68].forEach(y => { const st = new T3.Mesh(new T3.CylinderGeometry(0.085, 0.09, 0.035, 14), PIN_RED); st.position.y = y; m.add(st); });
       const tag = new T3.Mesh(new T3.CircleGeometry(0.1, 20), new T3.MeshBasicMaterial({map: G.letterTex(b.l, "#ffffff", hexOf(b))})); tag.position.set(0, 0.32, 0.17); m.add(tag);
       return {m, b, x, z, down: false, gold}; }); target = pins[tIdx]; };
-    const bowler = G.beast(me, 0.45); bowler.position.set(-1.3, 0.22, -2.6); bowler.rotation.y = 0.4;
+    const bowler = G.beast(LASTME(me), 0.45); bowler.position.set(-1.3, 0.22, -2.6); bowler.rotation.y = 0.4;
     const host = byL("B"), bon = me.l === "B" ? null : G.beast(host, 0.5);  if (bon){ bon.position.set(1.95, 0.02, PZ + 1.6); bon.rotation.y = -0.5; }
     const cheer = big => { if (!bon) return; let n = big ? 3 : 1; const hop = () => G.tween(380, t => { bon.position.y = 0.02 + Math.sin(t*Math.PI)*(big ? 0.6 : 0.35); bon.rotation.y = -0.5 + t*Math.PI*2*(big ? 1 : 0); }, () => { if (--n > 0) hop(); }); hop(); };
     const ball = new T3.Group(); G.scene.add(ball); ball.position.set(0, 0.26, 0);
@@ -5991,13 +6032,13 @@ function hunt3dPlay(me, mi, opt){
     const weather = {t0: performance.now() - 30000, rain: 0, rainOn: false, nextRain: performance.now() + 50000 + Math.random()*40000, rainbowT: 0, lastSky: 0};
     CLEAN.push(() => MUSIC.rain(false));
     // ---- emotes
-    { const w = $("g3d").parentElement; w.insertAdjacentHTML("beforeend", `<button class="slview" id="emob" style="top:21rem" aria-label="Emotes">😀</button><div class="emotebar" id="emobar"><button data-emo="wave">👋</button><button data-emo="dance">💃</button><button data-emo="special">${me.e || "⭐"}</button></div>
+    { const w = $("g3d").parentElement; w.insertAdjacentHTML("beforeend", `<button class="slview" id="emob" style="top:21rem" aria-label="Emotes">😀</button><div class="emotebar" id="emobar"><button data-emo="wave">👋</button><button data-emo="dance">💃</button><button data-emo="special">${me.e || "⭐"}</button><button data-emo="party">🪩</button><button data-emo="win">🏆</button><button data-emo="lose">😤</button></div>
       <div class="ridebar" id="ridebar"></div><div class="traceover" id="traceover"></div>`); }
     let emote = null; const emoBubble = emojiSprite("👋", 1); emoBubble.visible = false;
     $("emob").onclick = () => $("emobar").classList.toggle("on");
     app.querySelectorAll("[data-emo]").forEach(el => el.onclick = () => { const k = el.dataset.emo; emote = {k, t0: performance.now()}; $("emobar").classList.remove("on");
-      emoBubble.material.map = emojiSprite(k === "wave" ? "👋" : k === "dance" ? "🎶" : (me.e || "⭐"), 1).material.map; emoBubble.visible = true; buzz(15);
-      const md = player.userData && player.userData.mdl; if (md) md.emote = {k, t0: performance.now()/1000}; speak(k === "wave" ? `Hello from ${nm(me)}!` : k === "dance" ? "Dance time!" : `${nm(me)}'s special move!`, null, {beast: me.l});
+      emoBubble.material.map = emojiSprite(k === "wave" ? "👋" : k === "dance" || k === "party" ? "🎶" : k === "win" ? "🏆" : k === "lose" ? "😤" : (me.e || "⭐"), 1).material.map; emoBubble.visible = true; buzz(15);
+      const md = player.userData && player.userData.mdl; if (md) md.emote = {k, t0: performance.now()/1000}; speak(k === "wave" ? `Hello from ${nm(me)}!` : k === "dance" || k === "party" ? "Dance time!" : k === "win" ? "Woo hoo!" : k === "lose" ? "Hmph!" : `${nm(me)}'s special move!`, null, {beast: me.l});
       if (k === "special") for (let j = 0; j < 3; j++) later(() => G.burst(pos[0], base + jumpY + 1.5, pos[1], 14, [hexOf(me), "#FFFFFF", "#FFD166"], true), j*300); });
     // ---- flocks of birds that take off as you walk past
     const flocks = [], birdM = mat(MAP.id === "frost" ? "#FFFFFF" : MAP.id === "claw" ? "#3A2E2E" : "#5A6BA8"), bodyG = new T3.BoxGeometry(0.18, 0.12, 0.26), wingG = new T3.BoxGeometry(0.26, 0.02, 0.14);
@@ -6032,7 +6073,7 @@ function hunt3dPlay(me, mi, opt){
       $("tutn").onclick = () => { si++; if (si >= steps.length){ $("tut").remove(); S.huntTut = 1; save(); speak(`Find the letter ${SAY[targets[0]]}!`); } else showStep(); }; showStep(); }
 
     // ================= PLAYER, LETTERS, BEACON =================
-    const player = G.beast(me, MODELS[me.l] ? 1.05 : 0.7);
+    const player = G.beast(LASTME(me), MODELS[me.l] ? 1.05 : 0.7);
     let pos = spawn.slice(), face = Math.PI, idx = 0, done = false;
     const letters = [];
     const PR = opt.easy ? W*0.45 : W - 3, prand = opt.daily ? seededRng("ab-daily-places-" + opt.daily) : Math.random;
@@ -6778,7 +6819,7 @@ function keepyPlay(me, K){
     [-1, 1].forEach(sd => { add(new T3.CylinderGeometry(0.15, 0.2, 12, 8), mat("#8A8F99"), sd*14, 6, -14, true); add(new T3.BoxGeometry(2.2, 1.2, 0.4), new T3.MeshBasicMaterial({color: "#FFF6DA"}), sd*14, 12, -14, false); });
     kitSky(G, {mr: 60, birds: true});
     // your beast and the thing you're keeping up
-    const player = G.beast(me, 0.7); let px = 0;
+    const player = G.beast(LASTME(me), 0.7); let px = 0;
     const thing = new T3.Group(); scene.add(thing); const M = c => new T3.MeshLambertMaterial({color: c});
     if (K.id === "ball"){ const c = document.createElement("canvas"); c.width = 256; c.height = 128; const x = c.getContext("2d"); x.fillStyle = "#FFFFFF"; x.fillRect(0, 0, 256, 128); x.fillStyle = "#1D1D1D"; [[40, 30], [120, 64], [200, 30], [80, 104], [170, 100], [250, 70], [10, 80]].forEach(([a2, b2]) => { x.beginPath(); for (let k = 0; k < 5; k++){ const an = k/5*Math.PI*2; x.lineTo(a2 + Math.cos(an)*15, b2 + Math.sin(an)*15); } x.fill(); });
       thing.add(new T3.Mesh(new T3.SphereGeometry(K.r, 24, 16), new T3.MeshLambertMaterial({map: new T3.CanvasTexture(c)}))); }
@@ -7628,9 +7669,9 @@ function chessPlay(myTeam, oppTeam, lvl){
 function gameOver(title, msg, pts, again, icon){
   award(pts); medal(icon || (pts >= 8 ? "🥇" : pts >= 5 ? "🥈" : "🥉"), title);
   render(`${header(title, "games", "Games")}
-    <div class="card"><div class="medal">${icon || (pts >= 8 ? "🥇" : pts >= 5 ? "🥈" : "🥉")}</div><p class="say">${msg}</p><p class="sub">+${pts} points for your team</p>
+    <div class="card">${resultSlot()}<div class="medal">${icon || (pts >= 8 ? "🥇" : pts >= 5 ? "🥈" : "🥉")}</div><p class="say">${msg}</p><p class="sub">+${pts} points for your team</p>
       <div class="row"><button class="btn" id="again">Play again</button><button class="btn ghost" data-go="games">More games</button></div></div>`);
-  speak(msg.replace(/<[^>]+>/g, "")); $("again").onclick = again;
+  speak(msg.replace(/<[^>]+>/g, "")); $("again").onclick = again; resultBeast(icon ? icon !== "🥉" : pts >= 5);
 }
 /* a 2D canvas game: returns the drawing context and a frame loop */
 function canvasGame(title, note, controls, aspect){
@@ -7880,7 +7921,7 @@ function jellyPlay(me, MAP){
     let nextL = 0, got = 0; const items = [];
     const addItem = y => { const l = String.fromCharCode(65 + nextL % 26); const m = new T3.Mesh(new T3.BoxGeometry(0.7, 0.7, 0.7), new T3.MeshLambertMaterial({map: G.letterTex(l, hexOf(byL(l)))})); m.position.set((R() - .5)*WID*1.6, y, 0); scene.add(m); items.push({m, l}); };
     // the player
-    const pl = G.beast(me, 0.75); let px = 0, py = 0.6, vx = 0, vy = 13, hold = 0, dead = false, best = 0, topY = 0, camY = 3;
+    const pl = G.beast(LASTME(me), 0.75); let px = 0, py = 0.6, vx = 0, vy = 13, hold = 0, dead = false, best = 0, topY = 0, camY = 3;
     powerArm(me, () => { if (dead) return; vy = 26; $("fb").textContent = `⚡ ${me.power || "Super bounce"}! Up you go!`; G.burst(px, py, 0, 20, [col(me), "#FFFFFF"], true); });
     makePlat(0, "normal").g.position.x = 0; plats[0].x = 0; for (let k = 1; k < 14; k++) makePlat(k*GAP, "normal"); topY = 13*GAP;
     for (let k = 0; k < 8; k++) addDeco(k*6); addItem(7);

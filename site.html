@@ -410,6 +410,10 @@
 .flip-hint{position:absolute;right:6px;bottom:6px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;font-size:13px;line-height:22px;text-align:center;pointer-events:none}
 .card-tile.teach .card-tile-inner{animation:teachflip 1.6s ease-in-out .6s 1}
 @keyframes teachflip{0%,100%{transform:rotateY(0)}40%,60%{transform:rotateY(180deg)}}
+.m3d-btn{display:block;margin:.6rem auto 1rem;border:0;color:#fff;font:700 1rem/1.2 inherit;font-family:inherit;padding:.75rem 1.2rem;border-radius:999px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.15)}
+.m3d-btn[hidden]{display:none}.m3d-wrap{margin:0 0 1.2rem}.m3d-load,.m3d-tip{text-align:center;font-size:.85rem;opacity:.7;margin:.4rem 0}
+.m3d-ar{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);border:0;background:#fff;color:#222;font:700 .95rem inherit;font-family:inherit;padding:.6rem 1rem;border-radius:999px;box-shadow:0 3px 12px rgba(0,0,0,.2)}
+.m3d-moves{display:flex;gap:.5rem;justify-content:center;margin-top:.6rem;flex-wrap:wrap}.m3d-moves button{border:2px solid #ddd;background:#fff;border-radius:999px;padding:.45rem .9rem;font:600 .9rem inherit;font-family:inherit;cursor:pointer}
 </style>
 </head>
 <body>
@@ -1042,6 +1046,25 @@ const backBtn = document.getElementById("backBtn");
 const prevBtn = document.getElementById("prevBtn");
 const nextBtn = document.getElementById("nextBtn");
 
+const MODEL3D = "ACDEFGHIJKLMOPQRSTUVW";
+const M3D_RIGGED = "ACDFGHIJKMOPRSTW";
+let mvLoad = null;
+function loadModelViewer(){ return mvLoad || (mvLoad = new Promise((res, rej) => { const sc = document.createElement("script"); sc.type = "module"; sc.src = "https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js"; sc.onload = res; sc.onerror = rej; document.head.appendChild(sc); })); }
+function show3D(b){
+  const w = document.getElementById("m3dWrap"), btn = document.getElementById("m3dBtn"); if (!w) return;
+  btn.hidden = true; w.hidden = false; w.innerHTML = `<p class="m3d-load">Loading ${b.name}…</p>`;
+  loadModelViewer().then(() => {
+    const rig = M3D_RIGGED.includes(b.l); const mvAnims = null;
+    w.innerHTML = `<model-viewer id="mv" src="/models/${b.l}.glb" alt="${b.name} in 3D" camera-controls touch-action="pan-y" auto-rotate auto-rotate-delay="3000" rotation-per-second="18deg" ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto" shadow-intensity="1" exposure="1.05" ${rig ? 'autoplay animation-name="Idle"' : ""} style="width:100%;height:420px;background:radial-gradient(circle at 50% 40%,#fff,#EEF4FF);border-radius:18px">
+      <button slot="ar-button" class="m3d-ar">📱 Put ${b.name.split(" ")[0]} in your room</button></model-viewer>
+      ${rig ? `<div class="m3d-moves">${[["👋 Wave", "Wave_One_Hand"], ["🪩 Party", "Party"], ["⚡ Power", "Power"], ["🏆 Win", "Win"], ["😤 Sulk", "Lose"], ["🏃 Run", "Running"]].filter(([t, n]) => !mvAnims || mvAnims.includes(n)).map(([t, n]) => `<button data-anim="${n}">${t}</button>`).join("")}</div>` : ""}
+      <p class="m3d-tip">Drag to spin. Pinch to zoom.</p>`;
+    const mv = document.getElementById("mv");
+    w.querySelectorAll("[data-anim]").forEach(x => x.addEventListener("click", () => {
+      const n = x.dataset.anim; mv.animationName = n; mv.currentTime = 0; mv.play({repetitions: n === "Running" ? 3 : 1});
+      mv.addEventListener("finished", () => { mv.animationName = "Idle"; mv.play(); }, {once: true}); }));
+  }).catch(() => { w.innerHTML = `<p class="m3d-load">Couldn't load the 3D viewer. Try again later.</p>`; });
+}
 function renderBeastPage(letter) {
   const idx = ALPHABET.indexOf(letter);
   const b = byLetter[letter];
@@ -1070,6 +1093,7 @@ function renderBeastPage(letter) {
     ${ART[b.l] ? `<div class="hero-art-wrap"><img class="hero-art" src="${ART[b.l]}" alt="${b.name}, illustrated by Louise Pyke"><span class="letter-big hero-letter" style="background:${t.color}">${b.l}</span></div>` : `<span class="letter-big" style="background:${t.color}">${b.l}</span>`}
     <span class="tag-pill mono" style="background:${t.color}">${t.tagShort}</span>
     <h2>${b.name}</h2>
+    ${MODEL3D.includes(b.l) ? `<button class="m3d-btn" id="m3dBtn" style="background:${t.color}">✨ See ${b.name.split(" ")[0]} in 3D, or in your room</button><div class="m3d-wrap" id="m3dWrap" hidden></div>` : ""}
     <p class="team-of">${t.name}</p>
     ${b.note ? `<span class="note-badge mono" style="background:${t.tint};color:${t.color}">${b.note}</span>` : ""}
     ${CATCHPHRASE[b.l] ? `<blockquote class="catchphrase" style="border-color:${t.color}">\u201C${CATCHPHRASE[b.l]}\u201D</blockquote>` : ""}
@@ -1143,6 +1167,7 @@ window.addEventListener("hashchange", syncFromHash);
 syncFromHash();
 
 backBtn.addEventListener("click", closeBeastPage);
+beastHero.addEventListener("click", e => { if (e.target.closest("#m3dBtn")) show3D(byLetter[ALPHABET[currentLetterIndex]]); });
 prevBtn.addEventListener("click", () => {
   if (currentLetterIndex > 0) {
     currentLetterIndex -= 1;
